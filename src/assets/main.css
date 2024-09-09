@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'Jost';
+  src: url('../assets/fonts/Jost-Regular.ttf');
+}
+@font-face {
+  font-family: 'DM Serif Display';
+  src: url('../assets/fonts/DMSerifDisplay-Regular.woff2');
+}
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  src: url('../assets/fonts/Font_Awesome_5_Brands\ .woff');
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+:root {
+  --font-Jost: 'Jost', sans-serif;
+  --font-DM: 'DM Serif Display', sans-serif;
+  --font-Awesome: 'Font Awesome 5 Brands', sans-serif;
+}
+body {
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  background-image: url('/background.svg');
+  background-position: center center;
+}
+#top {
+  scroll-behavior: smooth;
+}
+img {
+  display: block;
+  max-width: 100vh;
+}
+h1,
+h2,
+h3,
+h4,
+li,
+a,
+p,
+button {
+  font-family: var(--font-Jost);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 125%;
+  letter-spacing: 0.01em;
+  text-align: center;
+  overflow-wrap: break-word;
+  color: #292f36;
+}
+.container__big {
+  width: 1920px;
+  margin: 0 auto;
+}
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}
+.center {
+  padding-left: calc(50% - 600px);
+  padding-right: calc(50% - 600px);
+}
+/* Управление переносами */
+p {
+  -webkit-hyphens: auto;
+  -webkit-hyphenate-limit-before: 3;
+  -webkit-hyphenate-limit-after: 3;
+  -webkit-hyphenate-limit-chars: 6 3 3;
+  -webkit-hyphenate-limit-lines: 2;
+  -webkit-hyphenate-limit-last: always;
+  -webkit-hyphenate-limit-zone: 8%;
+
+  -moz-hyphens: auto;
+  -moz-hyphenate-limit-chars: 6 3 3;
+  -moz-hyphenate-limit-lines: 2;
+  -moz-hyphenate-limit-last: always;
+  -moz-hyphenate-limit-zone: 8%;
+
+  -ms-hyphens: auto;
+  -ms-hyphenate-limit-chars: 6 3 3;
+  -ms-hyphenate-limit-lines: 2;
+  -ms-hyphenate-limit-last: always;
+  -ms-hyphenate-limit-zone: 8%;
+
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+}
