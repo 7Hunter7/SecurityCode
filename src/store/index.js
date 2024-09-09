@@ -1,13 +1,14 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { Store } from "vuex";
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default new Store({
   state: {
     inventory: [],
+    types: ["Диэлектрические перчатки", "Защитные очки", "Изолирующие каски"],
+    voltageClasses: ["0,4 кВ", "10 кВ", "35 кВ", "110 кВ"],
+    szTypes: ["Перчатки", "Очки", "Каски"],
   },
   mutations: {
+    // методы для изменения состояния
     setInventory(state, inventory) {
       state.inventory = inventory;
     },
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    // методы для чтения состояния
     allItems: (state) => state.inventory,
   },
 });

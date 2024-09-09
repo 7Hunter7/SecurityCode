@@ -1,44 +1,70 @@
 <template>
-  <div class="siz-page">
-    <!-- Заголовок -->
+  <div class="siz-inventory">
     <h1>Учет средств индивидуальной защиты</h1>
 
     <!-- Панель поиска и фильтров -->
-    <div class="controls">
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Поиск по названию СИЗ..."
-        @input="filterSIZ"
-      />
-      <select v-model="selectedCategory" @change="filterSIZ">
-        <option value="">Все категории</option>
-        <option value="каска">Каска</option>
-        <option value="перчатки">Перчатки</option>
-        <option value="боты">Боты</option>
-        <!-- Добавить другие категории -->
+    <div class="filters">
+      <input v-model="search" placeholder="Поиск по СИЗ..." />
+      <select v-model="selectedLocation">
+        <option value="">Все местонахождения</option>
+        <option
+          v-for="location in uniqueLocations"
+          :key="location"
+          :value="location"
+        >
+          {{ location }}
+        </option>
       </select>
+      <select v-model="selectedType">
+        <option value="">Все виды</option>
+        <option v-for="type in uniqueTypes" :key="type" :value="type">
+          {{ type }}
+        </option>
+      </select>
+      <select v-model="selectedVoltageClass">
+        <option value="">Все классы напряжения</option>
+        <option v-for="voltage in voltageClasses" :key="voltage">
+          {{ voltage }}
+        </option>
+      </select>
+      <select v-model="selectedSzType">
+        <option value="">Все типы</option>
+        <option v-for="szType in szTypes" :key="szType">{{ szType }}</option>
+      </select>
+      <!-- Можно добавить дополнительные фильтры по местонахождению, дате, состоянию и т.д. -->
     </div>
 
     <!-- Таблица СИЗ -->
     <table>
       <thead>
         <tr>
-          <th>Название</th>
-          <th>Категория</th>
-          <th>Количество</th>
-          <th>Ед.изм.</th>
-          <th>Состояние</th>
+          <th>Местонахождение</th>
+          <th>Вид СЗ</th>
+          <th>Класс напряжения (кВ)</th>
+          <th>Тип СЗ</th>
+          <th>№ СЗ</th>
+          <th>Дата испытания</th>
+          <th>Дата следующего испытания</th>
+          <th>Дата последнего осмотра</th>
+          <th>Кол-во</th>
+          <th>Кол-во по классам</th>
+          <th>Примечания</th>
           <th>Действия</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in filteredSIZ" :key="item.id">
-          <td>{{ item.name }}</td>
-          <td>{{ item.category }}</td>
+          <td>{{ item.location }}</td>
+          <td>{{ item.type }}</td>
+          <td>{{ item.voltageClass }}</td>
+          <td>{{ item.szType }}</td>
+          <td>{{ item.number }}</td>
+          <td>{{ item.testDate }}</td>
+          <td>{{ item.nextTestDate }}</td>
+          <td>{{ item.lastInspectDate }}</td>
           <td>{{ item.quantity }}</td>
-          <td>{{ item.units }}</td>
-          <td>{{ item.status }}</td>
+          <td>{{ item.quantityByClass }}</td>
+          <td>{{ item.note }}</td>
           <td>
             <button @click="editSIZ(item)">Редактировать</button>
             <button @click="deleteSIZ(item)">Удалить</button>
@@ -50,42 +76,74 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "SecurityDevicePage",
   data() {
     return {
       // Данные СИЗ
+      search: "",
+      selectedType: "",
+      selectedVoltageClass: "",
+      selectedSzType: "",
+
+      // Пример данных СИЗ
       SIZItems: [
         {
           id: 1,
-          name: "Каска",
-          category: "каска",
-          quantity: 50,
-          units: "шт.",
-          status: "в наличии",
+          location: "Подстанция 1",
+          type: "Диэлектрические перчатки",
+          voltageClass: "1",
+          szType: "Перчатки",
+          number: "1",
+          testDate: "2022-01-01",
+          nextTestDate: "2023-01-01",
+          lastInspectionDate: "2024-06-01",
+          quantity: 100,
+          quantityByClass: "B",
+          note: "Требуется проверка",
         },
         {
           id: 2,
-          name: "Перчатки",
-          category: "перчатки",
-          quantity: 100,
-          units: "пар",
-          status: "на испытаниях",
+          location: "Подстанция 2",
+          type: "Диэлектрические боты",
+          voltageClass: "1",
+          szType: "Боты",
+          number: "10",
+          testDate: "2021-01-01",
+          nextTestDate: "2022-01-01",
+          lastInspectionDate: "2021-06-01",
+          quantity: 50,
+          quantityByClass: "A",
+          note: "Требуется проверка",
         },
-        {
-          id: 3,
-          name: "Боты",
-          category: "боты",
-          quantity: 30,
-          units: "пар",
-          status: "на складе",
-        },
-        // Пример данных, можно добавить больше
+        // Добавить другие записи
       ],
-      searchQuery: "",
-      selectedCategory: "",
-      filteredSIZ: [],
     };
+  },
+  computed: {
+    ...mapState(["types", "voltageClasses", "szTypes"]),
+    // Динамическое заполнение выпадающих списков
+    uniqueLocations() {
+      return [...new Set(this.SIZItems.map((item) => item.location))];
+    },
+    uniqueTypes() {
+      return [...new Set(this.SIZItems.map((item) => item.type))];
+    },
+
+    filteredSIZ() {
+      return this.SIZItems.filter((item) => {
+        return (
+          item?.name?.toLowerCase().includes(this.search.toLowerCase()) &&
+          (this.selectedType ? item.type === this.selectedType : true) &&
+          (this.selectedVoltageClass
+            ? item.voltageClass === this.selectedVoltageClass
+            : true) &&
+          (this.selectedSzType ? item.szType === this.selectedSzType : true)
+        );
+      });
+    },
   },
   mounted() {
     // Инициализация фильтрованных данных при загрузке страницы
@@ -120,19 +178,19 @@ export default {
 </script>
 
 <style scoped>
-.siz-page {
+.siz-inventory {
   padding: 20px;
 }
-.controls {
+.filters {
   display: flex;
   gap: 20px;
   margin-bottom: 20px;
 }
-.controls input {
+.filters input {
   padding: 8px;
   width: 200px;
 }
-.controls select {
+.filters select {
   padding: 8px;
 }
 table {
@@ -142,7 +200,7 @@ table {
 table th,
 table td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 8px;
   text-align: left;
 }
 table th {
