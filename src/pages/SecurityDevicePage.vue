@@ -1,56 +1,7 @@
 <template>
   <div class="siz-inventory">
     <h1>Учет средств индивидуальной защиты</h1>
-
-    <!-- Панель поиска и фильтров -->
-    <div class="filters">
-      <input v-model="search" placeholder="Поиск по СИЗ..." />
-      <!-- Фильтр по местонахождению -->
-      <select v-model="selectedLocation">
-        <option value="">Выберите местонахождение</option>
-        <option
-          v-for="location in uniqueLocations"
-          :key="location"
-          :value="location"
-        >
-          {{ location }}
-        </option>
-      </select>
-      <!-- Фильтр по виду СЗ -->
-      <select v-model="selectedType">
-        <option value="">Выберите вид СЗ</option>
-        <option v-for="type in uniqueTypes" :key="type" :value="type">
-          {{ type }}
-        </option>
-      </select>
-      <!-- Фильтр по классу напряжения СЗ -->
-      <select v-model="selectedVoltageClass">
-        <option value="">Выберите класс напряжения</option>
-        <option
-          v-for="voltage in voltageClasses"
-          :key="voltage"
-          :value="voltage"
-        >
-          {{ voltage }} кВ
-        </option>
-      </select>
-      <!-- Фильтр по типу СЗ -->
-      <select v-model="selectedSzType">
-        <option value="">Выберите тип СЗ</option>
-        <option v-for="szType in szTypes" :key="szType" :value="szType">
-          {{ szType }}
-        </option>
-      </select>
-      <!-- Фильтр по датам испытаний -->
-      <input
-        type="date"
-        v-model="testDateFrom"
-        placeholder="Дата испытания от"
-      />
-      <input type="date" v-model="testDateTo" placeholder="Дата испытания до" />
-      <!-- Можно добавить дополнительные фильтры по местонахождению, дате, состоянию и т.д. -->
-    </div>
-
+    <FiltersComponent @filterChanged="handleFilterChange" />
     <!-- Таблица СИЗ -->
     <table>
       <thead>
@@ -93,84 +44,67 @@
 </template>
 
 <script>
+import FiltersComponent from "../components/FiltersComponent.vue";
 import { mapState } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
+  components: {
+    FiltersComponent,
+  },
   data() {
     return {
-      // Данные СИЗ
-      search: "",
-      selectedLocation: "",
-      selectedType: "",
-      selectedVoltageClass: "",
-      selectedSzType: "",
-      testDateFrom: "",
-      testDateTo: "",
-      quantity: "",
-
-      // Пример данных СИЗ
-      SIZItems: [
-        {
-          id: 1,
-          location: "Подстанция 1",
-          type: "Диэлектрические перчатки",
-          voltageClass: "1",
-          szType: "Перчатки",
-          number: "1",
-          testDate: "2022-01-01",
-          nextTestDate: "2023-01-01",
-          lastInspectDate: "2024-06-01",
-          quantity: 100,
-          quantityByClass: 100,
-          note: "Требуется проверка",
-        },
-        {
-          id: 2,
-          location: "Подстанция 2",
-          type: "Диэлектрические боты",
-          voltageClass: "10",
-          szType: "Боты",
-          number: "10",
-          testDate: "2021-01-01",
-          nextTestDate: "2022-01-01",
-          lastInspectDate: "2021-06-01",
-          quantity: 50,
-          quantityByClass: 50,
-          note: "Требуется проверка",
-        },
-        // Добавить другие записи
-      ],
+      filteredSIZ: "",
     };
   },
   computed: {
-    ...mapState(["types", "voltageClasses", "szTypes"]),
-    // Динамическое заполнение выпадающих списков
-    uniqueLocations() {
-      return [...new Set(this.SIZItems.map((item) => item.location))];
-    },
-    uniqueTypes() {
-      return [...new Set(this.SIZItems.map((item) => item.type))];
-    },
+    ...mapState(["SIZItems"]),
+  },
+  mounted() {
+    // Инициализация фильтрованных данных при загрузке страницы
+    this.filteredSIZ = this.SIZItems;
+  },
+  methods: {
+    handleFilterChange(filters) {
+      // Обновление локального состояния с новыми значениями фильтров
+      this.search = filters.search;
+      this.selectedLocation = filters.selectedLocation;
+      this.selectedType = filters.selectedType;
+      this.selectedVoltageClass = filters.selectedVoltageClass;
+      this.testDateFrom = filters.testDateFrom;
+      this.testDateTo = filters.testDateTo;
 
-    filteredSIZ() {
-      return this.SIZItems.filter((item) => {
+      // Применение фильтров к данным
+      this.filteredSIZ = this.SIZItems.filter((item) => {
+        const matchesSearch = item.type
+          .toLowerCase()
+          .includes(this.search.toLowerCase());
+        const matchesLocation = this.selectedLocation
+          ? item.location === this.selectedLocation
+          : true;
+        const matchesType = this.selectedType
+          ? item.type === this.selectedType
+          : true;
+        const matchesVoltageClass = this.selectedVoltageClass
+          ? item.voltageClass === this.selectedVoltageClass
+          : true;
+        const matchesDateFrom = this.testDateFrom
+          ? new Date(item.testDate) >= new Date(this.testDateFrom)
+          : true;
+        const matchesDateTo = this.testDateTo
+          ? new Date(item.testDate) <= new Date(this.testDateTo)
+          : true;
+
         return (
-          item?.type?.toLowerCase().includes(this.search.toLowerCase()) &&
-          (!this.selectedLocation || item.location === this.selectedLocation) &&
-          (!this.selectedType || item.type === this.selectedType) &&
-          (!this.selectedVoltageClass ||
-            item.voltageClass === this.selectedVoltageClass) &&
-          (!this.selectedSzType || item.szType === this.selectedSzType) &&
-          (!this.testDateFrom ||
-            new Date(item.testDate) >= new Date(this.testDateFrom)) &&
-          (!this.testDateTo ||
-            new Date(item.testDate) <= new Date(this.testDateTo))
+          matchesSearch &&
+          matchesLocation &&
+          matchesType &&
+          matchesVoltageClass &&
+          matchesDateFrom &&
+          matchesDateTo
         );
       });
     },
-  },
-  methods: {
     editSIZ(item) {
       // Логика редактирования СИЗ
       alert(`Редактировать: ${item.name}`);
