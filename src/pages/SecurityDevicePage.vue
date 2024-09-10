@@ -5,8 +5,9 @@
     <!-- Панель поиска и фильтров -->
     <div class="filters">
       <input v-model="search" placeholder="Поиск по СИЗ..." />
+      <!-- Фильтр по местонахождению -->
       <select v-model="selectedLocation">
-        <option value="">Все местонахождения</option>
+        <option value="">Выберите местонахождение</option>
         <option
           v-for="location in uniqueLocations"
           :key="location"
@@ -15,22 +16,38 @@
           {{ location }}
         </option>
       </select>
+      <!-- Фильтр по виду СЗ -->
       <select v-model="selectedType">
-        <option value="">Все виды</option>
+        <option value="">Выберите вид СЗ</option>
         <option v-for="type in uniqueTypes" :key="type" :value="type">
           {{ type }}
         </option>
       </select>
+      <!-- Фильтр по классу напряжения СЗ -->
       <select v-model="selectedVoltageClass">
-        <option value="">Все классы напряжения</option>
-        <option v-for="voltage in voltageClasses" :key="voltage">
-          {{ voltage }}
+        <option value="">Выберите класс напряжения</option>
+        <option
+          v-for="voltage in voltageClasses"
+          :key="voltage"
+          :value="voltage"
+        >
+          {{ voltage }} кВ
         </option>
       </select>
+      <!-- Фильтр по типу СЗ -->
       <select v-model="selectedSzType">
-        <option value="">Все типы</option>
-        <option v-for="szType in szTypes" :key="szType">{{ szType }}</option>
+        <option value="">Выберите тип СЗ</option>
+        <option v-for="szType in szTypes" :key="szType" :value="szType">
+          {{ szType }}
+        </option>
       </select>
+      <!-- Фильтр по датам испытаний -->
+      <input
+        type="date"
+        v-model="testDateFrom"
+        placeholder="Дата испытания от"
+      />
+      <input type="date" v-model="testDateTo" placeholder="Дата испытания до" />
       <!-- Можно добавить дополнительные фильтры по местонахождению, дате, состоянию и т.д. -->
     </div>
 
@@ -84,9 +101,13 @@ export default {
     return {
       // Данные СИЗ
       search: "",
+      selectedLocation: "",
       selectedType: "",
       selectedVoltageClass: "",
       selectedSzType: "",
+      testDateFrom: "",
+      testDateTo: "",
+      quantity: "",
 
       // Пример данных СИЗ
       SIZItems: [
@@ -99,23 +120,23 @@ export default {
           number: "1",
           testDate: "2022-01-01",
           nextTestDate: "2023-01-01",
-          lastInspectionDate: "2024-06-01",
+          lastInspectDate: "2024-06-01",
           quantity: 100,
-          quantityByClass: "B",
+          quantityByClass: 100,
           note: "Требуется проверка",
         },
         {
           id: 2,
           location: "Подстанция 2",
           type: "Диэлектрические боты",
-          voltageClass: "1",
+          voltageClass: "10",
           szType: "Боты",
           number: "10",
           testDate: "2021-01-01",
           nextTestDate: "2022-01-01",
-          lastInspectionDate: "2021-06-01",
+          lastInspectDate: "2021-06-01",
           quantity: 50,
-          quantityByClass: "A",
+          quantityByClass: 50,
           note: "Требуется проверка",
         },
         // Добавить другие записи
@@ -135,33 +156,21 @@ export default {
     filteredSIZ() {
       return this.SIZItems.filter((item) => {
         return (
-          item?.name?.toLowerCase().includes(this.search.toLowerCase()) &&
-          (this.selectedType ? item.type === this.selectedType : true) &&
-          (this.selectedVoltageClass
-            ? item.voltageClass === this.selectedVoltageClass
-            : true) &&
-          (this.selectedSzType ? item.szType === this.selectedSzType : true)
+          item?.type?.toLowerCase().includes(this.search.toLowerCase()) &&
+          (!this.selectedLocation || item.location === this.selectedLocation) &&
+          (!this.selectedType || item.type === this.selectedType) &&
+          (!this.selectedVoltageClass ||
+            item.voltageClass === this.selectedVoltageClass) &&
+          (!this.selectedSzType || item.szType === this.selectedSzType) &&
+          (!this.testDateFrom ||
+            new Date(item.testDate) >= new Date(this.testDateFrom)) &&
+          (!this.testDateTo ||
+            new Date(item.testDate) <= new Date(this.testDateTo))
         );
       });
     },
   },
-  mounted() {
-    // Инициализация фильтрованных данных при загрузке страницы
-    this.filteredSIZ = this.SIZItems;
-  },
   methods: {
-    filterSIZ() {
-      // Фильтрация данных на основе поиска и выбранной категории
-      this.filteredSIZ = this.SIZItems.filter((item) => {
-        const matchesSearch = item.name
-          .toLowerCase()
-          .includes(this.searchQuery.toLowerCase());
-        const matchesCategory = this.selectedCategory
-          ? item.category === this.selectedCategory
-          : true;
-        return matchesSearch && matchesCategory;
-      });
-    },
     editSIZ(item) {
       // Логика редактирования СИЗ
       alert(`Редактировать: ${item.name}`);
