@@ -1,7 +1,12 @@
 <template>
   <div class="siz-inventory">
     <h1>Учет средств индивидуальной защиты</h1>
-    <FiltersComponent @filterChanged="handleFilterChange" />
+    <FiltersComponent
+      :locations="uniqueLocations"
+      :types="uniqueTypes"
+      :voltageClasses="uniqueVoltageClasses"
+      @filterChanged="handleFilterChange"
+    />
     <!-- Таблица СИЗ -->
     <table>
       <thead>
@@ -59,6 +64,16 @@ export default {
   },
   computed: {
     ...mapState(["SIZItems"]),
+    // Динамическое заполнение выпадающих списков
+    uniqueLocations() {
+      return [...new Set(this.SIZItems.map((item) => item.location))];
+    },
+    uniqueTypes() {
+      return [...new Set(this.SIZItems.map((item) => item.type))];
+    },
+    uniqueVoltageClasses() {
+      return [...new Set(this.SIZItems.map((item) => item.voltageClass))];
+    },
   },
   mounted() {
     // Инициализация фильтрованных данных при загрузке страницы

@@ -7,33 +7,26 @@
     />
     <!-- Фильтр по местонахождению -->
     <select v-model="selectedLocation" @change="updateFilters">
-      <option value="">Выберите местонахождение</option>
-      <option
-        v-for="location in uniqueLocations"
-        :key="location"
-        :value="location"
-      >
+      <option value="">Местонахождение</option>
+      <option v-for="location in locations" :key="location" :value="location">
         {{ location }}
       </option>
     </select>
     <!-- Фильтр по виду СЗ -->
     <select v-model="selectedType" @change="updateFilters">
-      <option value="">Выберите вид СЗ</option>
-      <option v-for="type in uniqueTypes" :key="type" :value="type">
+      <option value="">Вид СЗ</option>
+      <option v-for="type in types" :key="type" :value="type">
         {{ type }}
       </option>
     </select>
     <!-- Фильтр по классу напряжения СЗ -->
     <select v-model="selectedVoltageClass" @change="updateFilters">
-      <option value="">Выберите класс напряжения</option>
-      <option
-        v-for="voltage in uniqueVoltageClass"
-        :key="voltage"
-        :value="voltage"
-      >
+      <option value="">Класс напряжения</option>
+      <option v-for="voltage in voltageClasses" :key="voltage" :value="voltage">
         {{ voltage }} кВ
       </option>
     </select>
+    <br />
     <!-- Фильтр по датам испытаний -->
     <label for="date-from">Дата следующего испытания (от)</label>
     <input
@@ -58,9 +51,18 @@ import { mapState } from "vuex";
 export default {
   name: "FiltersComponent",
   props: {
-    locations: Array,
-    types: Array,
-    voltageClasses: Array,
+    locations: {
+      type: Array,
+      required: true,
+    },
+    types: {
+      type: Array,
+      required: true,
+    },
+    voltageClasses: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -72,19 +74,7 @@ export default {
       testDateTo: "",
     };
   },
-  computed: {
-    ...mapState(["SIZItems"]),
-    // Динамическое заполнение выпадающих списков
-    uniqueLocations() {
-      return [...new Set(this.SIZItems.map((item) => item.location))];
-    },
-    uniqueTypes() {
-      return [...new Set(this.SIZItems.map((item) => item.type))];
-    },
-    uniqueVoltageClass() {
-      return [...new Set(this.SIZItems.map((item) => item.voltageClass))];
-    },
-  },
+
   methods: {
     updateFilters() {
       this.$emit("filterChanged", {
@@ -105,6 +95,7 @@ export default {
   display: flex;
   gap: 20px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 .filters input,
 .filters select {
