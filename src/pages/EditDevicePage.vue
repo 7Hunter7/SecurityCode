@@ -3,28 +3,123 @@
     <h1>{{ isEditMode ? "Редактировать СИЗ" : "Добавить новое СИЗ" }}</h1>
 
     <form @submit.prevent="submitForm">
-      <!-- Название -->
+      <!-- Местонахождение -->
       <div class="form-group">
-        <label for="name">Название СИЗ:</label>
+        <label for="location">Местонахождение:</label>
+        <div>
+          <select v-model="siz.location" id="location" required>
+            <option value="">Местонахождение</option>
+            <option
+              v-for="location in locations"
+              :key="location"
+              :value="location"
+            >
+              {{ location }}
+            </option>
+          </select>
+          <input
+            v-if="siz.location === 'new'"
+            v-model="newLocation"
+            type="text"
+            placeholder="Добавить новое"
+          />
+        </div>
+      </div>
+
+      <!-- Вид СЗ -->
+      <div class="form-group">
+        <label for="type">Вид СЗ:</label>
+        <div>
+          <select v-model="siz.type" id="type" required>
+            <option value="">Вид СЗ</option>
+            <option v-for="type in types" :key="type" :value="type">
+              {{ type }}
+            </option>
+          </select>
+          <input
+            v-if="siz.type === 'new'"
+            v-model="newType"
+            type="text"
+            placeholder="Добавить новый"
+          />
+        </div>
+      </div>
+
+      <!-- Класс напряжения (кВ) -->
+      <div class="form-group">
+        <label for="voltageClass">Класс напряжения (кВ):</label>
+        <div>
+          <select v-model="siz.voltageClass" id="voltageClass" required>
+            <option value="">Класс напряжения</option>
+            <option
+              v-for="voltage in voltageClasses"
+              :key="voltage"
+              :value="voltage"
+            >
+              {{ voltage }} кВ
+            </option>
+          </select>
+          <input
+            v-if="siz.voltageClass === 'new'"
+            v-model="newVoltageClass"
+            type="text"
+            placeholder="Добавить новый"
+          />
+        </div>
+      </div>
+
+      <!-- Тип СЗ -->
+      <div class="form-group">
+        <label for="szType">Тип СЗ:</label>
+        <div>
+          <select v-model="siz.szType" id="szType" required>
+            <option value="">Тип СЗ</option>
+            <option v-for="szType in szTypes" :key="szType" :value="szType">
+              {{ szType }}
+            </option>
+          </select>
+          <input
+            v-if="siz.szType === 'new'"
+            v-model="newSzType"
+            type="text"
+            placeholder="Добавить новый"
+          />
+        </div>
+      </div>
+
+      <!-- № СЗ -->
+      <div class="form-group">
+        <label for="number">№ СЗ:</label>
         <input
-          v-model="siz.name"
+          v-model="siz.number"
           type="text"
-          id="name"
-          placeholder="Введите название СИЗ"
+          id="number"
+          placeholder="Номер СЗ"
           required
         />
       </div>
 
-      <!-- Категория -->
+      <!-- Дата испытания -->
       <div class="form-group">
-        <label for="category">Категория:</label>
-        <select v-model="siz.category" id="category" required>
-          <option value="">Выберите категорию</option>
-          <option value="каска">Каска</option>
-          <option value="перчатки">Перчатки</option>
-          <option value="очки">Очки</option>
-          <!-- Добавить другие категории -->
-        </select>
+        <label for="testDate">Дата испытания:</label>
+        <input type="date" v-model="siz.testDate" id="testDate" required />
+      </div>
+
+      <!-- Дата следующего испытания -->
+      <div class="form-group">
+        <label for="nextTestDate">Дата следующего испытания:</label>
+        <input
+          type="date"
+          v-model="siz.nextTestDate"
+          id="nextTestDate"
+          required
+        />
+      </div>
+
+      <!-- Дата последнего осмотра -->
+      <div class="form-group">
+        <label for="lastInspectDate">Дата последнего осмотра:</label>
+        <input type="date" v-model="siz.lastInspectDate" id="lastInspectDate" />
       </div>
 
       <!-- Количество -->
@@ -35,20 +130,29 @@
           type="number"
           id="quantity"
           min="1"
-          placeholder="Введите количество"
+          placeholder="Количество"
+          value="1"
           required
         />
       </div>
 
-      <!-- Состояние -->
+      <!-- Примечания -->
       <div class="form-group">
-        <label for="status">Состояние:</label>
-        <select v-model="siz.status" id="status" required>
-          <option value="">Выберите состояние</option>
-          <option value="в наличии">В наличии</option>
-          <option value="на складе">На складе</option>
-          <option value="в ремонте">В ремонте</option>
-        </select>
+        <label for="note">Примечания:</label>
+        <div>
+          <select v-model="siz.note" id="note">
+            <option value="">Выберите примечание</option>
+            <option v-for="note in notes" :key="note" :value="note">
+              {{ note }}
+            </option>
+          </select>
+          <input
+            v-if="siz.note === 'new'"
+            v-model="newNote"
+            type="text"
+            placeholder="Примечание"
+          />
+        </div>
       </div>
 
       <!-- Кнопка отправки -->
@@ -70,16 +174,52 @@ export default {
       type: Object,
       default: null,
     },
+    locations: {
+      type: Array,
+      default: () => ["Подстанция 110кВ", "Подстанция 35кВ"],
+    },
+    types: {
+      type: Array,
+      default: () => [
+        "Перчатки",
+        "Боты",
+        "Указатель напряжения",
+        "Изолируюшая штанга",
+      ],
+    },
+    voltageClasses: {
+      type: Array,
+      default: () => [1, 10, 35, 110],
+    },
+    szTypes: {
+      type: Array,
+      default: () => ["УВН", "ШОУ"],
+    },
+    notes: {
+      type: Array,
+      default: () => ["Требуется проверка", "Испытано", "Осмотрено"],
+    },
   },
   data() {
     return {
       siz: {
-        name: "",
-        category: "",
+        location: "",
+        type: "",
+        voltageClass: "",
+        szType: "",
+        number: "",
+        testDate: "",
+        nextTestDate: "",
+        lastInspectDate: "",
         quantity: 1,
-        status: "",
+        note: "",
       },
       isEditMode: false,
+      newLocation: "",
+      newType: "",
+      newVoltageClass: "",
+      newSzType: "",
+      newNote: "",
     };
   },
   mounted() {
@@ -91,11 +231,17 @@ export default {
   },
   methods: {
     submitForm() {
+      // Если пользователь добавляет новое значение, используем его
+      if (this.newLocation) this.siz.location = this.newLocation;
+      if (this.newType) this.siz.type = this.newType;
+      if (this.newVoltageClass) this.siz.voltageClass = this.newVoltageClass;
+      if (this.newSzType) this.siz.szType = this.newSzType;
+      if (this.newNote) this.siz.note = this.newNote;
+
+      // В зависимости от режима, отправляем событие
       if (this.isEditMode) {
-        // Логика обновления существующего СИЗ
         this.$emit("updateSIZ", this.siz);
       } else {
-        // Логика добавления нового СИЗ
         this.$emit("addSIZ", this.siz);
       }
     },

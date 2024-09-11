@@ -1,6 +1,7 @@
 <template>
   <div class="siz-inventory">
     <h1>Учет средств индивидуальной защиты</h1>
+    <!-- Компонент фильтров -->
     <FiltersComponent
       :locations="uniqueLocations"
       :types="uniqueTypes"
