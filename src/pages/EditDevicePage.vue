@@ -8,7 +8,7 @@
         <label for="location">Местонахождение:</label>
         <div>
           <select v-model="siz.location" id="location" required>
-            <option value="">Местонахождение</option>
+            <option value="">Выберите местонахождение</option>
             <option
               v-for="location in locations"
               :key="location"
@@ -21,7 +21,7 @@
             v-if="siz.location === 'new'"
             v-model="newLocation"
             type="text"
-            placeholder="Добавить новое"
+            placeholder="Добавить новое местонахождение"
           />
         </div>
       </div>
@@ -31,7 +31,7 @@
         <label for="type">Вид СЗ:</label>
         <div>
           <select v-model="siz.type" id="type" required>
-            <option value="">Вид СЗ</option>
+            <option value="">Выберите вид СЗ</option>
             <option v-for="type in types" :key="type" :value="type">
               {{ type }}
             </option>
@@ -40,7 +40,7 @@
             v-if="siz.type === 'new'"
             v-model="newType"
             type="text"
-            placeholder="Добавить новый"
+            placeholder="Добавить новый вид СЗ"
           />
         </div>
       </div>
@@ -50,7 +50,7 @@
         <label for="voltageClass">Класс напряжения (кВ):</label>
         <div>
           <select v-model="siz.voltageClass" id="voltageClass" required>
-            <option value="">Класс напряжения</option>
+            <option value="">Выберите класс напряжения</option>
             <option
               v-for="voltage in voltageClasses"
               :key="voltage"
@@ -63,7 +63,7 @@
             v-if="siz.voltageClass === 'new'"
             v-model="newVoltageClass"
             type="text"
-            placeholder="Добавить новый"
+            placeholder="Добавить новый класс напряжения"
           />
         </div>
       </div>
@@ -73,7 +73,7 @@
         <label for="szType">Тип СЗ:</label>
         <div>
           <select v-model="siz.szType" id="szType" required>
-            <option value="">Тип СЗ</option>
+            <option value="">Выберите тип СЗ</option>
             <option v-for="szType in szTypes" :key="szType" :value="szType">
               {{ szType }}
             </option>
@@ -82,7 +82,7 @@
             v-if="siz.szType === 'new'"
             v-model="newSzType"
             type="text"
-            placeholder="Добавить новый"
+            placeholder="Добавить новый тип СЗ"
           />
         </div>
       </div>
@@ -94,7 +94,7 @@
           v-model="siz.number"
           type="text"
           id="number"
-          placeholder="Номер СЗ"
+          placeholder="Введите номер СЗ"
           required
         />
       </div>
@@ -102,7 +102,13 @@
       <!-- Дата испытания -->
       <div class="form-group">
         <label for="testDate">Дата испытания:</label>
-        <input type="date" v-model="siz.testDate" id="testDate" required />
+        <input
+          type="date"
+          v-model="siz.testDate"
+          id="testDate"
+          @change="setNextTestDate"
+          required
+        />
       </div>
 
       <!-- Дата следующего испытания -->
@@ -130,7 +136,7 @@
           type="number"
           id="quantity"
           min="1"
-          placeholder="Количество"
+          placeholder="Введите количество"
           value="1"
           required
         />
@@ -150,7 +156,7 @@
             v-if="siz.note === 'new'"
             v-model="newNote"
             type="text"
-            placeholder="Примечание"
+            placeholder="Добавить новое примечание"
           />
         </div>
       </div>
@@ -176,7 +182,7 @@ export default {
     },
     locations: {
       type: Array,
-      default: () => ["Подстанция 110кВ", "Подстанция 35кВ"],
+      default: () => ["Подстанция 35кВ", "Подстанция 110кВ"],
     },
     types: {
       type: Array,
@@ -230,6 +236,41 @@ export default {
     }
   },
   methods: {
+    setNextTestDate() {
+      if (!this.siz.testDate) return;
+
+      const testDate = new Date(this.siz.testDate);
+      let monthsToAdd = 0;
+
+      switch (this.siz.type) {
+        case "Диэлектрические перчатки":
+          monthsToAdd = 6;
+          break;
+        case "Диэлектрические боты":
+          monthsToAdd = 36;
+          break;
+        case "Указатель напряжения":
+          monthsToAdd = 12;
+          break;
+        case "Изолирующая штанга":
+          monthsToAdd = 24;
+          break;
+        default:
+          return;
+      }
+
+      // Увеличение месяца
+      const nextTestDate = new Date(
+        testDate.setMonth(testDate.getMonth() + monthsToAdd)
+      );
+
+      // Форматирование даты в ДД.ММ.ГГГГ
+      const day = String(nextTestDate.getDate()).padStart(2, "0");
+      const month = String(nextTestDate.getMonth() + 1).padStart(2, "0"); // Месяцы от 0 до 11
+      const year = nextTestDate.getFullYear();
+
+      this.siz.nextTestDate = `${day}.${month}.${year}`; // Установка даты в формате ДД.ММ.ГГГГ
+    },
     submitForm() {
       // Если пользователь добавляет новое значение, используем его
       if (this.newLocation) this.siz.location = this.newLocation;
