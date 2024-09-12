@@ -173,45 +173,10 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+
 export default {
   name: "EditDevicePage",
-  props: {
-    // Если редактируем существующий элемент, он передается через пропс
-    existingSIZ: {
-      type: Object,
-      default: null,
-    },
-    locations: {
-      type: Array,
-      default: () => ["Подстанция 35кВ", "Подстанция 110кВ"],
-    },
-    types: {
-      type: Array,
-      default: () => [
-        "Диэлектрические перчатки",
-        "Диэлектрические боты",
-        "Указатель напряжения",
-        "Изолируюшая штанга",
-      ],
-    },
-    voltageClasses: {
-      type: Array,
-      default: () => [1, 10, 35, 110],
-    },
-    szTypes: {
-      type: Array,
-      default: () => ["Перчатки", "Боты", "УНН", "УВН", "ШО", "ШОУ"],
-    },
-    notes: {
-      type: Array,
-      default: () => [
-        "Осмотрено",
-        "Осмотрено, Испытано",
-        "Необходимо отправить на испытания!",
-        "Испытание просрочено!",
-      ],
-    },
-  },
   data() {
     return {
       siz: {
@@ -233,6 +198,22 @@ export default {
       newSzType: "",
       newNote: "",
     };
+  },
+  computed: {
+    ...mapState({
+      locations: (state) => state.locations,
+      types: (state) => state.types,
+      voltageClasses: (state) => state.voltageClasses,
+      szTypes: (state) => state.szTypes,
+      notes: (state) => state.notes,
+    }),
+    ...mapGetters([
+      "getLocations",
+      "getTypes",
+      "getVoltageClasses",
+      "getSzTypes",
+      "getNotes",
+    ]),
   },
   mounted() {
     // Если передан существующий СИЗ, включаем режим редактирования
