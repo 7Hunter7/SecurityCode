@@ -157,6 +157,7 @@
             v-model="newNote"
             type="text"
             placeholder="Добавить новое примечание"
+            :readonly="true"
           />
         </div>
       </div>
@@ -263,38 +264,36 @@ export default {
         testDate.setMonth(testDate.getMonth() + monthsToAdd)
       );
       this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем дату в формате YYYY-MM-DD для календаря
-
-      // Проверка заполнения всех предыдущих полей
-      if (
-        this.siz.location &&
-        this.siz.type &&
-        this.siz.voltageClass &&
-        this.siz.szType &&
-        this.siz.number &&
-        this.siz.testDate &&
-        this.siz.nextTestDate &&
-        this.siz.quantity
-      ) {
-        this.setLastInspectDate(); // Установка текущей даты в поле "Дата последнего осмотра"
-        this.setAutomaticNote(); // Автоматическое выставление примечания
-      }
+      this.setLastInspectDate(); // Установка текущей даты последнего осмотра
+      this.setAutomaticNote(); // Автоматическое выставление примечания
     },
     setLastInspectDate() {
       this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
     },
     setAutomaticNote() {
+      console.log("Next test date:", this.siz.nextTestDate);
+      if (!this.siz.nextTestDate) {
+        // Если дата следующего испытания не установлена
+        this.siz.note = "Осмотрено";
+        console.log("Note set to: Осмотрено");
+        return;
+      }
+
       const currentDate = new Date();
-      const nextTestDate = new Date(this.siz.nextTestDate); // nextTestDate в формате YYYY-MM-DD
+      const nextTestDate = new Date(this.siz.nextTestDate); // Дата в формате YYYY-MM-DD
 
       const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // Один месяц в миллисекундах
       const differenceInMs = nextTestDate - currentDate; // Разница в миллисекундах
 
-      if (!this.siz.nextTestDate) {
-        this.siz.note = "Осмотрено";
-      } else if (differenceInMs > oneMonthInMs) {
+      if (differenceInMs > oneMonthInMs) {
+        console.log("Note set to: Осмотрено, СЗ Испытано");
         this.siz.note = "Осмотрено, СЗ Испытано";
-      } else if (differenceInMs <= oneMonthInMs) {
+      } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
+        console.log("Note set to: СЗ необходимо отправить на испытания!");
         this.siz.note = "СЗ необходимо отправить на испытания!";
+      } else if (differenceInMs < 0) {
+        console.log("Note set to: Испытание просрочено!");
+        this.siz.note = "Испытание просрочено!";
       }
     },
     submitForm() {
