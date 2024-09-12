@@ -187,8 +187,8 @@ export default {
     types: {
       type: Array,
       default: () => [
-        "Перчатки",
-        "Боты",
+        "Диэлектрические перчатки",
+        "Диэлектрические боты",
         "Указатель напряжения",
         "Изолируюшая штанга",
       ],
@@ -199,7 +199,7 @@ export default {
     },
     szTypes: {
       type: Array,
-      default: () => ["УВН", "ШОУ"],
+      default: () => ["Перчатки", "Боты", "УВН", "ШОУ"],
     },
     notes: {
       type: Array,
@@ -246,30 +246,23 @@ export default {
         case "Диэлектрические перчатки":
           monthsToAdd = 6;
           break;
-        case "Диэлектрические боты":
-          monthsToAdd = 36;
-          break;
         case "Указатель напряжения":
           monthsToAdd = 12;
           break;
         case "Изолирующая штанга":
           monthsToAdd = 24;
           break;
+        case "Диэлектрические боты":
+          monthsToAdd = 36;
+          break;
         default:
           return;
       }
-
       // Увеличение месяца
       const nextTestDate = new Date(
         testDate.setMonth(testDate.getMonth() + monthsToAdd)
       );
-
-      // Форматирование даты в ДД.ММ.ГГГГ
-      const day = String(nextTestDate.getDate()).padStart(2, "0");
-      const month = String(nextTestDate.getMonth() + 1).padStart(2, "0"); // Месяцы от 0 до 11
-      const year = nextTestDate.getFullYear();
-
-      this.siz.nextTestDate = `${day}.${month}.${year}`; // Установка даты в формате ДД.ММ.ГГГГ
+      this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем в YYYY-MM-DD для календаря
     },
     submitForm() {
       // Если пользователь добавляет новое значение, используем его
