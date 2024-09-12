@@ -263,9 +263,7 @@ export default {
         testDate.setMonth(testDate.getMonth() + monthsToAdd)
       );
       this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем дату в формате YYYY-MM-DD для календаря
-      this.setLastInspectDate(); // Установка текущей даты в поле "Дата последнего осмотра"
-    },
-    setLastInspectDate() {
+
       // Проверка заполнения всех предыдущих полей
       if (
         this.siz.location &&
@@ -276,8 +274,28 @@ export default {
         this.siz.testDate &&
         this.siz.nextTestDate &&
         this.siz.quantity
-      )
-        this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
+      ) {
+        this.setLastInspectDate(); // Установка текущей даты в поле "Дата последнего осмотра"
+        this.setAutomaticNote(); // Автоматическое выставление примечания
+      }
+    },
+    setLastInspectDate() {
+      this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
+    },
+    setAutomaticNote() {
+      const currentDate = new Date();
+      const nextTestDate = new Date(this.siz.nextTestDate); // nextTestDate в формате YYYY-MM-DD
+
+      const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // Один месяц в миллисекундах
+      const differenceInMs = nextTestDate - currentDate; // Разница в миллисекундах
+
+      if (!this.siz.nextTestDate) {
+        this.siz.note = "Осмотрено";
+      } else if (differenceInMs > oneMonthInMs) {
+        this.siz.note = "Осмотрено, СЗ Испытано";
+      } else if (differenceInMs <= oneMonthInMs) {
+        this.siz.note = "СЗ необходимо отправить на испытания!";
+      }
     },
     submitForm() {
       // Если пользователь добавляет новое значение, используем его
