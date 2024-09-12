@@ -173,7 +173,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "EditDevicePage",
@@ -223,6 +223,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["addSIZ", "updateSIZ"]),
+    submitForm() {
+      const newSIZ = { ...this.siz }; // Собираем данные из формы
+      if (this.isEditMode) {
+        this.updateSIZ(newSIZ); // Если редактирование — обновляем
+      } else {
+        newSIZ.id = Date.now(); // Присваиваем уникальный id (в будущем может быть из БД)
+        this.addSIZ(newSIZ); // Добавляем новое СИЗ
+      }
+      // Можно сделать редирект или очистку формы
+    },
+
     setNextTestDate() {
       if (!this.siz.testDate) return;
 
