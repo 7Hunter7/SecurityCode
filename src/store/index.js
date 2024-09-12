@@ -48,7 +48,7 @@ export default new Store({
       "Испытание просрочено!",
     ],
     // Пример данных СИЗ
-    SIZItems: [
+    sizItems: [
       {
         id: 1,
         location: "Подстанция 1",
@@ -91,7 +91,6 @@ export default new Store({
         quantityByClass: 1,
         note: "Испытано",
       },
-      // Добавить другие записи
     ],
   },
   mutations: {
@@ -99,10 +98,27 @@ export default new Store({
     setInventory(state, inventory) {
       state.inventory = inventory;
     },
+    ADD_SIZ(state, newSIZ) {
+      state.sizItems.push(newSIZ); // Добавление нового СИЗ
+    },
+    UPDATE_SIZ(state, updatedSIZ) {
+      const index = state.sizItems.findIndex((siz) => siz.id === updatedSIZ.id);
+      if (index !== -1) {
+        state.sizItems.splice(index, 1, updatedSIZ); // Обновление СИЗ
+      }
+    },
   },
   actions: {
     updateInventory({ commit }, inventory) {
       commit("setInventory", inventory);
+    },
+    addSIZ({ commit }, newSIZ) {
+      commit("ADD_SIZ", newSIZ);
+      // Также можно отправить запрос на сервер для сохранения в БД
+    },
+    updateSIZ({ commit }, updatedSIZ) {
+      commit("UPDATE_SIZ", updatedSIZ);
+      // Отправка на сервер для обновления в БД
     },
   },
   getters: {
@@ -113,5 +129,6 @@ export default new Store({
     getVoltageClasses: (state) => state.voltageClasses,
     getSzTypes: (state) => state.szTypes,
     getNotes: (state) => state.notes,
+    getSizItems: (state) => state.sizItems,
   },
 });
