@@ -200,11 +200,16 @@ export default {
     },
     szTypes: {
       type: Array,
-      default: () => ["Перчатки", "Боты", "УВН", "ШОУ"],
+      default: () => ["Перчатки", "Боты", "УНН", "УВН", "ШО", "ШОУ"],
     },
     notes: {
       type: Array,
-      default: () => ["Требуется проверка", "Испытано", "Осмотрено"],
+      default: () => [
+        "Осмотрено",
+        "Осмотрено, Испытано",
+        "Необходимо отправить на испытания!",
+        "Испытание просрочено!",
+      ],
     },
   },
   data() {
@@ -271,14 +276,11 @@ export default {
       this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
     },
     setAutomaticNote() {
-      console.log("Next test date:", this.siz.nextTestDate);
       if (!this.siz.nextTestDate) {
         // Если дата следующего испытания не установлена
         this.siz.note = "Осмотрено";
-        console.log("Note set to: Осмотрено");
         return;
       }
-
       const currentDate = new Date();
       const nextTestDate = new Date(this.siz.nextTestDate); // Дата в формате YYYY-MM-DD
 
@@ -286,13 +288,10 @@ export default {
       const differenceInMs = nextTestDate - currentDate; // Разница в миллисекундах
 
       if (differenceInMs > oneMonthInMs) {
-        console.log("Note set to: Осмотрено, СЗ Испытано");
-        this.siz.note = "Осмотрено, СЗ Испытано";
+        this.siz.note = "Осмотрено, Испытано";
       } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-        console.log("Note set to: СЗ необходимо отправить на испытания!");
-        this.siz.note = "СЗ необходимо отправить на испытания!";
+        this.siz.note = "Необходимо отправить на испытания!";
       } else if (differenceInMs < 0) {
-        console.log("Note set to: Испытание просрочено!");
         this.siz.note = "Испытание просрочено!";
       }
     },
