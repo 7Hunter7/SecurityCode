@@ -262,7 +262,22 @@ export default {
       const nextTestDate = new Date(
         testDate.setMonth(testDate.getMonth() + monthsToAdd)
       );
-      this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем в YYYY-MM-DD для календаря
+      this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем дату в формате YYYY-MM-DD для календаря
+      this.setLastInspectDate(); // Установка текущей даты в поле "Дата последнего осмотра"
+    },
+    setLastInspectDate() {
+      // Проверка заполнения всех предыдущих полей
+      if (
+        this.siz.location &&
+        this.siz.type &&
+        this.siz.voltageClass &&
+        this.siz.szType &&
+        this.siz.number &&
+        this.siz.testDate &&
+        this.siz.nextTestDate &&
+        this.siz.quantity
+      )
+        this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
     },
     submitForm() {
       // Если пользователь добавляет новое значение, используем его
