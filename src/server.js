@@ -20,28 +20,28 @@ mongoose
   .catch((err) => console.log(err));
 
 // Определение схемы и модели
-const sizItemSchema = new mongoose.Schema({
-  location: String,
-  type: String,
-  voltageClass: String,
-  szType: String,
-  number: Number,
-  testDate: Date,
-  nextTestDate: Date,
-  lastInspectDate: Date,
-  quantity: Number,
-  quantityByClass: Number,
-  note: String,
+const SIZItemSchema = new mongoose.Schema({
+  location: { type: String, required: true },
+  type: { type: String, required: true },
+  voltageClass: { type: String, required: true },
+  szType: { type: String, required: true },
+  number: { type: Number, required: true },
+  testDate: { type: Date, required: true },
+  nextTestDate: { type: Date, required: true },
+  lastInspectDate: { type: Date },
+  quantity: { type: Number, required: true },
+  quantityByClass: { type: Number, required: true },
+  note: { type: String },
 });
 
-const sizItem = mongoose.model("sizItem", sizItemSchema);
+const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
 
 // Routes
 
 // Получить все СИЗ
 app.get("/api/siz-items", async (req, res) => {
   try {
-    const items = await sizItem.find();
+    const items = await SIZItem.find();
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -50,7 +50,7 @@ app.get("/api/siz-items", async (req, res) => {
 
 // Добавить новое СИЗ
 app.post("/api/siz-items", async (req, res) => {
-  const item = new sizItem(req.body);
+  const item = new SIZItem(req.body);
   try {
     const newItem = await item.save();
     res.status(201).json(newItem);
@@ -62,7 +62,7 @@ app.post("/api/siz-items", async (req, res) => {
 // Обновить существующее СИЗ
 app.put("/api/siz-items/:id", async (req, res) => {
   try {
-    const updatedItem = await sizItem.findByIdAndUpdate(
+    const updatedItem = await SIZItem.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
@@ -79,7 +79,7 @@ app.put("/api/siz-items/:id", async (req, res) => {
 // Удалить СИЗ
 app.delete("/api/siz-items/:id", async (req, res) => {
   try {
-    const deletedItem = await sizItem.findByIdAndDelete(req.params.id);
+    const deletedItem = await SIZItem.findByIdAndDelete(req.params.id);
     if (!deletedItem) {
       return res.status(404).json({ message: "СИЗ не найдено" });
     }
