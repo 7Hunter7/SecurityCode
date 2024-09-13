@@ -46,16 +46,18 @@ const SIZItemSchema = new mongoose.Schema({
     ],
   },
   szType: { type: String, required: true },
-  number: { type: Number, required: true, min: 1 },
+  number: { type: Number, required: true, unique: true }, // Уникальный номер
   testDate: { type: Date, required: true },
   nextTestDate: { type: Date, required: true },
   lastInspectDate: { type: Date, default: Date.now },
   quantity: { type: Number, required: true, min: 1 },
-  quantityByClass: { type: Number, required: true, min: 1 },
   note: { type: String, maxlength: 255 },
 });
+SIZItemSchema.index({ number: 1 }, { unique: true }); // Создание уникального индекса
 
 const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
+// Команда для применения индексов:
+SIZItem.syncIndexes();
 
 // Схема валидации Joi
 const sizItemValidationSchema = Joi.object({
@@ -81,12 +83,11 @@ const sizItemValidationSchema = Joi.object({
     )
     .required(),
   szType: Joi.string().required(),
-  number: Joi.number().integer().min(1).required(),
+  number: Joi.number().integer().required(),
   testDate: Joi.date().required(),
   nextTestDate: Joi.date().required(),
   lastInspectDate: Joi.date(),
   quantity: Joi.number().integer().min(1).required(),
-  quantityByClass: Joi.number().integer().min(1).required(),
   note: Joi.string().max(255),
 });
 
@@ -101,14 +102,22 @@ app.get("/api/siz-items", async (req, res) => {
   }
 });
 
-// Добавить новое СИЗ в базу
+// Маршрут для добавления нового СИЗ с проверкой уникальности
 app.post("/api/siz-items", async (req, res) => {
   // Валидация с помощью Joi
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  const item = new SIZItem(req.body);
   try {
+    // Проверяем, существует ли уже запись с таким же номером
+    const existingItem = await SIZItem.findOne({ number: req.body.number });
+    if (existingItem) {
+      return res
+        .status(400)
+        .json({ message: "СИЗ с таким номером уже существует" });
+    }
+    // Создание и сохранение нового СИЗ
+    const item = new SIZItem(req.body);
     // Сохранение данных с использованием встроенной валидации Mongoose
     const newItem = await item.save();
     res.status(201).json(newItem);
