@@ -64,21 +64,21 @@ export default {
     };
   },
   computed: {
-    ...mapState(["SIZItems"]),
+    ...mapState(["sizItems"]),
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.SIZItems.map((item) => item.location))];
+      return [...new Set(this.sizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.SIZItems.map((item) => item.type))];
+      return [...new Set(this.sizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.SIZItems.map((item) => item.voltageClass))];
+      return [...new Set(this.sizItems.map((item) => item.voltageClass))];
     },
   },
   mounted() {
     // Инициализация фильтрованных данных при загрузке страницы
-    this.filteredSIZ = this.SIZItems;
+    this.filteredSIZ = this.sizItems;
   },
   methods: {
     handleFilterChange(filters) {
@@ -91,7 +91,7 @@ export default {
       this.testDateTo = filters.testDateTo;
 
       // Применение фильтров к данным
-      this.filteredSIZ = this.SIZItems.filter((item) => {
+      this.filteredSIZ = this.sizItems.filter((item) => {
         const matchesSearch = item.type
           .toLowerCase()
           .includes(this.search.toLowerCase());
@@ -128,7 +128,7 @@ export default {
     deleteSIZ(item) {
       // Логика удаления СИЗ
       if (confirm(`Вы уверены, что хотите удалить ${item.name}?`)) {
-        this.SIZItems = this.SIZItems.filter((siz) => siz.id !== item.id);
+        this.sizItems = this.sizItems.filter((siz) => siz.id !== item.id);
         this.filterSIZ(); // Обновить фильтрованные данные
       }
     },
