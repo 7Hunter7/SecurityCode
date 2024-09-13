@@ -1,8 +1,9 @@
 import { Store } from "vuex";
+import axios from "axios";
 
 export default new Store({
   state: {
-    inventory: [],
+    inventory: [], // Список всех СИЗ
     locations: [
       "ТП 0,4/6-10кВ",
       "Подстанция 35кВ",
@@ -109,16 +110,24 @@ export default new Store({
     },
   },
   actions: {
-    updateInventory({ commit }, inventory) {
-      commit("setInventory", inventory);
+    async addSIZ({ commit }, newSIZ) {
+      try {
+        const response = await axios.post("/api/siz", newSIZ); // Запрос на сервер
+        commit("ADD_SIZ", response.data); // Добавляем в store данные из ответа сервера
+      } catch (error) {
+        console.error("Ошибка при добавлении СИЗ:", error);
+      }
     },
-    addSIZ({ commit }, newSIZ) {
-      commit("ADD_SIZ", newSIZ);
-      // Также можно отправить запрос на сервер для сохранения в БД
-    },
-    updateSIZ({ commit }, updatedSIZ) {
-      commit("UPDATE_SIZ", updatedSIZ);
-      // Отправка на сервер для обновления в БД
+    async updateSIZ({ commit }, updatedSIZ) {
+      try {
+        const response = await axios.put(
+          `/api/siz/${updatedSIZ.id}`,
+          updatedSIZ
+        ); // Запрос на сервер
+        commit("UPDATE_SIZ", response.data); // Обновляем в store
+      } catch (error) {
+        console.error("Ошибка при обновлении СИЗ:", error);
+      }
     },
   },
   getters: {

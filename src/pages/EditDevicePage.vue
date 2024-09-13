@@ -206,6 +206,7 @@ export default {
       voltageClasses: (state) => state.voltageClasses,
       szTypes: (state) => state.szTypes,
       notes: (state) => state.notes,
+      sizItems: (state) => state.sizItems,
     }),
     ...mapGetters([
       "getLocations",
@@ -216,6 +217,8 @@ export default {
     ]),
   },
   mounted() {
+    if (this.$route.params.id) {
+      const existingSIZ = this.sizItems.find(item => item.id === +this.$route.params.id);
     // Если передан существующий СИЗ, включаем режим редактирования
     if (this.existingSIZ) {
       this.siz = { ...this.existingSIZ };
@@ -232,7 +235,7 @@ export default {
         newSIZ.id = Date.now(); // Присваиваем уникальный id (в будущем может быть из БД)
         this.addSIZ(newSIZ); // Добавляем новое СИЗ
       }
-      // Можно сделать редирект или очистку формы
+      this.$router.push("/security-device"); // Перенаправление после добавления/редактирования
     },
 
     setNextTestDate() {
