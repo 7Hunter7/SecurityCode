@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const Joi = require("joi");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -56,8 +57,40 @@ const SIZItemSchema = new mongoose.Schema({
 
 const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
 
-// Маршруты (Routes):
+// Схема валидации Joi
+const sizItemValidationSchema = Joi.object({
+  location: Joi.string().min(3).max(100).required(),
+  type: Joi.string().min(3).max(100).required(),
+  voltageClass: Joi.string()
+    .valid(
+      "0,4",
+      "1",
+      "3",
+      "6",
+      "10",
+      "15",
+      "20",
+      "35",
+      "110",
+      "150",
+      "220",
+      "330",
+      "500",
+      "750",
+      "1150"
+    )
+    .required(),
+  szType: Joi.string().required(),
+  number: Joi.number().integer().min(1).required(),
+  testDate: Joi.date().required(),
+  nextTestDate: Joi.date().required(),
+  lastInspectDate: Joi.date(),
+  quantity: Joi.number().integer().min(1).required(),
+  quantityByClass: Joi.number().integer().min(1).required(),
+  note: Joi.string().max(255),
+});
 
+// Маршруты (Routes):
 // Получить все СИЗ из базы данных
 app.get("/api/siz-items", async (req, res) => {
   try {
@@ -70,17 +103,27 @@ app.get("/api/siz-items", async (req, res) => {
 
 // Добавить новое СИЗ в базу
 app.post("/api/siz-items", async (req, res) => {
+  // Валидация с помощью Joi
+  const { error } = sizItemValidationSchema.validate(req.body);
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
   const item = new SIZItem(req.body);
   try {
+    // Сохранение данных с использованием встроенной валидации Mongoose
     const newItem = await item.save();
     res.status(201).json(newItem);
   } catch (err) {
+    // Если Mongoose найдёт ошибку валидации
     res.status(400).json({ message: err.message });
   }
 });
 
 // Обновить существующее СИЗ по его id
 app.put("/api/siz-items/:id", async (req, res) => {
+  // Валидация с помощью Joi перед обновлением
+  const { error } = sizItemValidationSchema.validate(req.body);
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
   try {
     const updatedItem = await SIZItem.findByIdAndUpdate(
       req.params.id,
