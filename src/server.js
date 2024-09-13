@@ -20,7 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // Определение схемы и модели
-const SIZItemSchema = new mongoose.Schema({
+const sizItemSchema = new mongoose.Schema({
   location: String,
   type: String,
   voltageClass: String,
@@ -34,20 +34,23 @@ const SIZItemSchema = new mongoose.Schema({
   note: String,
 });
 
-const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
+const sizItem = mongoose.model("sizItem", sizItemSchema);
 
 // Routes
+
+// Получить все СИЗ
 app.get("/api/siz-items", async (req, res) => {
   try {
-    const items = await SIZItem.find();
+    const items = await sizItem.find();
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
+// Добавить новое СИЗ
 app.post("/api/siz-items", async (req, res) => {
-  const item = new SIZItem(req.body);
+  const item = new sizItem(req.body);
   try {
     const newItem = await item.save();
     res.status(201).json(newItem);
@@ -56,8 +59,37 @@ app.post("/api/siz-items", async (req, res) => {
   }
 });
 
-// Дополнительные маршруты для обновления и удаления...
+// Обновить существующее СИЗ
+app.put("/api/siz-items/:id", async (req, res) => {
+  try {
+    const updatedItem = await sizItem.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedItem) {
+      return res.status(404).json({ message: "СИЗ не найдено" });
+    }
+    res.json(updatedItem);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
+// Удалить СИЗ
+app.delete("/api/siz-items/:id", async (req, res) => {
+  try {
+    const deletedItem = await sizItem.findByIdAndDelete(req.params.id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: "СИЗ не найдено" });
+    }
+    res.json({ message: "СИЗ удалено" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Запуск сервера
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
