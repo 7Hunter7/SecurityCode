@@ -10,12 +10,17 @@ async function findSIZById(req, res, next) {
     if (!sizItem) {
       const error = new Error("СИЗ не найдено");
       error.statusCode = 404;
-      return next(error); // Передаем ошибку в централизованную обработку
+      return next(error);
     }
     req.sizItem = sizItem;
     next();
   } catch (err) {
-    next(err); // Передаем ошибку в централизованную обработку
+    if (err.name === "CastError" && err.kind === "ObjectId") {
+      const error = new Error("Некорректный идентификатор СИЗ");
+      error.statusCode = 400;
+      return next(error);
+    }
+    next(err);
   }
 }
 
@@ -65,6 +70,16 @@ router.put("/:id", findSIZById, async (req, res, next) => {
   }
 
   try {
+    // Проверяем, существует ли другой СИЗ с таким же номером
+    if (req.body.number && req.body.number !== req.sizItem.number) {
+      const existingItem = await SIZItem.findOne({ number: req.body.number });
+      if (existingItem) {
+        const err = new Error("СИЗ с таким номером уже существует!");
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     req.sizItem.set(req.body);
     const updatedItem = await req.sizItem.save();
     res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem });
