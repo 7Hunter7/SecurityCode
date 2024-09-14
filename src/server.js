@@ -30,3 +30,15 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// Логирование ошибок подключения к базе данных
+mongoose
+  .connect("mongodb://localhost:27017/siz_inventory", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => {
+    console.error("Ошибка подключения к MongoDB:", err);
+    process.exit(1); // Выход из процесса при неудачном подключении
+  });
