@@ -3,6 +3,11 @@ const router = express.Router();
 const SIZItem = require("../models/SIZItem"); // Импорт модели
 const { sizItemValidationSchema } = require("../validation/sizValidation"); // Валидация с Joi
 
+// Создание middleware для обработки ошибок
+const handleError = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
   let sizItem;
@@ -29,38 +34,32 @@ router.get("/", async (req, res) => {
 });
 
 // Добавить новое СИЗ с проверкой уникальности
-router.post("/", async (req, res) => {
-  // Валидация с помощью Joi
-  const { error } = sizItemValidationSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message }); // Ошибка валидации, 400 Bad Request
+router.post(
+  "/",
+  handleError(async (req, res) => {
+    const { error } = sizItemValidationSchema.validate(req.body);
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
 
-  // Проверяем, существует ли уже запись с таким же номером
-  try {
     const existingItem = await SIZItem.findOne({ number: req.body.number });
     if (existingItem) {
       return res
         .status(400)
-        .json({ message: "СИЗ с таким номером уже существует!" }); // Дубликат, 400 Bad Request
+        .json({ message: "СИЗ с таким номером уже существует!" });
     }
-    // Создание и сохранение нового СИЗ
+
     const item = new SIZItem(req.body);
     const newItem = await item.save();
-    res.status(201).json(newItem); // Успешное создание, 201 Created
-  } catch (err) {
-    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
-  }
-});
-
+    res.status(201).json(newItem);
+  })
+);
 // Обновить существующее СИЗ
 router.put("/:id", findSIZById, async (req, res) => {
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message }); // Ошибка валидации, 400 Bad Request
   try {
-    const updatedItem = await SIZItem.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    req.sizItem.set(req.body); // Обновляем найденный объект
+    const updatedItem = await req.sizItem.save(); // Сохраняем обновления
     res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem }); // Успешное обновление, 200 OK
   } catch (err) {
     res.status(500).json({ message: err.message }); // Ошибка сервера
