@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const SIZItem = require("../models/SIZItem");
 const { sizItemValidationSchema } = require("../validation/sizValidation");
+const logger = require("../logger"); // Подключаем Winston
 
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
@@ -28,8 +29,10 @@ async function findSIZById(req, res, next) {
 router.get("/", async (req, res, next) => {
   try {
     const items = await SIZItem.find();
+    logger.info("Все СИЗ успешно получены");
     res.status(200).json(items);
   } catch (err) {
+    logger.error("Ошибка получения СИЗ:", err);
     next(err);
   }
 });
@@ -40,6 +43,7 @@ router.post("/", async (req, res, next) => {
   if (error) {
     const err = new Error(error.details[0].message);
     err.statusCode = 400;
+    logger.warn(`Ошибка валидации при добавлении СИЗ: ${err.message}`);
     return next(err);
   }
 
@@ -48,13 +52,16 @@ router.post("/", async (req, res, next) => {
     if (existingItem) {
       const err = new Error("СИЗ с таким номером уже существует!");
       err.statusCode = 400;
+      logger.warn("Попытка добавить дублирующее СИЗ");
       return next(err);
     }
 
     const item = new SIZItem(req.body);
     const newItem = await item.save();
+    logger.info(`СИЗ успешно добавлено с ID: ${newItem._id}`);
     res.status(201).json(newItem);
   } catch (err) {
+    logger.error("Ошибка при добавлении нового СИЗ:", err);
     next(err);
   }
 });
