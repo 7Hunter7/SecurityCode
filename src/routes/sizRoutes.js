@@ -7,9 +7,9 @@ const { sizItemValidationSchema } = require("../validation/sizValidation"); // �
 router.get("/", async (req, res) => {
   try {
     const items = await SIZItem.find();
-    res.json(items);
+    res.status(200).json(items); // Успешный запрос, возвращаем 200 OK
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message }); // Ошибка сервера
   }
 });
 
@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   // Валидация с помощью Joi
   const { error } = sizItemValidationSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) return res.status(400).json({ message: error.details[0].message }); // Ошибка валидации, 400 Bad Request
 
   // Проверяем, существует ли уже запись с таким же номером
   try {
@@ -25,23 +25,21 @@ router.post("/", async (req, res) => {
     if (existingItem) {
       return res
         .status(400)
-        .json({ message: "СИЗ с таким номером уже существует!" });
+        .json({ message: "СИЗ с таким номером уже существует!" }); // Дубликат, 400 Bad Request
     }
     // Создание и сохранение нового СИЗ
     const item = new SIZItem(req.body);
     const newItem = await item.save();
-    res.status(201).json(newItem);
-    // Если Mongoose найдёт ошибку валидации
+    res.status(201).json(newItem); // Успешное создание, 201 Created
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
   }
 });
 
 // Обновить существующее СИЗ
 router.put("/:id", async (req, res) => {
   const { error } = sizItemValidationSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
-
+  if (error) return res.status(400).json({ message: error.details[0].message }); // Ошибка валидации, 400 Bad Request
   try {
     const updatedItem = await SIZItem.findByIdAndUpdate(
       req.params.id,
@@ -49,11 +47,11 @@ router.put("/:id", async (req, res) => {
       { new: true }
     );
     if (!updatedItem) {
-      return res.status(404).json({ message: "СИЗ не найдено" });
+      return res.status(404).json({ message: "СИЗ не найдено" }); // Не найдено, 404 Not Found
     }
-    res.json(updatedItem);
+    res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem }); // Успешное обновление, 200 OK
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
   }
 });
 
@@ -62,11 +60,11 @@ router.delete("/:id", async (req, res) => {
   try {
     const deletedItem = await SIZItem.findByIdAndDelete(req.params.id);
     if (!deletedItem) {
-      return res.status(404).json({ message: "СИЗ не найдено" });
+      return res.status(404).json({ message: "СИЗ не найдено!" }); // Не найдено, 404 Not Found
     }
-    res.json({ message: "СИЗ удалено" });
+    res.status(204).send(); // Успешное удаление, 204 No Content, без тела ответа
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
   }
 });
 
