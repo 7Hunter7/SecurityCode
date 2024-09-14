@@ -30,6 +30,9 @@ const errorHandler = (err, req, res, next) => {
     status: "error",
     message,
   });
+
+  // Вызов next, если нужно продолжить обработку
+  next();
 };
 
 module.exports = errorHandler;
