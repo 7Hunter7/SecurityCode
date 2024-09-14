@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const sizRoutes = require("./routes/sizRoutes");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +23,9 @@ mongoose
 
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
+
+// Использование обработчика ошибок
+app.use(errorHandler);
 
 // Запуск сервера
 app.listen(PORT, () => {
