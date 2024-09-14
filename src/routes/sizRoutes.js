@@ -33,8 +33,9 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) {
-    error.statusCode = 400;
-    return next(error);
+    const err = new Error(error.details[0].message);
+    err.statusCode = 400;
+    return next(err);
   }
 
   try {
@@ -54,11 +55,13 @@ router.post("/", async (req, res, next) => {
 });
 
 // Обновить существующее СИЗ
+// Обновить существующее СИЗ
 router.put("/:id", findSIZById, async (req, res, next) => {
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) {
-    error.statusCode = 400;
-    return next(error);
+    const err = new Error(error.details[0].message);
+    err.statusCode = 400;
+    return next(err);
   }
 
   try {
