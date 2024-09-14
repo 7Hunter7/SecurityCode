@@ -53,11 +53,12 @@ const SIZItemSchema = new mongoose.Schema({
   quantity: { type: Number, required: true, min: 1 },
   note: { type: String, maxlength: 255 },
 });
-SIZItemSchema.index({ number: 1 }, { unique: true }); // Создание уникального индекса
+
+// SIZItemSchema.index({ number: 1 }, { unique: true }); // Создание уникального индекса
+// Команда для применения индексов:
+// SIZItem.syncIndexes();
 
 const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
-// Команда для применения индексов:
-SIZItem.syncIndexes();
 
 // Схема валидации Joi
 const sizItemValidationSchema = Joi.object({
@@ -114,11 +115,10 @@ app.post("/api/siz-items", async (req, res) => {
     if (existingItem) {
       return res
         .status(400)
-        .json({ message: "СИЗ с таким номером уже существует" });
+        .json({ message: "СИЗ с таким номером уже существует!" });
     }
     // Создание и сохранение нового СИЗ
     const item = new SIZItem(req.body);
-    // Сохранение данных с использованием встроенной валидации Mongoose
     const newItem = await item.save();
     res.status(201).json(newItem);
   } catch (err) {
