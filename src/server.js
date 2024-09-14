@@ -24,7 +24,7 @@ mongoose
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
 
-// Использование обработчика ошибок
+// Использование Middleware для обработки ошибок
 app.use(errorHandler);
 
 // Запуск сервера
