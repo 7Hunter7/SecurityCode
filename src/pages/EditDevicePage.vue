@@ -218,11 +218,14 @@ export default {
   },
   mounted() {
     if (this.$route.params.id) {
-      const existingSIZ = this.sizItems.find(item => item.id === +this.$route.params.id);
-    // Если передан существующий СИЗ, включаем режим редактирования
-    if (this.existingSIZ) {
-      this.siz = { ...this.existingSIZ };
-      this.isEditMode = true;
+      const existingSIZ = this.sizItems.find(
+        (item) => item.id === +this.$route.params.id
+      );
+      // Если передан существующий СИЗ, включаем режим редактирования
+      if (this.existingSIZ) {
+        this.siz = { ...this.existingSIZ };
+        this.isEditMode = true;
+      }
     }
   },
   methods: {
