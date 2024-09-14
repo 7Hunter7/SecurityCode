@@ -1,5 +1,7 @@
+const logger = require("../logger");
+
 const errorHandler = (err, req, res, next) => {
-  console.error(err.stack); // Логирование ошибки
+  logger.error(err.stack); /// Логируем ошибки с их стеком
 
   let statusCode = err.statusCode || 500;
   let message = err.message || "Внутренняя ошибка сервера";
