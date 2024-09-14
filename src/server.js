@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const sizRoutes = require("./routes/sizRoutes");
-const errorHandler = require("./middlewares/errorHandler");
+const errorHandler = require("./middlewares/errorHandler"); // Подключаем обработчик ошибок
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,7 +24,7 @@ mongoose
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
 
-// Использование Middleware для обработки ошибок
+// Централизованная обработка ошибок
 app.use(errorHandler);
 
 // Запуск сервера
