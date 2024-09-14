@@ -3,6 +3,21 @@ const router = express.Router();
 const SIZItem = require("../models/SIZItem"); // Импорт модели
 const { sizItemValidationSchema } = require("../validation/sizValidation"); // Валидация с Joi
 
+// Проверка наличия СИЗ
+async function findSIZById(req, res, next) {
+  let sizItem;
+  try {
+    sizItem = await SIZItem.findById(req.params.id);
+    if (!sizItem) {
+      return res.status(404).json({ message: "СИЗ не найдено" }); // Не найдено, 404 Not Found
+    }
+    req.sizItem = sizItem; // Сохраняем найденный объект в запрос
+    next();
+  } catch (err) {
+    return res.status(500).json({ message: err.message }); // Ошибка сервера
+  }
+}
+
 // Получить все СИЗ
 router.get("/", async (req, res) => {
   try {
@@ -37,7 +52,7 @@ router.post("/", async (req, res) => {
 });
 
 // Обновить существующее СИЗ
-router.put("/:id", async (req, res) => {
+router.put("/:id", findSIZById, async (req, res) => {
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message }); // Ошибка валидации, 400 Bad Request
   try {
@@ -46,25 +61,19 @@ router.put("/:id", async (req, res) => {
       req.body,
       { new: true }
     );
-    if (!updatedItem) {
-      return res.status(404).json({ message: "СИЗ не найдено" }); // Не найдено, 404 Not Found
-    }
     res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem }); // Успешное обновление, 200 OK
   } catch (err) {
-    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
+    res.status(500).json({ message: err.message }); // Ошибка сервера
   }
 });
 
 // Удалить СИЗ
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", findSIZById, async (req, res) => {
   try {
-    const deletedItem = await SIZItem.findByIdAndDelete(req.params.id);
-    if (!deletedItem) {
-      return res.status(404).json({ message: "СИЗ не найдено!" }); // Не найдено, 404 Not Found
-    }
-    res.status(204).send(); // Успешное удаление, 204 No Content, без тела ответа
+    await req.sizItem.remove(); // Используем сохранённый объект
+    res.status(204).send(); // Успешное удаление, 204 No Content
   } catch (err) {
-    res.status(500).json({ message: err.message }); // Ошибка сервера, 500 Internal Server Error
+    res.status(500).json({ message: err.message }); // Ошибка сервера
   }
 });
 
