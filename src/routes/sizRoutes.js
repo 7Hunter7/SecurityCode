@@ -30,7 +30,7 @@ router.get("/", async (req, res, next) => {
     const items = await SIZItem.find();
     res.status(200).json(items);
   } catch (err) {
-    next(err); // Передаем ошибку
+    next(err);
   }
 });
 
@@ -59,7 +59,6 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// Обновить существующее СИЗ
 // Обновить существующее СИЗ
 router.put("/:id", findSIZById, async (req, res, next) => {
   const { error } = sizItemValidationSchema.validate(req.body);
@@ -92,7 +91,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 router.delete("/:id", findSIZById, async (req, res, next) => {
   try {
     await req.sizItem.remove();
-    res.status(204).send();
+    res.status(204).send(); // Успешное удаление, без тела
   } catch (err) {
     next(err);
   }
