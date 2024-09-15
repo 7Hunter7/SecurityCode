@@ -1,7 +1,7 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 // Схема валидации Joi
-const sizItemValidationSchema = Joi.object({
+export const sizItemValidationSchema = Joi.object({
   location: Joi.string().min(3).max(100).required(),
   type: Joi.string().min(3).max(100).required(),
   voltageClass: Joi.string()
@@ -31,5 +31,3 @@ const sizItemValidationSchema = Joi.object({
   quantity: Joi.number().integer().min(1).required(),
   note: Joi.string().max(255),
 });
-
-module.exports = { sizItemValidationSchema };
