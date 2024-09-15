@@ -104,4 +104,4 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
