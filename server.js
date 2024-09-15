@@ -5,8 +5,7 @@ import sizRoutes from "./src/routes/sizRoutes.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 import dotenv from "dotenv"; // Подключаем dotenv для работы с переменными окружения
 
-const path = require("./src/.env");
-dotenv.config({ path: path.resolve(__dirname, ".env") }); // Настраиваем dotenv
+dotenv.config(); // Настраиваем dotenv
 
 const app = express();
 const PORT = process.env.PORT || 5000;
