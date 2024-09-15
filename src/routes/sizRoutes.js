@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
+import SIZItem from "../models/SIZItem.js";
+import { sizItemValidationSchema } from "../validation/sizValidation.js";
+import logger from "../logger.js"; // Подключаем Winston
 const router = express.Router();
-const SIZItem = require("../models/SIZItem");
-const { sizItemValidationSchema } = require("../validation/sizValidation");
-const logger = require("../logger"); // Подключаем Winston
 
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
@@ -33,7 +33,7 @@ router.get("/", async (req, res, next) => {
     res.status(200).json(items);
   } catch (err) {
     logger.error("Ошибка получения СИЗ:", err);
-    next(err);
+    next(err); // Передаем ошибку
   }
 });
 
