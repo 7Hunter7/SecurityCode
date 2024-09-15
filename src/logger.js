@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require("winston");
+import { createLogger, format, transports } from "winston";
 const { combine, timestamp, printf, errors } = format;
 
 // Формат логов
@@ -8,7 +8,7 @@ const logFormat = printf(({ level, message, timestamp, stack }) => {
 
 // Конфигурация логера
 const logger = createLogger({
-  level: "info", // Уровень логирования, можно настроить для фильтрации
+  level: process.env.LOG_LEVEL || "info", // Уровень логирования, по умолчанию info
   format: combine(
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), // Добавляем временную метку
     errors({ stack: true }), // Включаем вывод стека для ошибок
@@ -21,4 +21,14 @@ const logger = createLogger({
   ],
 });
 
-module.exports = logger;
+// В режиме разработки, добавляем логгирование в консоль
+if (process.env.NODE_ENV !== "production") {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    })
+  );
+}
+
+// Экспортируем логгер по умолчанию
+export default logger;

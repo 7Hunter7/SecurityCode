@@ -1,4 +1,4 @@
-const logger = require("../logger");
+import logger from "../logger.js";
 
 const errorHandler = (err, req, res, next) => {
   logger.error(err.stack); /// Логируем ошибки с их стеком
@@ -37,4 +37,4 @@ const errorHandler = (err, req, res, next) => {
   next();
 };
 
-module.exports = errorHandler;
+export default errorHandler;
