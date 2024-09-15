@@ -14,17 +14,20 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Подключение к MongoDB
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  throw new Error("MONGO_URI is not defined in environment variables");
+}
+
 // Подключение к MongoDB Atlas через переменную окружения
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB Atlas connected"))
-  .catch((err) => {
-    console.error("Ошибка подключения к MongoDB:", err);
-    process.exit(1); // Выход из приложения, если подключение не удалось
-  });
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("Ошибка подключения к MongoDB:", err));
 
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
