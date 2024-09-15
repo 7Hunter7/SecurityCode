@@ -5,7 +5,8 @@ import sizRoutes from "./src/routes/sizRoutes.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 import dotenv from "dotenv"; // Подключаем dotenv для работы с переменными окружения
 
-dotenv.config(); // Настраиваем dotenv
+const path = require("./src/.env");
+dotenv.config({ path: path.resolve(__dirname, ".env") }); // Настраиваем dotenv
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Подключение к MongoDB
 const mongoUri = process.env.MONGO_URI;
+console.log("MONGO_URI:", mongoUri);
 if (!mongoUri) {
   throw new Error("MONGO_URI is not defined in environment variables");
 }
