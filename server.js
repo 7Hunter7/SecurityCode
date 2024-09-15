@@ -1,9 +1,11 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const sizRoutes = require("./routes/sizRoutes");
-const errorHandler = require("./middlewares/errorHandler");
-require("dotenv").config(); // Подключаем dotenv для работы с переменными окружения
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import sizRoutes from "./routes/sizRoutes.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import dotenv from "dotenv"; // Подключаем dotenv для работы с переменными окружения
+
+dotenv.config(); // Настраиваем dotenv
 
 const app = express();
 const PORT = process.env.PORT || 5000;
