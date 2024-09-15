@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const sizRoutes = require("./routes/sizRoutes");
 const errorHandler = require("./middlewares/errorHandler");
-const logger = require("./logger"); // Подключаем Winston
+require("dotenv").config(); // Подключаем dotenv для работы с переменными окружения
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,16 +12,16 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Подключение к MongoDB
+// Подключение к MongoDB Atlas через переменную окружения
 mongoose
-  .connect("mongodb://localhost:27017/siz_inventory", {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => logger.info("MongoDB connected")) // Логируем подключение
+  .then(() => console.log("MongoDB Atlas connected"))
   .catch((err) => {
-    logger.error("Ошибка подключения к MongoDB:", err);
-    process.exit(1); // Завершаем процесс при ошибке подключения
+    console.error("Ошибка подключения к MongoDB:", err);
+    process.exit(1); // Выход из приложения, если подключение не удалось
   });
 
 // Подключение маршрутов
@@ -32,5 +32,5 @@ app.use(errorHandler);
 
 // Запуск сервера
 app.listen(PORT, () => {
-  logger.info(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
