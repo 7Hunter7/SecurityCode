@@ -1,6 +1,6 @@
 {
   "name": "security-code",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -38,9 +38,9 @@
     "vite-plugin-vue-devtools": "^7.3.1",
     "vitest": "^1.6.0"
   },
-  "description": "<<<<<<< HEAD\r # security-code",
+  "description": "SecurityCode",
   "main": "vite.config.js",
   "keywords": [],
-  "author": "",
+  "author": "Hunter",
   "license": "ISC"
 }
