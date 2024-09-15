@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Определение схемы и модели с валидацией
 const SIZItemSchema = new mongoose.Schema({
@@ -37,4 +37,6 @@ const SIZItemSchema = new mongoose.Schema({
 // Команда для применения индексов:
 // SIZItem.syncIndexes();
 
-module.exports = mongoose.model("SIZItem", SIZItemSchema);
+// Экспорт модели по умолчанию
+const SIZItem = mongoose.model("SIZItem", SIZItemSchema);
+export default SIZItem;
