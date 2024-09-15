@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import sizRoutes from "./src/routes/sizRoutes";
+import sizRoutes from "./src/routes/sizRoutes.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 import dotenv from "dotenv"; // Подключаем dotenv для работы с переменными окружения
 
