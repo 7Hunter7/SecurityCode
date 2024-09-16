@@ -1,14 +1,14 @@
 @font-face {
-  font-family: 'Jost';
-  src: url('../assets/fonts/Jost-Regular.ttf');
+  font-family: "Jost";
+  src: url("../assets/fonts/Jost-Regular.ttf");
 }
 @font-face {
-  font-family: 'DM Serif Display';
-  src: url('../assets/fonts/DMSerifDisplay-Regular.woff2');
+  font-family: "DM Serif Display";
+  src: url("../assets/fonts/DMSerifDisplay-Regular.woff2");
 }
 @font-face {
-  font-family: 'Font Awesome 5 Brands';
-  src: url('../assets/fonts/Font_Awesome_5_Brands\ .woff');
+  font-family: "Font Awesome 5 Brands";
+  src: url("../assets/fonts/Font_Awesome_5_Brands\ .woff");
 }
 * {
   padding: 0;
@@ -17,15 +17,13 @@
   text-decoration: none;
 }
 :root {
-  --font-Jost: 'Jost', sans-serif;
-  --font-DM: 'DM Serif Display', sans-serif;
-  --font-Awesome: 'Font Awesome 5 Brands', sans-serif;
+  --font-Jost: "Jost", sans-serif;
+  --font-DM: "DM Serif Display", sans-serif;
+  --font-Awesome: "Font Awesome 5 Brands", sans-serif;
 }
 body {
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
-  background-image: url('/background.svg');
-  background-position: center center;
 }
 #top {
   scroll-behavior: smooth;
