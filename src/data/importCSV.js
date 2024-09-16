@@ -13,10 +13,10 @@ const importCSV = () => {
       for (const row of results) {
         await SIZItem.create({
           location: row["Местонахождение"],
-          szType: row["Вид СЗ"],
+          type: row["Вид СЗ"],
           voltageClass: row["Класс напряжения СЗ, кВ"],
-          szKind: row["Тип СЗ"],
-          szNumber: row["№ СЗ"],
+          szType: row["Тип СЗ"],
+          number: row["№ СЗ"],
           testDate: new Date(row["Дата испытания"]),
           nextTestDate: new Date(row["Дата следующего испытания"]),
           lastInspectDate: row["Дата последнего осмотра"]
