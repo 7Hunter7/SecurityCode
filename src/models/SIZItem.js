@@ -1,8 +1,12 @@
-// src/models/SIZItem.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 
 const SIZItem = sequelize.define("SIZItem", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   location: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -56,6 +60,7 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   note: {
     type: DataTypes.STRING,
+    allowNull: true,
     validate: {
       len: [0, 255],
     },
