@@ -72,6 +72,7 @@ const SIZItem = sequelize.define("SIZItem", {
     validate: {
       len: [0, 255],
     },
+    defaultValue: "",
   },
 });
 
