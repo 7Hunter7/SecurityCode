@@ -5,23 +5,7 @@ export const sizItemValidationSchema = Joi.object({
   location: Joi.string().min(3).max(100).required(),
   type: Joi.string().min(3).max(100).required(),
   voltageClass: Joi.string()
-    .valid(
-      "0,4",
-      "1",
-      "3",
-      "6",
-      "10",
-      "15",
-      "20",
-      "35",
-      "110",
-      "150",
-      "220",
-      "330",
-      "500",
-      "750",
-      "1150"
-    )
+    .valid("0,4", "1", "3", "6", "10", "15", "20", "35", "110", "150", "220")
     .required(),
   szType: Joi.string().required(),
   number: Joi.number().integer().required(),
