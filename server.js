@@ -1,5 +1,5 @@
 import express from "express";
-import sequelize from "./src/db.js"; // Подключение к базе данных
+import sequelize from "./src/data/db.js/index.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
 import bodyParser from "body-parser"; // Парсинг тела запроса

@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../db.js";
+import sequelize from "../data/db.js";
 
 const SIZItem = sequelize.define("SIZItem", {
   id: {
@@ -50,10 +50,18 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   lastInspectDate: {
     type: DataTypes.DATE,
+    allowNull: true,
   },
   quantity: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    validate: {
+      min: 1,
+    },
+  },
+  classQuantity: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
     validate: {
       min: 1,
     },
