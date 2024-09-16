@@ -1,23 +1,27 @@
 import express from "express";
-import sequelize from "./src/db.js";
-import sizRoutes from "./src/routes/sizRoutes.js";
-import errorHandler from "./src/middlewares/errorHandler.js";
-import bodyParser from "body-parser";
+import sequelize from "./src/db.js"; // Подключение к базе данных
+import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
+import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
+import bodyParser from "body-parser"; // Парсинг тела запроса
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware для парсинга JSON
 app.use(bodyParser.json());
 
-// Подключение к базе данных и синхронизация модели
-sequelize
-  .sync()
-  .then(() => {
+// Асинхронная синхронизация базы данных
+const syncDatabase = async () => {
+  try {
+    await sequelize.sync();
     console.log("База данных синхронизирована");
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error("Ошибка синхронизации базы данных:", err);
-  });
+  }
+};
+
+// Запуск синхронизации
+syncDatabase();
 
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
