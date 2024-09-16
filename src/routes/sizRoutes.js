@@ -21,6 +21,7 @@ async function findSIZById(req, res, next) {
       error.statusCode = 400;
       return next(error);
     }
+    logger.error(`Ошибка поиска СИЗ по ID: ${err.message}`);
     next(err);
   }
 }
@@ -32,7 +33,7 @@ router.get("/", async (req, res, next) => {
     logger.info("Все СИЗ успешно получены");
     res.status(200).json(items);
   } catch (err) {
-    logger.error("Ошибка получения СИЗ:", err);
+    logger.error(`Ошибка получения СИЗ: ${err.message}`);
     next(err); // Передаем ошибку
   }
 });
@@ -61,7 +62,7 @@ router.post("/", async (req, res, next) => {
     logger.info(`СИЗ успешно добавлено с ID: ${newItem._id}`);
     res.status(201).json(newItem);
   } catch (err) {
-    logger.error("Ошибка при добавлении нового СИЗ:", err);
+    logger.error(`Ошибка при добавлении нового СИЗ: ${err.message}`);
     next(err);
   }
 });
@@ -72,6 +73,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
   if (error) {
     const err = new Error(error.details[0].message);
     err.statusCode = 400;
+    logger.warn(`Ошибка валидации при обновлении СИЗ: ${err.message}`);
     return next(err);
   }
 
@@ -82,14 +84,19 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       if (existingItem) {
         const err = new Error("СИЗ с таким номером уже существует!");
         err.statusCode = 400;
+        logger.warn(
+          `Попытка обновления на дублирующий номер СИЗ: ${req.body.number}`
+        );
         return next(err);
       }
     }
 
     req.sizItem.set(req.body);
     const updatedItem = await req.sizItem.save();
+    logger.info(`СИЗ с ID: ${req.sizItem._id} успешно обновлено`);
     res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem });
   } catch (err) {
+    logger.error(`Ошибка обновления СИЗ: ${err.message}`);
     next(err);
   }
 });
@@ -98,8 +105,12 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 router.delete("/:id", findSIZById, async (req, res, next) => {
   try {
     await req.sizItem.remove();
+    logger.info(`СИЗ с ID: ${req.sizItem._id} успешно удалено`);
     res.status(204).send(); // Успешное удаление, без тела
   } catch (err) {
+    logger.error(
+      `Ошибка удаления СИЗ с ID: ${req.sizItem._id}: ${err.message}`
+    );
     next(err);
   }
 });
