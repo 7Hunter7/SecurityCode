@@ -9,8 +9,6 @@
         <div>
           <select v-model="siz.location" id="location" required>
             <option value="">Выберите местонахождение</option>
-            <!-- Добавлена опция для нового значения -->
-            <option value="new">Добавить новое местонахождение</option>
             <option
               v-for="location in locations"
               :key="location"
@@ -18,6 +16,8 @@
             >
               {{ location }}
             </option>
+            <!-- Добавлена опция для нового значения -->
+            <option value="new">Добавить новое местонахождение</option>
           </select>
           <input
             v-if="siz.location === 'new'"
