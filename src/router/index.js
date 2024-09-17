@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import("../pages/SecurityDevicePage.vue"),
     },
     {
-      path: "/edit-device/:id", // Маршрут для редактирования с параметром ID
+      path: "/edit-device/:id?", // Маршрут для редактирования с параметром ID
       name: "Edit Device",
       component: () => import("../pages/EditDevicePage.vue"),
       props: true, // Передаем параметры маршрута как пропсы
