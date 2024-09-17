@@ -51,7 +51,7 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import axios from "axios"; // Для выполнения HTTP-запросов
+import { useRouter } from "vue-router";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -62,16 +62,11 @@ export default {
   data() {
     return {
       filteredSIZ: [], // Для фильтрованных данных
-      search: "",
-      selectedLocation: "",
-      selectedType: "",
-      selectedVoltageClass: "",
-      testDateFrom: "",
-      testDateTo: "",
     };
   },
   computed: {
     ...mapState(["sizItems"]), // Получаем данные из хранилища Vuex
+
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
       return [...new Set(this.sizItems.map((item) => item.location))];
@@ -163,9 +158,8 @@ export default {
         };
       });
     },
-    editSIZ(item) {
-      // Логика редактирования СИЗ
-      alert(`Редактировать: ${item.name}`);
+    editSIZ(id) {
+      this.$router.push({ name: "Edit Device", query: { id } }); // Переход на страницу редактирования с передачей ID
     },
     // Удаление элемента
     async deleteSIZ(item) {
@@ -179,6 +173,9 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  margin-block: 20px;
+}
 .siz-inventory {
   padding: 20px;
 }
