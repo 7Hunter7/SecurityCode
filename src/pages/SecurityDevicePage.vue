@@ -52,7 +52,7 @@
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
 import axios from "axios"; // Для выполнения HTTP-запросов
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -61,18 +61,14 @@ export default {
   },
   data() {
     return {
-      sizItems: [], // Здесь будут храниться данные
-      filteredSIZ: [],
+      filteredSIZ: [], // Для фильтрованных данных
+      search: "",
+      selectedLocation: "",
+      selectedType: "",
+      selectedVoltageClass: "",
+      testDateFrom: "",
+      testDateTo: "",
     };
-  },
-  async mounted() {
-    try {
-      const response = await axios.get("/api/siz-items"); // Запрос данных
-      this.sizItems = response.data; // Сохранение данных в состояние
-      this.filteredSIZ = this.sizItems; // Инициализация отображаемых данных
-    } catch (error) {
-      console.error("Ошибка получения данных:", error);
-    }
   },
   computed: {
     ...mapState(["sizItems"]), // Получаем данные из хранилища Vuex
@@ -88,9 +84,17 @@ export default {
     },
   },
   mounted() {
-    this.calculateQuantityByClass();
+    this.loadSIZItems(); // Загружаем данные при монтировании компонента
+  },
+  watch: {
+    sizItems() {
+      this.filteredSIZ = this.sizItems; // Обновляем данные для отображения при изменении state
+      this.calculateQuantityByClass();
+    },
   },
   methods: {
+    ...mapActions(["loadSIZItems", "deleteSIZ"]), // Экшены для загрузки и удаления данных
+
     // Форматирование данных перед отображением
     formatDate(date) {
       if (!date) return "";
@@ -136,7 +140,7 @@ export default {
           matchesDateTo
         );
       });
-      this.calculateQuantityByClass(); // Обновление расчета количества по классам
+      this.calculateQuantityByClass(); // Обновление расчета количества СЗ по классам
     },
     calculateQuantityByClass() {
       const quantityByClass = {};
@@ -150,7 +154,7 @@ export default {
         quantityByClass[key] += parseInt(item.quantity, 10);
       });
 
-      // Применение данных обратно в объект filteredSIZ
+      // Обновление количества по классам для каждого элемента
       this.filteredSIZ = this.filteredSIZ.map((item) => {
         const key = `${item.type}_${item.voltageClass}_${item.location}`;
         return {
@@ -163,10 +167,11 @@ export default {
       // Логика редактирования СИЗ
       alert(`Редактировать: ${item.name}`);
     },
-    deleteSIZ(item) {
-      if (confirm(`Вы уверены, что хотите удалить ${item.name}?`)) {
-        this.sizItems = this.sizItems.filter((siz) => siz.id !== item.id);
-        this.filterSIZ(); // Обновить фильтрованные данные
+    // Удаление элемента
+    async deleteSIZ(item) {
+      if (confirm(`Вы уверены, что хотите удалить ${item.type}?`)) {
+        await this.deleteSIZ(item.id);
+        this.handleFilterChange(); // Обновляем фильтрованные данные
       }
     },
   },
