@@ -9,6 +9,8 @@
         <div>
           <select v-model="siz.location" id="location" required>
             <option value="">Выберите местонахождение</option>
+            <!-- Добавлена опция для нового значения -->
+            <option value="new">Добавить новое местонахождение</option>
             <option
               v-for="location in locations"
               :key="location"
@@ -32,6 +34,7 @@
         <div>
           <select v-model="siz.type" id="type" required>
             <option value="">Выберите вид СЗ</option>
+            <option value="new">Добавить новый вид СЗ</option>
             <option v-for="type in types" :key="type" :value="type">
               {{ type }}
             </option>
@@ -51,6 +54,7 @@
         <div>
           <select v-model="siz.voltageClass" id="voltageClass" required>
             <option value="">Выберите класс напряжения</option>
+            <option value="new">Добавить новый класс напряжения</option>
             <option
               v-for="voltage in voltageClasses"
               :key="voltage"
@@ -58,6 +62,7 @@
             >
               {{ voltage }} кВ
             </option>
+            <!-- Добавлена опция для нового значения -->
           </select>
           <input
             v-if="siz.voltageClass === 'new'"
@@ -74,6 +79,7 @@
         <div>
           <select v-model="siz.szType" id="szType" required>
             <option value="">Выберите тип СЗ</option>
+            <option value="new">Добавить новый тип СЗ</option>
             <option v-for="szType in szTypes" :key="szType" :value="szType">
               {{ szType }}
             </option>
