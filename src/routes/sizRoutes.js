@@ -29,7 +29,7 @@ async function findSIZById(req, res, next) {
 // Получить все СИЗ
 router.get("/", async (req, res, next) => {
   try {
-    const items = await SIZItem.find();
+    const items = await SIZItem.findAll();
     logger.info("Все СИЗ успешно получены");
     res.status(200).json(items);
   } catch (err) {
