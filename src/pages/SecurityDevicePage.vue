@@ -51,6 +51,7 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
+import axios from "axios"; // Для выполнения HTTP-запросов
 import { mapState } from "vuex";
 
 export default {
@@ -60,8 +61,18 @@ export default {
   },
   data() {
     return {
-      filteredSIZ: "",
+      sizItems: [], // Здесь будут храниться данные
+      filteredSIZ: [],
     };
+  },
+  async mounted() {
+    try {
+      const response = await axios.get("/api/siz-items"); // Запрос данных
+      this.sizItems = response.data; // Сохранение данных в состояние
+      this.filteredSIZ = this.sizItems; // Инициализация отображаемых данных
+    } catch (error) {
+      console.error("Ошибка получения данных:", error);
+    }
   },
   computed: {
     ...mapState(["sizItems"]),
@@ -77,11 +88,10 @@ export default {
     },
   },
   mounted() {
-    // Инициализация фильтрованных данных при загрузке страницы
-    this.filteredSIZ = this.sizItems;
     this.calculateQuantityByClass();
   },
   methods: {
+    // Фильтрация данных
     handleFilterChange(filters) {
       this.search = filters.search;
       this.selectedLocation = filters.selectedLocation;
