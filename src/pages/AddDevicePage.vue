@@ -164,7 +164,7 @@
 
       <!-- Кнопка добавления -->
       <div class="form-actions">
-        <button type="submit">"Добавить СИЗ"</button>
+        <button type="submit">Добавить СИЗ</button>
       </div>
     </form>
   </div>
@@ -269,7 +269,7 @@ export default {
 </script>
 
 <style scoped>
-.edit-siz-page {
+.add-siz-page {
   padding: 20px;
 }
 .form-group {
