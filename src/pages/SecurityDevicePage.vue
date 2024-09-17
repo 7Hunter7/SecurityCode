@@ -79,10 +79,10 @@ export default {
   mounted() {
     // Инициализация фильтрованных данных при загрузке страницы
     this.filteredSIZ = this.sizItems;
+    this.calculateQuantityByClass();
   },
   methods: {
     handleFilterChange(filters) {
-      // Обновление локального состояния с новыми значениями фильтров
       this.search = filters.search;
       this.selectedLocation = filters.selectedLocation;
       this.selectedType = filters.selectedType;
@@ -120,13 +120,34 @@ export default {
           matchesDateTo
         );
       });
+      this.calculateQuantityByClass(); // Обновление расчета количества по классам
+    },
+    calculateQuantityByClass() {
+      const quantityByClass = {};
+
+      // Подсчет количества по классам напряжения и местонахождению
+      this.filteredSIZ.forEach((item) => {
+        const key = `${item.type}_${item.voltageClass}_${item.location}`;
+        if (!quantityByClass[key]) {
+          quantityByClass[key] = 0;
+        }
+        quantityByClass[key] += parseInt(item.quantity, 10);
+      });
+
+      // Применение данных обратно в объект filteredSIZ
+      this.filteredSIZ = this.filteredSIZ.map((item) => {
+        const key = `${item.type}_${item.voltageClass}_${item.location}`;
+        return {
+          ...item,
+          quantityByClass: quantityByClass[key],
+        };
+      });
     },
     editSIZ(item) {
       // Логика редактирования СИЗ
       alert(`Редактировать: ${item.name}`);
     },
     deleteSIZ(item) {
-      // Логика удаления СИЗ
       if (confirm(`Вы уверены, что хотите удалить ${item.name}?`)) {
         this.sizItems = this.sizItems.filter((siz) => siz.id !== item.id);
         this.filterSIZ(); // Обновить фильтрованные данные
