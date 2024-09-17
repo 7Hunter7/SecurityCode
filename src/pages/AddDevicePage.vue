@@ -16,14 +16,12 @@
             >
               {{ location }}
             </option>
-            <!-- Добавлена опция для нового значения -->
-            <option value="new">Добавить новое местонахождение</option>
           </select>
           <input
-            v-if="siz.location === 'new'"
+            v-if="siz.location === 'Добавить новое местоположение'"
             v-model="newLocation"
             type="text"
-            placeholder="Добавить новое местонахождение"
+            placeholder="Добавить местонахождение"
           />
         </div>
       </div>
@@ -34,16 +32,15 @@
         <div>
           <select v-model="siz.type" id="type" required>
             <option value="">Выберите вид СЗ</option>
-            <option value="new">Добавить новый вид СЗ</option>
             <option v-for="type in types" :key="type" :value="type">
               {{ type }}
             </option>
           </select>
           <input
-            v-if="siz.type === 'new'"
+            v-if="siz.type === 'Добавить новый вид'"
             v-model="newType"
             type="text"
-            placeholder="Добавить новый вид СЗ"
+            placeholder="Добавить вид СЗ"
           />
         </div>
       </div>
@@ -54,7 +51,6 @@
         <div>
           <select v-model="siz.voltageClass" id="voltageClass" required>
             <option value="">Выберите класс напряжения</option>
-            <option value="new">Добавить новый класс напряжения</option>
             <option
               v-for="voltage in voltageClasses"
               :key="voltage"
@@ -65,10 +61,10 @@
             <!-- Добавлена опция для нового значения -->
           </select>
           <input
-            v-if="siz.voltageClass === 'new'"
+            v-if="siz.voltageClass === 'Добавить новый класс'"
             v-model="newVoltageClass"
             type="text"
-            placeholder="Добавить новый класс напряжения"
+            placeholder="Добавить класс напряжения"
           />
         </div>
       </div>
@@ -79,16 +75,15 @@
         <div>
           <select v-model="siz.szType" id="szType" required>
             <option value="">Выберите тип СЗ</option>
-            <option value="new">Добавить новый тип СЗ</option>
             <option v-for="szType in szTypes" :key="szType" :value="szType">
               {{ szType }}
             </option>
           </select>
           <input
-            v-if="siz.szType === 'new'"
+            v-if="siz.szType === 'Добавить новый тип'"
             v-model="newSzType"
             type="text"
-            placeholder="Добавить новый тип СЗ"
+            placeholder="Добавить тип СЗ"
           />
         </div>
       </div>
@@ -159,10 +154,10 @@
             </option>
           </select>
           <input
-            v-if="siz.note === 'new'"
+            v-if="siz.note === 'Добавить новое примечание'"
             v-model="newNote"
             type="text"
-            placeholder="Добавить новое примечание"
+            placeholder="Добавить примечание"
             :readonly="true"
           />
         </div>
