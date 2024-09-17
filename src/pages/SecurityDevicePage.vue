@@ -52,6 +52,7 @@
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
 import axios from "axios"; // Для выполнения HTTP-запросов
+import { mapState } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -74,6 +75,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(["sizItems"]), // Получаем данные из хранилища Vuex
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
       return [...new Set(this.sizItems.map((item) => item.location))];
