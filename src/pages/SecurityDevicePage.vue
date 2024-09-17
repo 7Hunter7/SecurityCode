@@ -33,9 +33,9 @@
           <td>{{ item.voltageClass }}</td>
           <td>{{ item.szType }}</td>
           <td>{{ item.number }}</td>
-          <td>{{ item.testDate }}</td>
-          <td>{{ item.nextTestDate }}</td>
-          <td>{{ item.lastInspectDate }}</td>
+          <td>{{ formatDate(item.testDate) }}</td>
+          <td>{{ formatDate(item.nextTestDate) }}</td>
+          <td>{{ formatDate(item.lastInspectDate) }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.quantityByClass }}</td>
           <td>{{ item.note }}</td>
@@ -52,7 +52,6 @@
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
 import axios from "axios"; // Для выполнения HTTP-запросов
-import { mapState } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -75,7 +74,6 @@ export default {
     }
   },
   computed: {
-    ...mapState(["sizItems"]),
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
       return [...new Set(this.sizItems.map((item) => item.location))];
@@ -91,6 +89,12 @@ export default {
     this.calculateQuantityByClass();
   },
   methods: {
+    // Форматирование данных перед отображением
+    formatDate(date) {
+      if (!date) return "";
+      const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+      return new Date(date).toLocaleDateString("ru-RU", options);
+    },
     // Фильтрация данных
     handleFilterChange(filters) {
       this.search = filters.search;
