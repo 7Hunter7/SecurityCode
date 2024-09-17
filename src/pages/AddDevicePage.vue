@@ -1,6 +1,6 @@
 <template>
-  <div class="edit-siz-page">
-    <h1>{{ isEditMode ? "Редактировать СИЗ" : "Добавить новое СИЗ" }}</h1>
+  <div class="add-siz-page">
+    <h1>Добавить новое СИЗ</h1>
 
     <form @submit.prevent="submitForm">
       <!-- Местонахождение -->
@@ -162,21 +162,19 @@
         </div>
       </div>
 
-      <!-- Кнопка отправки -->
+      <!-- Кнопка добавления -->
       <div class="form-actions">
-        <button type="submit">
-          {{ isEditMode ? "Сохранить изменения" : "Добавить СИЗ" }}
-        </button>
+        <button type="submit">"Добавить СИЗ"</button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapState } from "vuex";
 
 export default {
-  name: "EditDevicePage",
+  name: "AddDevicePage",
   data() {
     return {
       siz: {
@@ -191,7 +189,6 @@ export default {
         quantity: 1,
         note: "",
       },
-      isEditMode: false,
       newLocation: "",
       newType: "",
       newVoltageClass: "",
@@ -200,47 +197,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      locations: (state) => state.locations,
-      types: (state) => state.types,
-      voltageClasses: (state) => state.voltageClasses,
-      szTypes: (state) => state.szTypes,
-      notes: (state) => state.notes,
-      sizItems: (state) => state.sizItems,
-    }),
-    ...mapGetters([
-      "getLocations",
-      "getTypes",
-      "getVoltageClasses",
-      "getSzTypes",
-      "getNotes",
-    ]),
-  },
-  mounted() {
-    if (this.$route.params.id) {
-      const existingSIZ = this.sizItems.find(
-        (item) => item.id === +this.$route.params.id
-      );
-      // Если передан существующий СИЗ, включаем режим редактирования
-      if (this.existingSIZ) {
-        this.siz = { ...this.existingSIZ };
-        this.isEditMode = true;
-      }
-    }
+    ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
   },
   methods: {
-    ...mapActions(["addSIZ", "updateSIZ"]),
-    submitForm() {
-      const newSIZ = { ...this.siz }; // Собираем данные из формы
-      if (this.isEditMode) {
-        this.updateSIZ(newSIZ); // Если редактирование — обновляем
-      } else {
-        newSIZ.id = Date.now(); // Присваиваем уникальный id (в будущем может быть из БД)
-        this.addSIZ(newSIZ); // Добавляем новое СИЗ
-      }
-      this.$router.push("/security-device"); // Перенаправление после добавления/редактирования
-    },
-
     setNextTestDate() {
       if (!this.siz.testDate) return;
 
@@ -302,12 +261,8 @@ export default {
       if (this.newSzType) this.siz.szType = this.newSzType;
       if (this.newNote) this.siz.note = this.newNote;
 
-      // В зависимости от режима, отправляем событие
-      if (this.isEditMode) {
-        this.$emit("updateSIZ", this.siz);
-      } else {
-        this.$emit("addSIZ", this.siz);
-      }
+      this.$emit("addSIZ", this.siz); // Отправляем событие для добавления
+      this.$router.push("/security-device");
     },
   },
 };
