@@ -36,7 +36,6 @@ export default new Store({
       "Перчатки",
       "Боты",
       "УНН-0,4",
-      "УНН-0,6",
       "УНН-1",
       "УВН-6",
       "УВН-10",
@@ -94,6 +93,10 @@ export default new Store({
     },
     async addSIZ({ commit }, newSIZ) {
       try {
+        // Валидация данных перед добавлением
+        if (!newSIZ.location || !newSIZ.type || !newSIZ.number) {
+          throw new Error("Заполните все обязательные поля!");
+        }
         const response = await axios.post("/api/siz", newSIZ); // Запрос на сервер
         commit("ADD_SIZ", response.data); // Добавляем в store данные из ответа сервера
       } catch (error) {
@@ -102,6 +105,10 @@ export default new Store({
     },
     async updateSIZ({ commit }, updatedSIZ) {
       try {
+        // Валидация данных перед обновлением
+        if (!updatedSIZ.location || !updatedSIZ.type || !updatedSIZ.number) {
+          throw new Error("Заполните все обязательные поля!");
+        }
         const response = await axios.put(
           `/api/siz/${updatedSIZ.id}`,
           updatedSIZ
