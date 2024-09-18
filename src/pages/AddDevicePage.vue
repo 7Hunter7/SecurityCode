@@ -16,7 +16,6 @@
             >
               {{ location }}
             </option>
-            <option value="new">Добавить новое местонахождение</option>
           </select>
           <input
             v-if="siz.location === 'new'"
@@ -36,7 +35,6 @@
             <option v-for="type in types" :key="type" :value="type">
               {{ type }}
             </option>
-            <option value="new">Добавить новый вид</option>
           </select>
           <input
             v-if="siz.type === 'new'"
@@ -60,7 +58,6 @@
             >
               {{ voltage }} кВ
             </option>
-            <option value="new">Добавить новый класс</option>
           </select>
           <input
             v-if="siz.voltageClass === 'new'"
@@ -80,7 +77,6 @@
             <option v-for="szType in szTypes" :key="szType" :value="szType">
               {{ szType }}
             </option>
-            <option value="new">Добавить новый тип</option>
           </select>
           <input
             v-if="siz.szType === 'new'"
