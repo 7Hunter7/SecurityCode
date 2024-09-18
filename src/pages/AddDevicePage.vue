@@ -22,6 +22,7 @@
             v-model="newLocation"
             type="text"
             placeholder="Добавить местонахождение"
+            required
           />
         </div>
       </div>
@@ -41,6 +42,7 @@
             v-model="newType"
             type="text"
             placeholder="Добавить вид СЗ"
+            required
           />
         </div>
       </div>
@@ -64,6 +66,7 @@
             v-model="newVoltageClass"
             type="text"
             placeholder="Добавить класс напряжения"
+            required
           />
         </div>
       </div>
@@ -83,6 +86,7 @@
             v-model="newSzType"
             type="text"
             placeholder="Добавить тип СЗ"
+            required
           />
         </div>
       </div>
@@ -125,7 +129,12 @@
       <!-- Дата последнего осмотра -->
       <div class="form-group">
         <label for="lastInspectDate">Дата последнего осмотра:</label>
-        <input type="date" v-model="siz.lastInspectDate" id="lastInspectDate" />
+        <input
+          type="date"
+          v-model="siz.lastInspectDate"
+          id="lastInspectDate"
+          required
+        />
       </div>
 
       <!-- Количество -->
@@ -157,7 +166,7 @@
             v-model="newNote"
             type="text"
             placeholder="Добавить примечание"
-            :readonly="true"
+            required
           />
         </div>
       </div>
