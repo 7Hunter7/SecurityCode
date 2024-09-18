@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from "vue-router";
     <!-- Навигационное меню -->
     <nav class="navigation">
       <RouterLink to="/">Главная</RouterLink>
-      <RouterLink to="/edit-device">Добавить СИЗ</RouterLink>
+      <RouterLink to="/add-device">Добавить СИЗ</RouterLink>
       <RouterLink to="/security-device">Учет СИЗ</RouterLink>
       <RouterLink to="/inventory">Инвентарь</RouterLink>
       <RouterLink to="/history">История</RouterLink>
