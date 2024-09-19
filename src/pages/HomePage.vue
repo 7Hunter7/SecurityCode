@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     goToAddSIZ() {
-      this.$router.push("/edit-device");
+      this.$router.push("/add-device");
     },
   },
 };
