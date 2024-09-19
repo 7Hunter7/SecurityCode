@@ -188,6 +188,11 @@ export default {
         quantity: 1,
         note: "",
       },
+      newLocation: "",
+      newType: "",
+      newVoltageClass: "",
+      newSzType: "",
+      newNote: "",
     };
   },
   computed: {
