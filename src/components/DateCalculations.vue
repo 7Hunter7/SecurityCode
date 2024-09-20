@@ -1,65 +1,95 @@
 <template>
   <div>
-    <!-- Этот компонент не содержит шаблона, так как он отвечает только за логику -->
+    <!-- Компонент не имеет шаблона, так как отвечает за расчеты -->
   </div>
 </template>
 
 <script>
 export default {
   name: "DateCalculations",
+  props: {
+    siz: {
+      type: Object,
+      required: true,
+    },
+  },
   methods: {
-    setNextTestDate(siz) {
-      if (!siz.testDate) return;
+    setNextTestDate() {
+      if (!this.siz.testDate) return;
 
-      const testDate = new Date(siz.testDate);
-      let monthsToAdd = 0;
+      try {
+        const testDate = new Date(this.siz.testDate);
+        if (isNaN(testDate)) {
+          throw new Error("Некорректная дата испытания");
+        }
 
-      switch (siz.type) {
-        case "Диэлектрические перчатки":
-          monthsToAdd = 6;
-          break;
-        case "Указатель напряжения":
-          monthsToAdd = 12;
-          break;
-        case "Изолирующая штанга":
-          monthsToAdd = 24;
-          break;
-        case "Диэлектрические боты":
-          monthsToAdd = 36;
-          break;
-        default:
-          return;
+        let monthsToAdd = 0;
+
+        switch (this.siz.type) {
+          case "Диэлектрические перчатки":
+            monthsToAdd = 6;
+            break;
+          case "Указатель напряжения":
+            monthsToAdd = 12;
+            break;
+          case "Изолирующая штанга":
+            monthsToAdd = 24;
+            break;
+          case "Диэлектрические боты":
+            monthsToAdd = 36;
+            break;
+          default:
+            throw new Error("Неизвестный тип СИЗ");
+        }
+
+        testDate.setMonth(testDate.getMonth() + monthsToAdd);
+
+        if (isNaN(testDate)) {
+          throw new Error("Ошибка при расчете даты следующего испытания");
+        }
+
+        this.$emit("updateNextTestDate", testDate.toISOString().substr(0, 10));
+        this.setLastInspectDate(); // Установка текущей даты последнего осмотра
+        this.setAutomaticNote(); // Автоматическое выставление примечания
+      } catch (error) {
+        console.error("Ошибка в setNextTestDate:", error.message);
+        alert(`Ошибка: ${error.message}`);
       }
-      // Увеличение месяца
-      const nextTestDate = new Date(
-        testDate.setMonth(testDate.getMonth() + monthsToAdd)
-      );
-      siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем дату в формате YYYY-MM-DD для календаря
-      this.setLastInspectDate(siz); // Установка текущей даты последнего осмотра
-      this.setAutomaticNote(siz); // Автоматическое выставление примечания
     },
-    setLastInspectDate(siz) {
-      siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
+
+    setLastInspectDate() {
+      const currentDate = new Date().toISOString().split("T")[0];
+      this.$emit("updateLastInspectDate", currentDate); // Передаем дату последнего осмотра
     },
-    setAutomaticNote(siz) {
-      if (!siz.nextTestDate) {
-        // Если дата следующего испытания не установлена
-        siz.note = "Осмотрено";
+
+    setAutomaticNote() {
+      if (!this.siz.nextTestDate) {
+        this.$emit("updateNote", "Осмотрено");
         return;
       }
-      const currentDate = new Date();
-      const nextTestDate = new Date(siz.nextTestDate); // Дата в формате YYYY-MM-DD
 
-      const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // Один месяц в миллисекундах
-      const differenceInMs = nextTestDate - currentDate; // Разница в миллисекундах
+      const currentDate = new Date();
+      const nextTestDate = new Date(this.siz.nextTestDate);
+
+      if (isNaN(nextTestDate)) {
+        console.error("Некорректная дата следующего испытания");
+        return;
+      }
+
+      const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
+      const differenceInMs = nextTestDate - currentDate;
+
+      let note = "Осмотрено";
 
       if (differenceInMs > oneMonthInMs) {
-        siz.note = "Осмотрено, Испытано";
+        note = "Осмотрено, Испытано";
       } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-        siz.note = "Необходимо отправить на испытания!";
+        note = "Необходимо отправить на испытания!";
       } else if (differenceInMs < 0) {
-        siz.note = "Испытание просрочено!";
+        note = "Испытание просрочено!";
       }
+
+      this.$emit("updateNote", note);
     },
   },
 };
