@@ -131,6 +131,15 @@
         <button type="submit">Добавить СИЗ</button>
       </div>
     </form>
+
+    <!-- Подключаем компонент для расчета дат -->
+    <DateCalculations
+      ref="dateCalculations"
+      :siz="siz"
+      @updateNextTestDate="updateNextTestDate"
+      @updateLastInspectDate="updateLastInspectDate"
+      @updateNote="updateNote"
+    />
   </div>
 </template>
 
@@ -171,7 +180,21 @@ export default {
   },
   methods: {
     calculateNextTestDate() {
-      this.$refs.dateCalculations.setNextTestDate();
+      if (this.$refs.dateCalculations) {
+        this.$refs.dateCalculations.setNextTestDate();
+      } else {
+        console.error("Компонент DateCalculations не найден.");
+      }
+      // Теперь мы уверены, что `dateCalculations` правильно инициализирован
+    },
+    updateNextTestDate(nextTestDate) {
+      this.siz.nextTestDate = nextTestDate;
+    },
+    updateLastInspectDate(lastInspectDate) {
+      this.siz.lastInspectDate = lastInspectDate;
+    },
+    updateNote(note) {
+      this.siz.note = note;
     },
     submitForm() {
       if (this.newLocation) this.siz.location = this.newLocation;
