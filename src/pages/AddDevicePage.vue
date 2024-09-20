@@ -6,44 +6,52 @@
       <InputField
         fieldId="location"
         label="Местонахождение:"
-        v-model="siz.location"
+        v-bind:modelValue="siz.location"
+        v-on:update:modelValue="(value) => (siz.location = value)"
         :options="locations"
         placeholder="Выберите местонахождение"
         newPlaceholder="Добавить новое местонахождение"
-        v-model:newValue="newLocation"
+        v-bind:newValue="newLocation"
+        v-on:update:newValue="(value) => (newLocation = value)"
       />
 
       <!-- Вид СЗ -->
       <InputField
         fieldId="type"
         label="Вид СЗ:"
-        v-model="siz.type"
+        v-bind:modelValue="siz.type"
+        v-on:update:modelValue="(value) => (siz.type = value)"
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
-        v-model:newValue="newType"
+        v-bind:newValue="newType"
+        v-on:update:newValue="(value) => (newType = value)"
       />
 
       <!-- Класс напряжения (кВ) -->
       <InputField
         fieldId="voltageClass"
         label="Класс напряжения (кВ):"
-        v-model="siz.voltageClass"
+        v-bind:modelValue="siz.voltageClass"
+        v-on:update:modelValue="(value) => (siz.voltageClass = value)"
         :options="voltageClasses"
         placeholder="Выберите класс напряжения"
         newPlaceholder="Добавить новый класс напряжения"
-        v-model:newValue="newVoltageClass"
+        v-bind:newValue="newVoltageClass"
+        v-on:update:newValue="(value) => (newVoltageClass = value)"
       />
 
       <!-- Тип СЗ -->
       <InputField
         fieldId="szType"
         label="Тип СЗ:"
-        v-model="siz.szType"
+        v-bind:modelValue="siz.szType"
+        v-on:update:modelValue="(value) => (siz.szType = value)"
         :options="szTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
-        v-model:newValue="newSzType"
+        v-bind:newValue="newSzType"
+        v-on:update:newValue="(value) => (newSzType = value)"
       />
 
       <!-- № СЗ -->
@@ -84,12 +92,7 @@
       <!-- Дата последнего осмотра -->
       <div class="form-group">
         <label for="lastInspectDate">Дата последнего осмотра:</label>
-        <input
-          type="date"
-          v-model="siz.lastInspectDate"
-          id="lastInspectDate"
-          required
-        />
+        <input type="date" v-model="siz.lastInspectDate" id="lastInspectDate" />
       </div>
 
       <!-- Количество -->
@@ -109,11 +112,13 @@
       <InputField
         fieldId="note"
         label="Примечания:"
-        v-model="siz.note"
+        v-bind:modelValue="siz.note"
+        v-on:update:modelValue="(value) => (siz.note = value)"
         :options="notes"
         placeholder="Выберите примечание"
         newPlaceholder="Добавить новое примечание"
-        v-model:newValue="newNote"
+        v-bind:newValue="newNote"
+        v-on:update:newValue="(value) => (newNote = value)"
       />
 
       <!-- Кнопка добавления -->
