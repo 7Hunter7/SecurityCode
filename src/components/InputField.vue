@@ -2,7 +2,12 @@
   <div class="form-group">
     <label :for="fieldId">{{ label }}</label>
     <div>
-      <select v-model="modelValue" :id="fieldId" :required="required">
+      <select
+        :id="fieldId"
+        :value="modelValue"
+        @change="onInputChange"
+        required
+      >
         <option value="">{{ placeholder }}</option>
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
@@ -10,7 +15,8 @@
       </select>
       <input
         v-if="modelValue === 'new'"
-        v-model="newValue"
+        :value="newValue"
+        @input="onNewInputChange"
         type="text"
         :placeholder="newPlaceholder"
       />
@@ -55,13 +61,12 @@ export default {
       default: false,
     },
   },
-  emits: ["update:modelValue", "update:newValue"],
-  watch: {
-    modelValue(newVal) {
-      this.$emit("update:modelValue", newVal);
+  methods: {
+    onInputChange(event) {
+      this.$emit("update:modelValue", event.target.value);
     },
-    newValue(newVal) {
-      this.$emit("update:newValue", newVal);
+    onNewInputChange(event) {
+      this.$emit("update:newValue", event.target.value);
     },
   },
 };
