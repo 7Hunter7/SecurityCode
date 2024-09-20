@@ -147,6 +147,11 @@
 import InputField from "../components/InputField.vue";
 import DateCalculations from "../components/DateCalculations.vue";
 import { mapState } from "vuex";
+import {
+  calculateNextTestDate,
+  getLastInspectDate,
+  getAutomaticNote,
+} from "../utils/dateUtils.js";
 
 export default {
   name: "AddDevicePage",
@@ -180,21 +185,22 @@ export default {
   },
   methods: {
     calculateNextTestDate() {
-      if (this.$refs.dateCalculations) {
-        this.$refs.dateCalculations.setNextTestDate();
-      } else {
-        console.error("Компонент DateCalculations не найден.");
-      }
-      // Теперь мы уверены, что `dateCalculations` правильно инициализирован
+      this.siz.nextTestDate = calculateNextTestDate(
+        this.siz.type,
+        new Date(this.siz.testDate)
+      );
+      this.updateLastInspectDate();
+      this.updateNote();
     },
-    updateNextTestDate(nextTestDate) {
-      this.siz.nextTestDate = nextTestDate;
+    updateLastInspectDate() {
+      this.siz.lastInspectDate = getLastInspectDate();
     },
-    updateLastInspectDate(lastInspectDate) {
-      this.siz.lastInspectDate = lastInspectDate;
-    },
-    updateNote(note) {
-      this.siz.note = note;
+    updateNote() {
+      const currentDate = new Date();
+      const nextTestDate = new Date(this.siz.nextTestDate);
+      const differenceInMs = nextTestDate - currentDate;
+
+      this.siz.note = getAutomaticNote(differenceInMs);
     },
     submitForm() {
       if (this.newLocation) this.siz.location = this.newLocation;
