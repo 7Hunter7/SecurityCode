@@ -131,21 +131,11 @@
         <button type="submit">Добавить СИЗ</button>
       </div>
     </form>
-
-    <!-- Подключаем компонент для расчета дат -->
-    <DateCalculations
-      ref="dateCalculations"
-      :siz="siz"
-      @updateNextTestDate="updateNextTestDate"
-      @updateLastInspectDate="updateLastInspectDate"
-      @updateNote="updateNote"
-    />
   </div>
 </template>
 
 <script>
 import InputField from "../components/InputField.vue";
-import DateCalculations from "../components/DateCalculations.vue";
 import { mapState } from "vuex";
 import {
   calculateNextTestDate,
