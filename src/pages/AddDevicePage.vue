@@ -1,95 +1,50 @@
 <template>
   <div class="add-siz-page">
     <h1>Добавить новое СИЗ</h1>
-
     <form @submit.prevent="submitForm">
       <!-- Местонахождение -->
-      <div class="form-group">
-        <label for="location">Местонахождение:</label>
-        <div>
-          <select v-model="siz.location" id="location" required>
-            <option value="">Выберите местонахождение</option>
-            <option
-              v-for="location in locations"
-              :key="location"
-              :value="location"
-            >
-              {{ location }}
-            </option>
-          </select>
-          <input
-            v-if="siz.location === 'new'"
-            v-model="newLocation"
-            type="text"
-            placeholder="Добавить местонахождение"
-            required
-          />
-        </div>
-      </div>
+      <InputField
+        fieldId="location"
+        label="Местонахождение:"
+        v-model="siz.location"
+        :options="locations"
+        placeholder="Выберите местонахождение"
+        newPlaceholder="Добавить новое местонахождение"
+        v-model:newValue="newLocation"
+      />
 
       <!-- Вид СЗ -->
-      <div class="form-group">
-        <label for="type">Вид СЗ:</label>
-        <div>
-          <select v-model="siz.type" id="type" required>
-            <option value="">Выберите вид СЗ</option>
-            <option v-for="type in types" :key="type" :value="type">
-              {{ type }}
-            </option>
-          </select>
-          <input
-            v-if="siz.type === 'new'"
-            v-model="newType"
-            type="text"
-            placeholder="Добавить вид СЗ"
-            required
-          />
-        </div>
-      </div>
+      <InputField
+        fieldId="type"
+        label="Вид СЗ:"
+        v-model="siz.type"
+        :options="types"
+        placeholder="Выберите вид СЗ"
+        newPlaceholder="Добавить новый вид СЗ"
+        v-model:newValue="newType"
+      />
 
       <!-- Класс напряжения (кВ) -->
-      <div class="form-group">
-        <label for="voltageClass">Класс напряжения (кВ):</label>
-        <div>
-          <select v-model="siz.voltageClass" id="voltageClass" required>
-            <option value="">Выберите класс напряжения</option>
-            <option
-              v-for="voltage in voltageClasses"
-              :key="voltage"
-              :value="voltage"
-            >
-              {{ voltage }} кВ
-            </option>
-          </select>
-          <input
-            v-if="siz.voltageClass === 'new'"
-            v-model="newVoltageClass"
-            type="text"
-            placeholder="Добавить класс напряжения"
-            required
-          />
-        </div>
-      </div>
+      <InputField
+        fieldId="voltageClass"
+        label="Класс напряжения (кВ):"
+        v-model="siz.voltageClass"
+        :options="voltageClasses"
+        placeholder="Выберите класс напряжения"
+        newPlaceholder="Добавить новый класс напряжения"
+        v-model:newValue="newVoltageClass"
+      />
 
       <!-- Тип СЗ -->
-      <div class="form-group">
-        <label for="szType">Тип СЗ:</label>
-        <div>
-          <select v-model="siz.szType" id="szType" required>
-            <option value="">Выберите тип СЗ</option>
-            <option v-for="szType in szTypes" :key="szType" :value="szType">
-              {{ szType }}
-            </option>
-          </select>
-          <input
-            v-if="siz.szType === 'new'"
-            v-model="newSzType"
-            type="text"
-            placeholder="Добавить тип СЗ"
-            required
-          />
-        </div>
-      </div>
+      <InputField
+        fieldId="szType"
+        label="Тип СЗ:"
+        v-model="siz.szType"
+        :options="szTypes"
+        placeholder="Выберите тип СЗ"
+        newPlaceholder="Добавить новый тип СЗ"
+        v-model:newValue="newSzType"
+      />
 
       <!-- № СЗ -->
       <div class="form-group">
@@ -146,30 +101,20 @@
           id="quantity"
           min="1"
           placeholder="Введите количество"
-          value="1"
           required
         />
       </div>
 
       <!-- Примечания -->
-      <div class="form-group">
-        <label for="note">Примечания:</label>
-        <div>
-          <select v-model="siz.note" id="note">
-            <option value="">Выберите примечание</option>
-            <option v-for="note in notes" :key="note" :value="note">
-              {{ note }}
-            </option>
-          </select>
-          <input
-            v-if="siz.note === 'Добавить новое примечание'"
-            v-model="newNote"
-            type="text"
-            placeholder="Добавить примечание"
-            required
-          />
-        </div>
-      </div>
+      <InputField
+        fieldId="note"
+        label="Примечания:"
+        v-model="siz.note"
+        :options="notes"
+        placeholder="Выберите примечание"
+        newPlaceholder="Добавить новое примечание"
+        v-model:newValue="newNote"
+      />
 
       <!-- Кнопка добавления -->
       <div class="form-actions">
@@ -180,10 +125,16 @@
 </template>
 
 <script>
+import InputField from "../components/InputField.vue";
+import DateCalculations from "../components/DateCalculations.vue";
 import { mapState } from "vuex";
 
 export default {
   name: "AddDevicePage",
+  components: {
+    InputField,
+    DateCalculations,
+  },
   data() {
     return {
       siz: {
@@ -210,67 +161,16 @@ export default {
   },
   methods: {
     setNextTestDate() {
-      if (!this.siz.testDate) return;
-
-      const testDate = new Date(this.siz.testDate);
-      let monthsToAdd = 0;
-
-      switch (this.siz.type) {
-        case "Диэлектрические перчатки":
-          monthsToAdd = 6;
-          break;
-        case "Указатель напряжения":
-          monthsToAdd = 12;
-          break;
-        case "Изолирующая штанга":
-          monthsToAdd = 24;
-          break;
-        case "Диэлектрические боты":
-          monthsToAdd = 36;
-          break;
-        default:
-          return;
-      }
-      // Увеличение месяца
-      const nextTestDate = new Date(
-        testDate.setMonth(testDate.getMonth() + monthsToAdd)
-      );
-      this.siz.nextTestDate = nextTestDate.toISOString().substr(0, 10); // Форматируем дату в формате YYYY-MM-DD для календаря
-      this.setLastInspectDate(); // Установка текущей даты последнего осмотра
-      this.setAutomaticNote(); // Автоматическое выставление примечания
-    },
-    setLastInspectDate() {
-      this.siz.lastInspectDate = new Date().toISOString().split("T")[0]; // Устанавливаем текущую дату в формате YYYY-MM-DD
-    },
-    setAutomaticNote() {
-      if (!this.siz.nextTestDate) {
-        // Если дата следующего испытания не установлена
-        this.siz.note = "Осмотрено";
-        return;
-      }
-      const currentDate = new Date();
-      const nextTestDate = new Date(this.siz.nextTestDate); // Дата в формате YYYY-MM-DD
-
-      const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // Один месяц в миллисекундах
-      const differenceInMs = nextTestDate - currentDate; // Разница в миллисекундах
-
-      if (differenceInMs > oneMonthInMs) {
-        this.siz.note = "Осмотрено, Испытано";
-      } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-        this.siz.note = "Необходимо отправить на испытания!";
-      } else if (differenceInMs < 0) {
-        this.siz.note = "Испытание просрочено!";
-      }
+      this.$refs.dateCalculations.setNextTestDate(this.siz);
     },
     submitForm() {
-      // Если пользователь добавляет новое значение, используем его
       if (this.newLocation) this.siz.location = this.newLocation;
       if (this.newType) this.siz.type = this.newType;
       if (this.newVoltageClass) this.siz.voltageClass = this.newVoltageClass;
       if (this.newSzType) this.siz.szType = this.newSzType;
       if (this.newNote) this.siz.note = this.newNote;
 
-      this.$emit("addSIZ", this.siz); // Отправляем событие для добавления
+      this.$emit("addSIZ", this.siz);
       this.$router.push("/security-device");
     },
   },
