@@ -28,9 +28,8 @@ export function getLastInspectDate() {
   return new Date().toISOString().split("T")[0];
 }
 
-export function getAutomaticNote() {
+export function getAutomaticNote(differenceInMs) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-  const differenceInMs = nextTestDate - currentDate;
 
   if (differenceInMs > oneMonthInMs) {
     return "Осмотрено, Испытано";
