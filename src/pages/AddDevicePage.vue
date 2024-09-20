@@ -203,12 +203,15 @@ export default {
       this.siz.note = getAutomaticNote(differenceInMs);
     },
     submitForm() {
-      if (this.newLocation) this.siz.location = this.newLocation;
-      if (this.newType) this.siz.type = this.newType;
-      if (this.newVoltageClass) this.siz.voltageClass = this.newVoltageClass;
-      if (this.newSzType) this.siz.szType = this.newSzType;
-      if (this.newNote) this.siz.note = this.newNote;
-
+      ["location", "type", "voltageClass", "szType", "note"].forEach(
+        (field) => {
+          const newValue =
+            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+          if (newValue) {
+            this.siz[field] = newValue;
+          }
+        }
+      );
       this.$emit("addSIZ", this.siz);
       this.$router.push("/security-device");
     },
