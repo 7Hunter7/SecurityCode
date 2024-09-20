@@ -2,21 +2,15 @@
   <div class="form-group">
     <label :for="fieldId">{{ label }}</label>
     <div>
-      <select
-        :id="fieldId"
-        :value="modelValue"
-        @change="onInputChange"
-        required
-      >
+      <select v-model="localValue" :id="fieldId" required>
         <option value="">{{ placeholder }}</option>
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
       <input
-        v-if="modelValue === 'new'"
-        :value="newValue"
-        @input="onNewInputChange"
+        v-if="localValue === 'new'"
+        v-model="localNewValue"
         type="text"
         :placeholder="newPlaceholder"
       />
@@ -26,65 +20,32 @@
 
 <script>
 export default {
-  name: "InputField",
   props: {
-    fieldId: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: String,
-      required: true,
-    },
-    options: {
-      type: Array,
-      required: true,
-    },
-    placeholder: {
-      type: String,
-      default: "",
-    },
-    newPlaceholder: {
-      type: String,
-      default: "",
-    },
-    newValue: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-      default: false,
-    },
+    modelValue: String,
+    newValue: String,
+    fieldId: String,
+    label: String,
+    options: Array,
+    placeholder: String,
+    newPlaceholder: String,
   },
-  methods: {
-    onInputChange(event) {
-      this.$emit("update:modelValue", event.target.value);
+  computed: {
+    localValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit("update:modelValue", value);
+      },
     },
-    onNewInputChange(event) {
-      this.$emit("update:newValue", event.target.value);
+    localNewValue: {
+      get() {
+        return this.newValue;
+      },
+      set(value) {
+        this.$emit("update:newValue", value);
+      },
     },
   },
 };
 </script>
-
-<style scoped>
-.form-group {
-  margin-bottom: 20px;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-</style>
