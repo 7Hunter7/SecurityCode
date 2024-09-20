@@ -92,7 +92,12 @@
       <!-- Дата последнего осмотра -->
       <div class="form-group">
         <label for="lastInspectDate">Дата последнего осмотра:</label>
-        <input type="date" v-model="siz.lastInspectDate" id="lastInspectDate" />
+        <input
+          type="date"
+          v-model="siz.lastInspectDate"
+          id="lastInspectDate"
+          required
+        />
       </div>
 
       <!-- Количество -->
