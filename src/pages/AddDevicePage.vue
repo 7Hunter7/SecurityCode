@@ -147,7 +147,6 @@ export default {
   name: "AddDevicePage",
   components: {
     InputField,
-    DateCalculations,
   },
   data() {
     return {
