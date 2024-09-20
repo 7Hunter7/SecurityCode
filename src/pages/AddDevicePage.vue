@@ -73,7 +73,7 @@
           type="date"
           v-model="siz.testDate"
           id="testDate"
-          @change="setNextTestDate"
+          @change="calculateNextTestDate"
           required
         />
       </div>
@@ -170,8 +170,8 @@ export default {
     ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
   },
   methods: {
-    setNextTestDate() {
-      this.$refs.dateCalculations.setNextTestDate(this.siz);
+    calculateNextTestDate() {
+      this.$refs.dateCalculations.setNextTestDate();
     },
     submitForm() {
       if (this.newLocation) this.siz.location = this.newLocation;
