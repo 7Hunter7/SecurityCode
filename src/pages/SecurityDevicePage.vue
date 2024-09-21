@@ -138,25 +138,31 @@ export default {
       this.calculateQuantityByClass(); // Обновление расчета количества СЗ по классам
     },
     calculateQuantityByClass() {
-      const quantityByClass = {};
+      if (Array.isArray(this.filteredSIZ)) {
+        const quantityByClass = {};
 
-      // Подсчет количества по классам напряжения и местонахождению
-      this.filteredSIZ.forEach((item) => {
-        const key = `${item.type}_${item.voltageClass}_${item.location}`;
-        if (!quantityByClass[key]) {
-          quantityByClass[key] = 0;
-        }
-        quantityByClass[key] += parseInt(item.quantity, 10);
-      });
+        // Подсчет количества по классам напряжения и местонахождению
+        console.log("filteredSIZ:", this.filteredSIZ);
 
-      // Обновление количества по классам для каждого элемента
-      this.filteredSIZ = this.filteredSIZ.map((item) => {
-        const key = `${item.type}_${item.voltageClass}_${item.location}`;
-        return {
-          ...item,
-          quantityByClass: quantityByClass[key],
-        };
-      });
+        this.filteredSIZ.forEach((item) => {
+          const key = `${item.type}_${item.voltageClass}_${item.location}`;
+          if (!quantityByClass[key]) {
+            quantityByClass[key] = 0;
+          }
+          quantityByClass[key] += parseInt(item.quantity, 10);
+        });
+
+        // Применение данных обратно в объект filteredSIZ
+        this.filteredSIZ = this.filteredSIZ.map((item) => {
+          const key = `${item.type}_${item.voltageClass}_${item.location}`;
+          return {
+            ...item,
+            quantityByClass: quantityByClass[key],
+          };
+        });
+      } else {
+        console.error("filteredSIZ is not an array", this.filteredSIZ);
+      }
     },
     editSIZ(id) {
       this.$router.push({ name: "Edit Device", query: { id } }); // Переход на страницу редактирования с передачей ID
