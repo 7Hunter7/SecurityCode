@@ -86,9 +86,15 @@ export default new Store({
     async loadSIZItems({ commit }) {
       try {
         const response = await axios.get("/api/siz-items"); // Запрос на сервер для получения данных
-        commit("SET_SIZ_ITEMS", response.data); // Сохраняем данные в state
+        if (Array.isArray(response.data)) {
+          commit("SET_SIZ_ITEMS", response.data); // Сохраняем данные в state
+        } else {
+          console.error("Expected array but got:", response.data);
+          this.sizItems = []; // Пустой массив по умолчанию
+        }
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
+        this.sizItems = []; // Пустой массив в случае ошибки
       }
     },
     async addSIZ({ commit }, newSIZ) {
