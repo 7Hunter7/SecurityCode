@@ -71,14 +71,17 @@
 
 <script>
 import InputField from "../components/InputField.vue";
-import DateCalculations from "../components/DateCalculations.vue";
+import {
+  calculateNextTestDate,
+  getLastInspectDate,
+  getAutomaticNote,
+} from "../utils/dateUtils.js";
 import { mapState } from "vuex";
 
 export default {
   name: "EditDevicePage",
   components: {
     InputField,
-    DateCalculations,
   },
   data() {
     return {
@@ -116,20 +119,29 @@ export default {
   },
   methods: {
     submitForm() {
-      if (this.newLocation) this.siz.location = this.newLocation;
-      if (this.newType) this.siz.type = this.newType;
-      if (this.newVoltageClass) this.siz.voltageClass = this.newVoltageClass;
-      if (this.newSzType) this.siz.szType = this.newSzType;
-      if (this.newNote) this.siz.note = this.newNote;
+      ["location", "type", "voltageClass", "szType", "note"].forEach(
+        (field) => {
+          const newValue =
+            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+          if (newValue) {
+            this.siz[field] = newValue;
+          }
+        }
+      );
 
       this.$emit("updateSIZ", this.siz);
       this.$router.push("/security-device");
     },
     calculateNextTestDate() {
-      this.siz.nextTestDate = this.$refs.dateCalculations.setNextTestDate(
-        this.siz.testDate,
-        this.siz.type
-      );
+      if (this.siz.testDate && this.siz.type) {
+        this.siz.nextTestDate = calculateNextTestDate(
+          this.siz.type,
+          new Date(this.siz.testDate)
+        );
+        this.siz.lastInspectDate = getLastInspectDate();
+        const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
+        this.siz.note = getAutomaticNote(differenceInMs);
+      }
     },
   },
 };
