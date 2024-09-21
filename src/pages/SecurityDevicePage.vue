@@ -69,6 +69,10 @@ export default {
 
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
+      if (!Array.isArray(this.sizItems)) {
+        console.error("sizItems is not an array", this.sizItems);
+        return [];
+      }
       return [...new Set(this.sizItems.map((item) => item.location))];
     },
     uniqueTypes() {
