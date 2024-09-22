@@ -40,3 +40,12 @@ export function getAutomaticNote(differenceInMs) {
   }
   return "Осмотрено";
 }
+
+export function calculateQuantityByClass(quantityByClass, row) {
+  const key = `${row["Вид СЗ"]}_${row["Класс напряжения СЗ, кВ"]}_${row["Местонахождение"]}`;
+  if (!quantityByClass[key]) {
+    quantityByClass[key] = 0;
+  }
+  quantityByClass[key] += parseInt(row["Количество"], 10);
+  return quantityByClass[key];
+}
