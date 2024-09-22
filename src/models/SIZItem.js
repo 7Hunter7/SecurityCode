@@ -18,14 +18,14 @@ const SIZItem = sequelize.define("SIZItem", {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      len: [3, 100],
+      len: [1, 100],
     },
   },
   voltageClass: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [["0,4", "1", "3", "6", "10", "15", "20", "35", "110", "220"]],
+      isIn: [[0, 4, 1, 3, 6, 10, 15, 20, 35, 110, 220]],
     },
   },
   szType: {
