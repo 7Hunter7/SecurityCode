@@ -10,39 +10,24 @@ const SIZItem = sequelize.define("SIZItem", {
   location: {
     type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      len: [3, 100],
-    },
   },
   type: {
     type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      len: [1, 100],
-    },
   },
   voltageClass: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      isIn: [[0, 4, 1, 3, 6, 10, 15, 20, 35, 110, 220]],
-    },
   },
   szType: {
     type: DataTypes.STRING,
-    allowNull: true,
-    defaultValue: "-",
-    validate: {
-      len: [1, 100],
-    },
+    allowNull: false,
+    defaultValue: "-", // Cтрока по умолчанию
   },
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,
-    validate: {
-      isInt: true,
-    },
   },
   testDate: {
     type: DataTypes.DATE,
@@ -54,26 +39,21 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   lastInspectDate: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true, // Можно не заполнять
   },
   quantity: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    validate: {
-      min: 1,
-    },
+    defaultValue: 1, // Устанавливаем значение по умолчанию
   },
   classQuantity: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true, // Поле не обязательное
   },
   note: {
     type: DataTypes.STRING,
-    allowNull: true,
-    defaultValue: "",
-    validate: {
-      len: [0, 255],
-    },
+    allowNull: true, // Поле не обязательное
+    defaultValue: "", // Пустая строка по умолчанию
   },
 });
 
