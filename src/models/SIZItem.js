@@ -22,7 +22,7 @@ const SIZItem = sequelize.define("SIZItem", {
     },
   },
   voltageClass: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       isIn: [[0, 4, 1, 3, 6, 10, 15, 20, 35, 110, 220]],
