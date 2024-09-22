@@ -1,3 +1,4 @@
+// Функция для расчета следующей даты испытания
 export function calculateNextTestDate(sizType, testDate) {
   let monthsToAdd = 0;
 
@@ -17,20 +18,20 @@ export function calculateNextTestDate(sizType, testDate) {
     default:
       return null;
   }
-
   const nextTestDate = new Date(
     testDate.setMonth(testDate.getMonth() + monthsToAdd)
   );
   return nextTestDate.toISOString().substr(0, 10);
 }
 
+// Функция для получения текущей даты последнего осмотра
 export function getLastInspectDate() {
   return new Date().toISOString().split("T")[0];
 }
 
+// Функция для автоматического выставления примечания в зависимости от разницы дат
 export function getAutomaticNote(differenceInMs) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-
   if (differenceInMs > oneMonthInMs) {
     return "Осмотрено, Испытано";
   } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
@@ -41,6 +42,12 @@ export function getAutomaticNote(differenceInMs) {
   return "Осмотрено";
 }
 
+// Функция для проверки валидности даты
+export function isValidDate(date) {
+  return !isNaN(Date.parse(date));
+}
+
+// Функция для подсчета количества СЗ по классам
 export function calculateQuantityByClass(quantityByClass, row) {
   // Создаем уникальный ключ для подсчета количества по классам
   const key = `${row["Вид СЗ"]}_${row["Класс напряжения СЗ, кВ"]}_${row["Местонахождение"]}`;
