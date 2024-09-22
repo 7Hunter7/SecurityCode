@@ -30,11 +30,12 @@ async function findSIZById(req, res, next) {
 router.get("/", async (req, res, next) => {
   try {
     const items = await SIZItem.findAll();
+    console.log(`Найдено ${items.length} записей в базе данных.`);
     logger.info("Все СИЗ успешно получены");
     res.status(200).json(items);
   } catch (err) {
-    logger.error(`Ошибка получения СИЗ: ${err.message}`);
-    next(err); // Передаем ошибку
+    logger.error("Ошибка получения СИЗ:", err);
+    next(err);
   }
 });
 
