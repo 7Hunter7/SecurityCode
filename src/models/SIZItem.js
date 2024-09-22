@@ -31,6 +31,7 @@ const SIZItem = sequelize.define("SIZItem", {
   szType: {
     type: DataTypes.STRING,
     allowNull: true,
+    defaultValue: "-",
     validate: {
       len: [1, 100],
     },
