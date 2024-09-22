@@ -24,7 +24,14 @@ const syncDatabase = async () => {
 syncDatabase();
 
 // Подключение маршрутов
-app.use("/api/siz-items", sizRoutes);
+app.use(
+  "/api/siz-items",
+  (req, res, next) => {
+    console.log("Запрос получен на /api/siz-items");
+    next();
+  },
+  sizRoutes
+);
 
 // Централизованная обработка ошибок
 app.use(errorHandler);
