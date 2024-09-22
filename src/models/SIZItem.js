@@ -65,11 +65,7 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   classQuantity: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 1,
-    validate: {
-      min: 1,
-    },
+    allowNull: true,
   },
   note: {
     type: DataTypes.STRING,
