@@ -13,6 +13,12 @@ app.use(bodyParser.json());
 // Middleware для парсинга данных формы
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Middleware для обработки ошибок
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500);
+  res.json({ error: err.message });
+});
+
 // Асинхронная синхронизация базы данных
 const syncDatabase = async () => {
   try {
