@@ -48,14 +48,18 @@ export function isValidDate(date) {
 }
 
 // Функция для подсчета количества СЗ по классам
-export function calculateQuantityByClass(quantityByClass, row) {
-  // Создаем уникальный ключ для подсчета количества по классам
-  const key = `${row["Вид СЗ"]}_${row["Класс напряжения СЗ, кВ"]}_${row["Местонахождение"]}`;
-  // Инициализируем количество для данного класса, если его еще нет
-  if (!quantityByClass[key]) {
-    quantityByClass[key] = 0;
-  }
-  // Добавляем количество из текущей строки
-  quantityByClass[key] += parseInt(row["Количество"], 10);
-  return quantityByClass[key];
+export function calculateQuantityByClass(items) {
+  const quantityByClass = {};
+
+  items.forEach((item) => {
+    const key = `${item.type}_${item.voltageClass}_${item.location}`;
+
+    if (!quantityByClass[key]) {
+      quantityByClass[key] = 0;
+    }
+
+    quantityByClass[key] += item.quantity;
+  });
+
+  return quantityByClass;
 }
