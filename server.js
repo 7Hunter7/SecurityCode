@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware для парсинга JSON
 app.use(bodyParser.json());
 
+// Middleware для парсинга данных формы
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Асинхронная синхронизация базы данных
 const syncDatabase = async () => {
   try {
