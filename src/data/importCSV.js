@@ -1,12 +1,10 @@
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
-import { calculateQuantityByClass } from "./utils.js"; // Импорт функции для подсчета количества по классам
 import { isValidDate } from "./dateUtils.js"; // Импорт функции валидации даты
 
 const importCSV = async () => {
   const results = [];
-  const quantityByClass = {};
 
   fs.createReadStream("./SIZinventory.csv")
     .pipe(csv())
@@ -15,8 +13,6 @@ const importCSV = async () => {
     })
     .on("end", async () => {
       for (const row of results) {
-        const classQuantity = calculateQuantityByClass(quantityByClass, row);
-
         const testDate = isValidDate(row["Дата испытания"])
           ? new Date(row["Дата испытания"])
           : null;
@@ -44,7 +40,6 @@ const importCSV = async () => {
           nextTestDate: nextTestDate,
           lastInspectDate: lastInspectDate,
           quantity: parseInt(row["Количество"], 10),
-          classQuantity: classQuantity,
           note: row["Примечание"],
         });
       }
