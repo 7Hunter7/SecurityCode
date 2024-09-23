@@ -21,21 +21,20 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   szType: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true, // Поле не обязательное
     defaultValue: "-", // Cтрока по умолчанию
   },
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true,
   },
   testDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true, // Поле не обязательное
   },
   nextTestDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true, // Поле не обязательное
   },
   lastInspectDate: {
     type: DataTypes.DATE,
