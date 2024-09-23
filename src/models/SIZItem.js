@@ -16,13 +16,13 @@ const SIZItem = sequelize.define("SIZItem", {
     allowNull: false,
   },
   voltageClass: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   szType: {
     type: DataTypes.STRING,
     allowNull: true, // Поле не обязательное
-    defaultValue: "-", // Cтрока по умолчанию
+    defaultValue: "", // Cтрока по умолчанию
   },
   number: {
     type: DataTypes.STRING,
