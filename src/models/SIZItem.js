@@ -25,7 +25,7 @@ const SIZItem = sequelize.define("SIZItem", {
     defaultValue: "-", // Cтрока по умолчанию
   },
   number: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   testDate: {
