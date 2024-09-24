@@ -17,6 +17,11 @@ app.use("/api/siz-items", sizRoutes);
 // Обработка статических файлов для клиента
 app.use(express.static(path.join(__dirname, "public")));
 
+// Если маршрут не найден в API
+app.use("/api", (req, res) => {
+  res.sendStatus(404); // Отправляет 404 статус
+});
+
 // Обработка всех остальных маршрутов и возврат index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
