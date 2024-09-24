@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware для парсинга JSON
 app.use(bodyParser.json());
+// Подключение маршрутов
+app.use("/api/siz-items", sizRoutes);
 
 // Middleware для парсинга данных формы
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,14 +35,22 @@ const syncDatabase = async () => {
 syncDatabase();
 
 // Подключение маршрутов
-app.use(
-  "/api/siz-items",
-  (req, res, next) => {
-    console.log("Запрос получен на /api/siz-items");
-    next();
-  },
-  sizRoutes
-);
+// app.use(
+//   "/api/siz-items",
+//   (req, res, next) => {
+//     console.log("Запрос получен на /api/siz-items");
+//     next();
+//   },
+//   sizRoutes
+// );
+
+// Обработка статических файлов для клиента
+app.use(express.static("public"));
+
+// Обработка всех остальных маршрутов и возврат index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Централизованная обработка ошибок
 app.use(errorHandler);
