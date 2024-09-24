@@ -39,6 +39,7 @@ router.get("/", async (req, res, next) => {
     res.status(200).json(items);
   } catch (err) {
     logger.error("Ошибка получения СИЗ:", err);
+    res.status(500).json({ message: "Ошибка получения данных" });
     next(err);
   }
 });
