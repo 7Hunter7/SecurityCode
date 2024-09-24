@@ -1,19 +1,29 @@
 import express from "express";
+import path from "path";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
-import bodyParser from "body-parser"; // Парсинг тела запроса
+// import bodyParser from "body-parser"; // Парсинг тела запроса
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware для парсинга JSON
-app.use(bodyParser.json());
+app.use(express.json());
+
 // Подключение маршрутов
 app.use("/api/siz-items", sizRoutes);
 
-// Middleware для парсинга данных формы
-app.use(bodyParser.urlencoded({ extended: true }));
+// Обработка статических файлов для клиента
+app.use(express.static(path.join(__dirname, "public")));
+
+// Обработка всех остальных маршрутов и возврат index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// // Middleware для парсинга данных формы
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 // Middleware для обработки ошибок
 app.use((err, req, res, next) => {
@@ -43,14 +53,6 @@ syncDatabase();
 //   },
 //   sizRoutes
 // );
-
-// Обработка статических файлов для клиента
-app.use(express.static("public"));
-
-// Обработка всех остальных маршрутов и возврат index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
 
 // Централизованная обработка ошибок
 app.use(errorHandler);
