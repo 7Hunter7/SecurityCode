@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
@@ -7,6 +8,10 @@ import errorHandler from "./src/middlewares/errorHandler.js"; // Обработ�
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Определение __dirname для ES-модуля
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware для парсинга JSON
 app.use(express.json());
