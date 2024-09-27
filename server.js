@@ -7,7 +7,7 @@ import errorHandler from "./src/middlewares/errorHandler.js"; // Обработ�
 // import bodyParser from "body-parser"; // Парсинг тела запроса
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Определение __dirname для ES-модуля
 const __filename = fileURLToPath(import.meta.url);
