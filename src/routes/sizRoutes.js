@@ -25,10 +25,6 @@ async function findSIZById(req, res, next) {
     next(err);
   }
 }
-// Проверка маршрута
-router.get("/", (req, res) => {
-  res.json({ message: "Маршрут работает корректно" });
-});
 
 // Получить все СИЗ
 router.get("/", async (req, res, next) => {
