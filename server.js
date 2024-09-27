@@ -22,14 +22,25 @@ app.use("/api/siz-items", sizRoutes);
 // Обработка статических файлов для клиента
 app.use(express.static(path.join(__dirname, "public")));
 
-// Если маршрут не найден в API
-app.use("/api", (req, res) => {
-  res.sendStatus(404); // Отправляет 404 статус
+// Получить все СИЗ
+app.get("/api/siz-items", async (req, res, next) => {
+  try {
+    const items = await SIZItem.findAll(); // Предполагается, что SIZItem — это ваша модель для работы с базой данных
+    res.status(200).json(items);
+  } catch (err) {
+    next(err);
+  }
 });
-
 // Обработка всех остальных маршрутов и возврат index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Обработка несуществующих маршрутов
+app.use((req, res) => {
+  res.status(404).send({
+    message: "URL not found",
+  });
 });
 
 // // Middleware для парсинга данных формы
