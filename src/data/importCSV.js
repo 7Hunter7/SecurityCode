@@ -6,7 +6,7 @@ import { isValidDate } from "../utils/dateUtils.js"; // Импорт функц�
 const importCSV = async () => {
   const results = [];
 
-  fs.createReadStream("./SIZinventory.csv")
+  fs.createReadStream("../data/SIZinventory.csv")
     .pipe(csv())
     .on("data", (data) => {
       console.log("Прочитана строка:", data); // Логирование данных строки
@@ -36,7 +36,7 @@ const importCSV = async () => {
           await SIZItem.create({
             location: row["Местонахождение"],
             type: row["Вид СЗ"],
-            voltageClass: row["Класс напряжения СЗ, кВ"],
+            voltageClass: row["Класс напряжения СЗ"],
             szType: row["Тип СЗ"],
             number: row["№ СЗ"],
             testDate: testDate,
