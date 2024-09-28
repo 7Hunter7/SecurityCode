@@ -41,22 +41,23 @@ export async function importCSV() {
         const testDate = row["Дата испытания"]
           ? isValidDate(row["Дата испытания"])
             ? new Date(row["Дата испытания"])
-            : new Date(formatDate(row["Дата испытания"]))
+            : formatDate(row["Дата испытания"])
           : null;
         const nextTestDate = row["Дата следующего испытания"]
           ? isValidDate(row["Дата следующего испытания"])
             ? new Date(row["Дата следующего испытания"])
-            : new Date(formatDate(row["Дата следующего испытания"]))
+            : formatDate(row["Дата следующего испытания"])
           : null;
         const lastInspectDate = row["Дата последнего осмотра"]
           ? isValidDate(row["Дата последнего осмотра"])
             ? new Date(row["Дата последнего осмотра"])
-            : new Date(formatDate(row["Дата последнего осмотра"]))
+            : formatDate(row["Дата последнего осмотра"])
           : null;
 
+        // Если даты испытания и следующего испытания пусты, пропустить строку
         if (!testDate || !nextTestDate) {
           console.log(
-            `Ошибка в строке с номером СЗ ${row["№ СЗ"]}: некорректные даты испытания или следующего испытания.`
+            `Ошибка в строке с номером СЗ ${row["№ СЗ"]}: некорректные или отсутствующие даты испытания или следующего испытания.`
           );
           continue;
         }
@@ -66,13 +67,13 @@ export async function importCSV() {
             location: row["Местонахождение"],
             type: row["Вид СЗ"],
             voltageClass: row["Класс напряжения СЗ"],
-            szType: row["Тип СЗ"],
+            szType: row["Тип СЗ"] || "", // Если тип СЗ отсутствует, использовать пустую строку
             number: row["№ СЗ"],
             testDate: testDate,
             nextTestDate: nextTestDate,
-            lastInspectDate: lastInspectDate,
+            lastInspectDate: lastInspectDate || null, // Если дата осмотра отсутствует, использовать null
             quantity: parseInt(row["Количество"], 10),
-            note: row["Примечание"],
+            note: row["Примечание"] || "", // Если примечание отсутствует, использовать пустую строку
           });
           console.log("Данные успешно сохранены:", row);
         } catch (error) {
