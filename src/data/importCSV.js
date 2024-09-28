@@ -25,13 +25,17 @@ export async function importCSV() {
   fs.createReadStream(filePath)
     .pipe(csv({ separator: ";" }))
     .on("data", (data) => {
-      console.log("Прочитана строка:", data); // Логирование данных строки
-      results.push(data);
+      const cleanedRow = {};
+      for (const key in data) {
+        const cleanedKey = key.trim(); // Удаляем пробелы в начале и конце ключа
+        cleanedRow[cleanedKey] = data[key].trim(); // Удаляем пробелы в значениях
+      }
+      results.push(cleanedRow);
     })
     .on("end", async () => {
-      console.log("Всего строк загружено:", results.length); // Логирование общего количества строк
+      console.log("Всего строк загружено:", results.length);
       for (const row of results) {
-        console.log("Обработка строки:", row); // Логирование перед обработкой строки
+        console.log("Обработка строки:", row);
         const testDate = isValidDate(row["Дата испытания"])
           ? new Date(row["Дата испытания"])
           : null;
