@@ -32,18 +32,23 @@ const importCSV = async () => {
           continue;
         }
 
-        await SIZItem.create({
-          location: row["Местонахождение"],
-          type: row["Вид СЗ"],
-          voltageClass: row["Класс напряжения СЗ"],
-          szType: row["Тип СЗ"],
-          number: row["№ СЗ"],
-          testDate: testDate,
-          nextTestDate: nextTestDate,
-          lastInspectDate: lastInspectDate,
-          quantity: parseInt(row["Количество"], 10),
-          note: row["Примечание"],
-        });
+        try {
+          await SIZItem.create({
+            location: row["Местонахождение"],
+            type: row["Вид СЗ"],
+            voltageClass: row["Класс напряжения СЗ, кВ"],
+            szType: row["Тип СЗ"],
+            number: row["№ СЗ"],
+            testDate: testDate,
+            nextTestDate: nextTestDate,
+            lastInspectDate: lastInspectDate,
+            quantity: parseInt(row["Количество"], 10),
+            note: row["Примечание"],
+          });
+          console.log("Данные успешно сохранены:", row);
+        } catch (error) {
+          console.error("Ошибка при сохранении данных:", error.message, row);
+        }
       }
 
       console.log("Импорт данных завершен.");
