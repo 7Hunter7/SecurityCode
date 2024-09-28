@@ -4,6 +4,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
 import { isValidDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
+import { formatDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
 
 // Определяем __dirname в стиле ES-модулей
 const __filename = fileURLToPath(import.meta.url);
@@ -36,14 +37,22 @@ export async function importCSV() {
       console.log("Всего строк загружено:", results.length);
       for (const row of results) {
         console.log("Обработка строки:", row);
-        const testDate = isValidDate(row["Дата испытания"])
-          ? new Date(row["Дата испытания"])
+
+        // Форматирование и преобразование дат
+        const testDate = row["Дата испытания"]
+          ? isValidDate(row["Дата испытания"])
+            ? new Date(row["Дата испытания"])
+            : formatDate(row["Дата испытания"])
           : null;
-        const nextTestDate = isValidDate(row["Дата следующего испытания"])
-          ? new Date(row["Дата следующего испытания"])
+        const nextTestDate = row["Дата следующего испытания"]
+          ? isValidDate(row["Дата следующего испытания"])
+            ? new Date(row["Дата следующего испытания"])
+            : formatDate(row["Дата следующего испытания"])
           : null;
-        const lastInspectDate = isValidDate(row["Дата последнего осмотра"])
-          ? new Date(row["Дата последнего осмотра"])
+        const lastInspectDate = row["Дата последнего осмотра"]
+          ? isValidDate(row["Дата последнего испытания"])
+            ? new Date(row["Дата последнего испытания"])
+            : formatDate(row["Дата последнего испытания"])
           : null;
 
         if (!testDate || !nextTestDate) {
