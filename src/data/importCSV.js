@@ -38,7 +38,7 @@ export async function importCSV() {
       for (const row of results) {
         console.log("Обработка строки:", row);
 
-        // Форматирование и преобразование дат
+        // Проверка и преобразование дат
         const testDate = row["Дата испытания"]
           ? isValidDate(row["Дата испытания"])
             ? new Date(row["Дата испытания"])
