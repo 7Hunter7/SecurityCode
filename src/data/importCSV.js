@@ -63,19 +63,28 @@ export async function importCSV() {
         }
 
         try {
-          await SIZItem.create({
-            location: row["Местонахождение"],
-            type: row["Вид СЗ"],
-            voltageClass: row["Класс напряжения СЗ"],
-            szType: row["Тип СЗ"] || "", // Если тип СЗ отсутствует, использовать пустую строку
-            number: row["№ СЗ"],
-            testDate: testDate,
-            nextTestDate: nextTestDate,
-            lastInspectDate: lastInspectDate || null, // Если дата осмотра отсутствует, использовать null
-            quantity: parseInt(row["Количество"], 10),
-            note: row["Примечание"] || "", // Если примечание отсутствует, использовать пустую строку
+          const existingItem = await SIZItem.findOne({
+            where: { number: row["№ СЗ"] },
           });
-          console.log("Данные успешно сохранены:", row);
+          if (!existingItem) {
+            await SIZItem.create({
+              location: row["Местонахождение"],
+              type: row["Вид СЗ"],
+              voltageClass: row["Класс напряжения СЗ"],
+              szType: row["Тип СЗ"] || "", // Если тип СЗ отсутствует, использовать пустую строку
+              number: row["№ СЗ"],
+              testDate: testDate,
+              nextTestDate: nextTestDate,
+              lastInspectDate: lastInspectDate || null, // Если дата осмотра отсутствует, использовать null
+              quantity: parseInt(row["Количество"], 10),
+              note: row["Примечание"] || "", // Если примечание отсутствует, использовать пустую строку
+            });
+            console.log("Данные успешно сохранены:", row);
+          } else {
+            console.log(
+              `Запись с номером СЗ ${row["№ СЗ"]} уже существует, пропуск сохранения.`
+            );
+          }
         } catch (error) {
           console.error("Ошибка при сохранении данных:", error.message, row);
         }
