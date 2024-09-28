@@ -9,10 +9,12 @@ const importCSV = async () => {
   fs.createReadStream("./SIZinventory.csv")
     .pipe(csv())
     .on("data", (data) => {
+      console.log("Прочитана строка:", data); // Логирование данных строки
       results.push(data);
     })
     .on("end", async () => {
       for (const row of results) {
+        console.log("Обработка строки:", row); // Логирование перед обработкой строки
         const testDate = isValidDate(row["Дата испытания"])
           ? new Date(row["Дата испытания"])
           : null;
@@ -33,7 +35,7 @@ const importCSV = async () => {
         await SIZItem.create({
           location: row["Местонахождение"],
           type: row["Вид СЗ"],
-          voltageClass: row["Класс напряжения СЗ, кВ"],
+          voltageClass: row["Класс напряжения СЗ"],
           szType: row["Тип СЗ"],
           number: row["№ СЗ"],
           testDate: testDate,
