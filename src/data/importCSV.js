@@ -3,7 +3,8 @@ import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
 import { isValidDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
 
-const importCSV = async () => {
+export async function importCSV() {
+  console.log("Запуск функции импорта CSV данных");
   const results = [];
 
   fs.createReadStream("./data/SIZinventory.csv")
@@ -54,7 +55,4 @@ const importCSV = async () => {
 
       console.log("Импорт данных завершен.");
     });
-};
-
-console.log("Запуск функции импорта CSV данных");
-importCSV();
+}

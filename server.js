@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
-import importCSV from "./src/data/importCSV.js"; // Импорт функции для импорта данных
+import { importCSV } from "./src/data/importCSV.js"; // Импорт функции для импорта данных
 
 const app = express();
 const PORT = process.env.PORT || 3000;
