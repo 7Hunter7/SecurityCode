@@ -1,3 +1,4 @@
+import path from "path";
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
@@ -5,9 +6,12 @@ import { isValidDate } from "../utils/dateUtils.js"; // Импорт функц�
 
 export async function importCSV() {
   console.log("Запуск функции импорта CSV данных");
+
+  const filePath = path.join(__dirname, "../data/SIZinventory.csv");
+
   const results = [];
 
-  fs.createReadStream("./data/SIZinventory.csv")
+  fs.createReadStream(filePath)
     .pipe(csv())
     .on("data", (data) => {
       console.log("Прочитана строка:", data); // Логирование данных строки
