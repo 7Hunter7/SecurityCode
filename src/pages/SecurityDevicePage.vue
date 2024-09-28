@@ -65,7 +65,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["allSIZItems"]), // Получаем данные из хранилища Vuex
+    ...mapState(["sizItems"]),
+    ...mapGetters(["allSIZItems"]),
+    // Получаем данные из хранилища Vuex
 
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
@@ -83,7 +85,9 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("loadSIZItems"); // Загружаем данные при монтировании компонента
+    this.loadSIZItems();
+    this.$store.dispatch("loadSIZItems");
+    // Загружаем данные при монтировании компонента
   },
   watch: {
     sizItems() {
