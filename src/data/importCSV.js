@@ -23,7 +23,7 @@ export async function importCSV() {
   const results = [];
 
   fs.createReadStream(filePath)
-    .pipe(csv())
+    .pipe(csv({ separator: ";" }))
     .on("data", (data) => {
       console.log("Прочитана строка:", data); // Логирование данных строки
       results.push(data);
