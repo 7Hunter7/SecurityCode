@@ -52,7 +52,7 @@
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
 import { useRouter } from "vue-router";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -65,7 +65,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["sizItems"]), // Получаем данные из хранилища Vuex
+    ...mapGetters(["allSIZItems"]), // Получаем данные из хранилища Vuex
 
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
@@ -83,7 +83,7 @@ export default {
     },
   },
   mounted() {
-    this.loadSIZItems(); // Загружаем данные при монтировании компонента
+    this.$store.dispatch("loadSIZItems"); // Загружаем данные при монтировании компонента
   },
   watch: {
     sizItems() {
