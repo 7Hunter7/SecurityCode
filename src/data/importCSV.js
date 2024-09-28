@@ -14,6 +14,12 @@ export async function importCSV() {
 
   const filePath = path.join(__dirname, "../data/SIZinventory.csv");
 
+  // Проверка наличия файла
+  if (!fs.existsSync(filePath)) {
+    console.error(`Файл не найден: ${filePath}`);
+    return;
+  }
+
   const results = [];
 
   fs.createReadStream(filePath)
