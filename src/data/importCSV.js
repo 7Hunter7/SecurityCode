@@ -3,8 +3,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
-import { isValidDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
-import { formatDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
+import { isValidDate, formatDate } from "../utils/dateUtils.js"; // Импорт функций для работы с датами
 
 // Определяем __dirname в стиле ES-модулей
 const __filename = fileURLToPath(import.meta.url);
@@ -42,17 +41,17 @@ export async function importCSV() {
         const testDate = row["Дата испытания"]
           ? isValidDate(row["Дата испытания"])
             ? new Date(row["Дата испытания"])
-            : formatDate(row["Дата испытания"])
+            : new Date(formatDate(row["Дата испытания"]))
           : null;
         const nextTestDate = row["Дата следующего испытания"]
           ? isValidDate(row["Дата следующего испытания"])
             ? new Date(row["Дата следующего испытания"])
-            : formatDate(row["Дата следующего испытания"])
+            : new Date(formatDate(row["Дата следующего испытания"]))
           : null;
         const lastInspectDate = row["Дата последнего осмотра"]
-          ? isValidDate(row["Дата последнего испытания"])
-            ? new Date(row["Дата последнего испытания"])
-            : formatDate(row["Дата последнего испытания"])
+          ? isValidDate(row["Дата последнего осмотра"])
+            ? new Date(row["Дата последнего осмотра"])
+            : new Date(formatDate(row["Дата последнего осмотра"]))
           : null;
 
         if (!testDate || !nextTestDate) {
