@@ -1,7 +1,7 @@
-import { Store } from "vuex";
+import { createStore } from "vuex";
 import axios from "axios";
 
-export default new Store({
+export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
     locations: [
