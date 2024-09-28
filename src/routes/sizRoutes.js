@@ -2,12 +2,13 @@ import express from "express";
 import SIZItem from "../models/SIZItem.js";
 import { sizItemValidationSchema } from "../validation/sizValidation.js";
 import logger from "../logger.js"; // Подключаем Winston
+
 const router = express.Router();
 
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
   try {
-    const sizItem = await SIZItem.findById(req.params.id);
+    const sizItem = await SIZItem.findByPk(req.params.id); // Используем findByPk
     if (!sizItem) {
       const error = new Error("СИЗ не найдено");
       error.statusCode = 404;
@@ -16,11 +17,6 @@ async function findSIZById(req, res, next) {
     req.sizItem = sizItem;
     next();
   } catch (err) {
-    if (err.name === "CastError" && err.kind === "ObjectId") {
-      const error = new Error("Некорректный идентификатор СИЗ");
-      error.statusCode = 400;
-      return next(error);
-    }
     logger.error(`Ошибка поиска СИЗ по ID: ${err.message}`);
     next(err);
   }
@@ -51,7 +47,9 @@ router.post("/", async (req, res, next) => {
   }
 
   try {
-    const existingItem = await SIZItem.findOne({ number: req.body.number });
+    const existingItem = await SIZItem.findOne({
+      where: { number: req.body.number },
+    });
     if (existingItem) {
       const err = new Error("СИЗ с таким номером уже существует!");
       err.statusCode = 400;
@@ -59,9 +57,8 @@ router.post("/", async (req, res, next) => {
       return next(err);
     }
 
-    const item = new SIZItem(req.body);
-    const newItem = await item.save();
-    logger.info(`СИЗ успешно добавлено с ID: ${newItem._id}`);
+    const newItem = await SIZItem.create(req.body);
+    logger.info(`СИЗ успешно добавлено с ID: ${newItem.id}`);
     res.status(201).json(newItem);
   } catch (err) {
     logger.error(`Ошибка при добавлении нового СИЗ: ${err.message}`);
@@ -80,23 +77,23 @@ router.put("/:id", findSIZById, async (req, res, next) => {
   }
 
   try {
-    // Проверяем, существует ли другой СИЗ с таким же номером
-    if (req.body.number && req.body.number !== req.sizItem.number) {
-      const existingItem = await SIZItem.findOne({ number: req.body.number });
-      if (existingItem) {
-        const err = new Error("СИЗ с таким номером уже существует!");
-        err.statusCode = 400;
-        logger.warn(
-          `Попытка обновления на дублирующий номер СИЗ: ${req.body.number}`
-        );
-        return next(err);
-      }
+    const existingItem = await SIZItem.findOne({
+      where: { number: req.body.number },
+    });
+    if (existingItem && existingItem.id !== req.sizItem.id) {
+      const err = new Error("СИЗ с таким номером уже существует!");
+      err.statusCode = 400;
+      logger.warn(
+        `Попытка обновления на дублирующий номер СИЗ: ${req.body.number}`
+      );
+      return next(err);
     }
 
-    req.sizItem.set(req.body);
-    const updatedItem = await req.sizItem.save();
-    logger.info(`СИЗ с ID: ${req.sizItem._id} успешно обновлено`);
-    res.status(200).json({ message: "СИЗ успешно обновлено", updatedItem });
+    await req.sizItem.update(req.body); // Обновляем запись
+    logger.info(`СИЗ с ID: ${req.sizItem.id} успешно обновлено`);
+    res
+      .status(200)
+      .json({ message: "СИЗ успешно обновлено", updatedItem: req.sizItem });
   } catch (err) {
     logger.error(`Ошибка обновления СИЗ: ${err.message}`);
     next(err);
@@ -106,13 +103,11 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
   try {
-    await req.sizItem.remove();
-    logger.info(`СИЗ с ID: ${req.sizItem._id} успешно удалено`);
+    await req.sizItem.destroy();
+    logger.info(`СИЗ с ID: ${req.sizItem.id} успешно удалено`);
     res.status(204).send(); // Успешное удаление, без тела
   } catch (err) {
-    logger.error(
-      `Ошибка удаления СИЗ с ID: ${req.sizItem._id}: ${err.message}`
-    );
+    logger.error(`Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`);
     next(err);
   }
 });
