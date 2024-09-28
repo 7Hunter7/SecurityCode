@@ -47,6 +47,15 @@ export function isValidDate(date) {
   return !isNaN(Date.parse(date));
 }
 
+// функция для преобразования даты
+export function formatDate(dateStr) {
+  // Разделяем строку даты по точке
+  const [day, month, year] = dateStr.split(".");
+
+  // Формируем дату в формате YYYY-MM-DD
+  return `${year}-${month}-${day}`;
+}
+
 // Функция для подсчета количества СЗ по классам
 export function calculateQuantityByClass(items) {
   const quantityByClass = {};
