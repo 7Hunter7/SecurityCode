@@ -6,13 +6,14 @@ import { isValidDate } from "../utils/dateUtils.js"; // Импорт функц�
 const importCSV = async () => {
   const results = [];
 
-  fs.createReadStream("../data/SIZinventory.csv")
+  fs.createReadStream("./data/SIZinventory.csv")
     .pipe(csv())
     .on("data", (data) => {
       console.log("Прочитана строка:", data); // Логирование данных строки
       results.push(data);
     })
     .on("end", async () => {
+      console.log("Всего строк загружено:", results.length); // Логирование общего количества строк
       for (const row of results) {
         console.log("Обработка строки:", row); // Логирование перед обработкой строки
         const testDate = isValidDate(row["Дата испытания"])
@@ -55,4 +56,5 @@ const importCSV = async () => {
     });
 };
 
+console.log("Запуск функции импорта CSV данных");
 importCSV();
