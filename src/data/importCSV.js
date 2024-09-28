@@ -1,7 +1,7 @@
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
-import { isValidDate } from "./dateUtils.js"; // Импорт функции валидации даты
+import { isValidDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
 
 const importCSV = async () => {
   const results = [];
