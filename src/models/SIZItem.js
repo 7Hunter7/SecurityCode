@@ -16,7 +16,7 @@ const SIZItem = sequelize.define("SIZItem", {
     allowNull: false,
   },
   voltageClass: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   szType: {
@@ -27,6 +27,7 @@ const SIZItem = sequelize.define("SIZItem", {
   number: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true, // Уникальное значение
   },
   testDate: {
     type: DataTypes.DATE,
@@ -38,7 +39,7 @@ const SIZItem = sequelize.define("SIZItem", {
   },
   lastInspectDate: {
     type: DataTypes.DATE,
-    allowNull: true, // Можно не заполнять
+    allowNull: true, // Поле не обязательное
   },
   quantity: {
     type: DataTypes.INTEGER,
