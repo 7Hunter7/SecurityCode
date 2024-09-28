@@ -4,8 +4,7 @@ import { fileURLToPath } from "url";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
-// import bodyParser from "body-parser"; // Парсинг тела запроса
-import { importCSV } from "./src/data/importCSV.js";
+import importCSV from "./src/data/importCSV.js"; // Импорт функции для импорта данных
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,14 +54,14 @@ const syncDatabase = async () => {
   }
 };
 
-// Запуск синхронизации
-syncDatabase();
-
 // Централизованная обработка ошибок
 app.use(errorHandler);
 
 // Вызов импорта до запуска сервера
 importCSV().then(() => {
+  // Запуск синхронизации базы данных
+  syncDatabase();
+
   // Запуск сервера после завершения импорта
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
