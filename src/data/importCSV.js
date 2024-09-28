@@ -4,6 +4,10 @@ import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
 import { isValidDate } from "../utils/dateUtils.js"; // Импорт функции валидации даты
 
+// Определяем __dirname в стиле ES-модулей
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export async function importCSV() {
   console.log("Запуск функции импорта CSV данных");
 
