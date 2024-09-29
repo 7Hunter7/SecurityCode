@@ -77,17 +77,19 @@ export default {
       return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.getSizItems.map((item) => item.type))];
+      return [...new Set(this.getFilteredSizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
+      return [
+        ...new Set(this.getFilteredSizItems.map((item) => item.voltageClass)),
+      ];
     },
     filteredSIZ() {
       return this.sizItems; // Используем данные напрямую из Vuex
     },
   },
   methods: {
-    ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]), // Экшены для работы с Vuex
+    ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]),
 
     // Обновление данных
     async loadData() {
@@ -147,7 +149,7 @@ export default {
     async deleteSIZ(item) {
       if (confirm(`Вы уверены, что хотите удалить ${item.type}?`)) {
         await this.deleteSIZ(item.id); // Удаляем элемент через Vuex
-        this.handleFilterChange(); // Обновляем фильтрацию после удаления
+        await this.loadData();
       }
     },
   },
