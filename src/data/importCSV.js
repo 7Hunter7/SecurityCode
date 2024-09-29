@@ -20,6 +20,12 @@ export async function importCSV() {
     return;
   }
 
+  // Получаем максимальный updatedAt из базы данных
+  const latestRecord = await SIZItem.findOne({
+    order: [["updatedAt", "DESC"]],
+  });
+  const latestUpdatedAt = latestRecord ? latestRecord.updatedAt : null;
+
   const results = [];
 
   fs.createReadStream(filePath)
@@ -66,7 +72,12 @@ export async function importCSV() {
           const existingItem = await SIZItem.findOne({
             where: { number: row["№ СЗ"] },
           });
-          if (!existingItem) {
+
+          if (
+            !existingItem ||
+            new Date(existingItem.updatedAt) < new Date(latestUpdatedAt)
+            //Проверка последнего обновления данных в базе
+          ) {
             await SIZItem.create({
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
