@@ -64,6 +64,9 @@ export default {
   },
   computed: {
     ...mapGetters(["getSizItems"]),
+    filteredSIZ() {
+      return this.getSizItems;
+    },
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
       return [...new Set(this.getSizItems.map((item) => item.location))];
@@ -80,6 +83,7 @@ export default {
   },
   mounted() {
     this.loadData(); // Загружаем данные при монтировании компонента
+    console.log("Данные из store:", this.getSizItems);
   },
   methods: {
     ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]), // Экшены для работы с Vuex
