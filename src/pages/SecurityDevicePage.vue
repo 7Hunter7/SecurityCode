@@ -187,8 +187,9 @@ export default {
         console.error("filteredSIZ is not an array", this.filteredSIZ);
       }
     },
-    editSIZ(id) {
-      this.$router.push({ name: "Edit Device", query: { id } }); // Переход на страницу редактирования с передачей ID
+    editSIZ(item) {
+      this.$router.push({ name: "Edit Device", query: { id: item.id } });
+      // Переход на страницу редактирования с передачей ID
     },
     // Удаление элемента
     async deleteSIZ(item) {
