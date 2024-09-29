@@ -55,7 +55,6 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import { useRouter } from "vue-router";
 import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -69,33 +68,31 @@ export default {
     };
   },
   computed: {
-    ...mapState(["sizItems"]),
     ...mapGetters(["allSIZItems"]),
     // Получаем данные из хранилища Vuex
 
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      if (!Array.isArray(this.sizItems)) {
-        console.error("sizItems is not an array", this.sizItems);
+      if (!Array.isArray(this.allSIZItems)) {
+        console.error("allSIZItems is not an array", this.allSIZItems);
         return [];
       }
-      return [...new Set(this.sizItems.map((item) => item.location))];
+      return [...new Set(this.allSIZItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.sizItems.map((item) => item.type))];
+      return [...new Set(this.allSIZItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.sizItems.map((item) => item.voltageClass))];
+      return [...new Set(this.allSIZItems.map((item) => item.voltageClass))];
     },
   },
   mounted() {
-    this.loadSIZItems();
-    this.$store.dispatch("loadSIZItems");
+    this.loadallSIZItems();
     // Загружаем данные при монтировании компонента
   },
   watch: {
-    sizItems() {
-      this.filteredSIZ = this.sizItems; // Обновляем данные для отображения при изменении state
+    allSIZItems() {
+      this.filteredSIZ = this.allSIZItems; // Обновляем данные для отображения при изменении state
       this.calculateQuantityByClass();
     },
   },
@@ -106,7 +103,7 @@ export default {
     async loadData() {
       try {
         // Вызов экшена Vuex для загрузки данных
-        await this.$store.dispatch("loadSIZItems");
+        await this.loadSIZItems();
         console.log("Данные успешно обновлены");
       } catch (error) {
         console.error("Ошибка при обновлении данных", error);
@@ -121,43 +118,8 @@ export default {
     },
     // Фильтрация данных
     handleFilterChange(filters) {
-      this.search = filters.search;
-      this.selectedLocation = filters.selectedLocation;
-      this.selectedType = filters.selectedType;
-      this.selectedVoltageClass = filters.selectedVoltageClass;
-      this.testDateFrom = filters.testDateFrom;
-      this.testDateTo = filters.testDateTo;
+      this.$store.dispatch("applyFilters", filters);
 
-      // Применение фильтров к данным
-      // this.filteredSIZ = this.sizItems.filter((item) => {
-      //   const matchesSearch = item.type
-      //     .toLowerCase()
-      //     .includes(this.search.toLowerCase());
-      //   const matchesLocation = this.selectedLocation
-      //     ? item.location === this.selectedLocation
-      //     : true;
-      //   const matchesType = this.selectedType
-      //     ? item.type === this.selectedType
-      //     : true;
-      //   const matchesVoltageClass = this.selectedVoltageClass
-      //     ? item.voltageClass === this.selectedVoltageClass
-      //     : true;
-      //   const matchesDateFrom = this.testDateFrom
-      //     ? new Date(item.testDate) >= new Date(this.testDateFrom)
-      //     : true;
-      //   const matchesDateTo = this.testDateTo
-      //     ? new Date(item.testDate) <= new Date(this.testDateTo)
-      //     : true;
-
-      //   return (
-      //     matchesSearch &&
-      //     matchesLocation &&
-      //     matchesType &&
-      //     matchesVoltageClass &&
-      //     matchesDateFrom &&
-      //     matchesDateTo
-      //   );
-      // });
       this.calculateQuantityByClass(); // Обновление расчета количества СЗ по классам
     },
     calculateQuantityByClass() {
