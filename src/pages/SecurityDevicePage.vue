@@ -55,7 +55,7 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -63,27 +63,28 @@ export default {
     FiltersComponent,
   },
   computed: {
-    ...mapGetters(["getSizItems"]),
-    filteredSIZ() {
-      return this.getSizItems;
-    },
+    ...mapState(["sizItems"]),
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.getSizItems.map((item) => item.location))];
+      return [...new Set(this.sizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.getSizItems.map((item) => item.type))];
+      return [...new Set(this.sizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
+      return [...new Set(this.sizItems.map((item) => item.voltageClass))];
     },
     filteredSIZ() {
-      return this.getSizItems; // Используем данные напрямую из Vuex
+      return this.sizItems; // Используем данные напрямую из Vuex
     },
   },
-  mounted() {
-    this.loadData(); // Загружаем данные при монтировании компонента
-    console.log("Данные из store:", this.getSizItems);
+  watch: {
+    sizItems: {
+      handler() {
+        this.filteredSIZ = this.sizItems; // Обновляем данные для отображения при изменении state
+      },
+      immediate: true, // Сразу же применяем изменения при монтировании
+    },
   },
   methods: {
     ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]), // Экшены для работы с Vuex
