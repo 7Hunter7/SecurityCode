@@ -70,6 +70,9 @@ export default createStore({
     SET_SIZ_ITEMS(state, items) {
       state.sizItems = items;
     },
+    SET_FILTERED_SIZ_ITEMS(state, filteredItems) {
+      state.filteredSIZItems = filteredItems;
+    },
     ADD_SIZ(state, newSIZ) {
       state.sizItems.push(newSIZ); // Добавление нового СИЗ
     },
@@ -97,6 +100,39 @@ export default createStore({
         console.error("Ошибка загрузки данных:", error);
         this.sizItems = []; // Пустой массив в случае ошибки
       }
+    },
+    // Применение фильтров к данным
+    applyFilters({ commit, state }, filters) {
+      const filteredItems = state.sizItems.filter((item) => {
+        const matchesSearch = item.type
+          .toLowerCase()
+          .includes(filters.search.toLowerCase());
+        const matchesLocation = filters.selectedLocation
+          ? item.location === filters.selectedLocation
+          : true;
+        const matchesType = filters.selectedType
+          ? item.type === filters.selectedType
+          : true;
+        const matchesVoltageClass = filters.selectedVoltageClass
+          ? item.voltageClass === filters.selectedVoltageClass
+          : true;
+        const matchesDateFrom = filters.testDateFrom
+          ? new Date(item.testDate) >= new Date(filters.testDateFrom)
+          : true;
+        const matchesDateTo = filters.testDateTo
+          ? new Date(item.testDate) <= new Date(filters.testDateTo)
+          : true;
+
+        return (
+          matchesSearch &&
+          matchesLocation &&
+          matchesType &&
+          matchesVoltageClass &&
+          matchesDateFrom &&
+          matchesDateTo
+        );
+      });
+      commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
     },
     async addSIZ({ commit }, newSIZ) {
       try {

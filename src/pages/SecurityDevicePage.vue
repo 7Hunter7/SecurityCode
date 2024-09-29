@@ -129,35 +129,35 @@ export default {
       this.testDateTo = filters.testDateTo;
 
       // Применение фильтров к данным
-      this.filteredSIZ = this.sizItems.filter((item) => {
-        const matchesSearch = item.type
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-        const matchesLocation = this.selectedLocation
-          ? item.location === this.selectedLocation
-          : true;
-        const matchesType = this.selectedType
-          ? item.type === this.selectedType
-          : true;
-        const matchesVoltageClass = this.selectedVoltageClass
-          ? item.voltageClass === this.selectedVoltageClass
-          : true;
-        const matchesDateFrom = this.testDateFrom
-          ? new Date(item.testDate) >= new Date(this.testDateFrom)
-          : true;
-        const matchesDateTo = this.testDateTo
-          ? new Date(item.testDate) <= new Date(this.testDateTo)
-          : true;
+      // this.filteredSIZ = this.sizItems.filter((item) => {
+      //   const matchesSearch = item.type
+      //     .toLowerCase()
+      //     .includes(this.search.toLowerCase());
+      //   const matchesLocation = this.selectedLocation
+      //     ? item.location === this.selectedLocation
+      //     : true;
+      //   const matchesType = this.selectedType
+      //     ? item.type === this.selectedType
+      //     : true;
+      //   const matchesVoltageClass = this.selectedVoltageClass
+      //     ? item.voltageClass === this.selectedVoltageClass
+      //     : true;
+      //   const matchesDateFrom = this.testDateFrom
+      //     ? new Date(item.testDate) >= new Date(this.testDateFrom)
+      //     : true;
+      //   const matchesDateTo = this.testDateTo
+      //     ? new Date(item.testDate) <= new Date(this.testDateTo)
+      //     : true;
 
-        return (
-          matchesSearch &&
-          matchesLocation &&
-          matchesType &&
-          matchesVoltageClass &&
-          matchesDateFrom &&
-          matchesDateTo
-        );
-      });
+      //   return (
+      //     matchesSearch &&
+      //     matchesLocation &&
+      //     matchesType &&
+      //     matchesVoltageClass &&
+      //     matchesDateFrom &&
+      //     matchesDateTo
+      //   );
+      // });
       this.calculateQuantityByClass(); // Обновление расчета количества СЗ по классам
     },
     calculateQuantityByClass() {
