@@ -66,15 +66,14 @@ export default {
     this.loadData(); // Загружаем данные при монтировании компонента
   },
   computed: {
-    ...mapGetters(["getSizItems", "getFilteredSizItems"]),
-    filteredSIZItems() {
-      return this.getFilteredSizItems.length > 0
-        ? this.getFilteredSizItems
-        : this.getSizItems;
-    },
+    // Используем только отфильтрованные данные для всех списков
+    ...mapGetters(["getFilteredSizItems"]),
+
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.getSizItems.map((item) => item.location))];
+      return [
+        ...new Set(this.getFilteredSizItems.map((item) => item.location)),
+      ];
     },
     uniqueTypes() {
       return [...new Set(this.getFilteredSizItems.map((item) => item.type))];
@@ -122,7 +121,7 @@ export default {
     calculateQuantityByClass() {
       const quantityByClass = {};
 
-      this.filteredSIZ.forEach((item) => {
+      this.getFilteredSizItems.forEach((item) => {
         const key = `${item.type}_${item.voltageClass}_${item.location}`;
         if (!quantityByClass[key]) {
           quantityByClass[key] = 0;
@@ -130,8 +129,7 @@ export default {
         quantityByClass[key] += parseInt(item.quantity, 10);
       });
 
-      // Обновляем данные с расчетом количества по классам
-      this.filteredSIZ = this.filteredSIZ.map((item) => {
+      return this.getFilteredSizItems.map((item) => {
         const key = `${item.type}_${item.voltageClass}_${item.location}`;
         return {
           ...item,
