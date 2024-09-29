@@ -89,7 +89,8 @@ export default createStore({
   actions: {
     async loadSIZItems({ commit }) {
       try {
-        const response = await axios.get("/api/siz-items"); // Запрос на сервер для получения данных
+        const response = await axios.get("http://localhost:3000/api/siz-items");
+        // Запрос на сервер для получения данных
         if (Array.isArray(response.data)) {
           commit("SET_SIZ_ITEMS", response.data); // Сохраняем данные в state
         } else {
