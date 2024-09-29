@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import cors from "cors";
 import { fileURLToPath } from "url";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
@@ -10,7 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Добавлена поддержка CORS
-const cors = require("cors");
 app.use(cors());
 
 // Middleware для парсинга JSON
