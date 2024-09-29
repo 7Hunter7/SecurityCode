@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in filteredSIZ" :key="item.id">
+          <tr v-for="item in filteredSIZItems" :key="item.id">
             <td>{{ item.location }}</td>
             <td>{{ item.type }}</td>
             <td>{{ item.voltageClass }}</td>
@@ -62,28 +62,25 @@ export default {
   components: {
     FiltersComponent,
   },
+  mounted() {
+    this.loadData(); // Загружаем данные при монтировании компонента
+  },
   computed: {
-    ...mapState(["sizItems"]),
+    ...mapState(["filteredSIZItems"]),
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.sizItems.map((item) => item.location))];
+      return [...new Set(this.filteredSIZItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.sizItems.map((item) => item.type))];
+      return [...new Set(this.filteredSIZItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.sizItems.map((item) => item.voltageClass))];
+      return [
+        ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
+      ];
     },
     filteredSIZ() {
       return this.sizItems; // Используем данные напрямую из Vuex
-    },
-  },
-  watch: {
-    sizItems: {
-      handler() {
-        this.filteredSIZ = this.sizItems; // Обновляем данные для отображения при изменении state
-      },
-      immediate: true, // Сразу же применяем изменения при монтировании
     },
   },
   methods: {
