@@ -10,8 +10,13 @@ import { importCSV } from "./src/data/importCSV.js"; // Импорт функц�
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Добавлена поддержка CORS
-app.use(cors());
+// Настройка CORS для определённых доменов
+const corsOptions = {
+  origin: "http://localhost:5173", // Разрешить запросы только с этого домена
+  methods: ["GET", "POST", "PUT", "DELETE"], // Ограничить методы запросов
+  allowedHeaders: ["Content-Type", "Authorization"], // Разрешённые заголовки
+};
+app.use(cors(corsOptions));
 
 // Middleware для парсинга JSON
 app.use(express.json());
