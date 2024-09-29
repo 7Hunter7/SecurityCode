@@ -9,6 +9,10 @@ import { importCSV } from "./src/data/importCSV.js"; // Импорт функц�
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Добавлена поддержка CORS
+const cors = require("cors");
+app.use(cors());
+
 // Middleware для парсинга JSON
 app.use(express.json());
 
