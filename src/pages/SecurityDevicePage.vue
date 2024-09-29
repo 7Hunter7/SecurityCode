@@ -8,45 +8,48 @@
       :voltageClasses="uniqueVoltageClasses"
       @filterChanged="handleFilterChange"
     />
-    <button @click="loadData">Обновить данные</button>
-    <!-- Таблица СИЗ -->
-    <table>
-      <thead>
-        <tr>
-          <th>Местонахождение</th>
-          <th>Вид СЗ</th>
-          <th>Класс напряжения (кВ)</th>
-          <th>Тип СЗ</th>
-          <th>№ СЗ</th>
-          <th>Дата испытания</th>
-          <th>Дата следующего испытания</th>
-          <th>Дата последнего осмотра</th>
-          <th>Кол-во</th>
-          <th>Кол-во по классам</th>
-          <th>Примечания</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in filteredSIZ" :key="item.id">
-          <td>{{ item.location }}</td>
-          <td>{{ item.type }}</td>
-          <td>{{ item.voltageClass }}</td>
-          <td>{{ item.szType }}</td>
-          <td>{{ item.number }}</td>
-          <td>{{ formatDate(item.testDate) }}</td>
-          <td>{{ formatDate(item.nextTestDate) }}</td>
-          <td>{{ formatDate(item.lastInspectDate) }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.quantityByClass }}</td>
-          <td>{{ item.note }}</td>
-          <td>
-            <button @click="editSIZ(item)">Редактировать</button>
-            <button @click="deleteSIZ(item)">Удалить</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div style="overflow-y: scroll; max-height: 100vh">
+      <button @click="loadData">Обновить данные</button>
+      <!-- Таблица СИЗ -->
+      <table>
+        <thead>
+          <tr>
+            <th>Местонахождение</th>
+            <th>Вид СЗ</th>
+            <th>Класс напряжения (кВ)</th>
+            <th>Тип СЗ</th>
+            <th>№ СЗ</th>
+            <th>Дата испытания</th>
+            <th>Дата следующего испытания</th>
+            <th>Дата последнего осмотра</th>
+            <th>Кол-во</th>
+            <th>Кол-во по классам</th>
+            <th>Примечания</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in filteredSIZ" :key="item.id">
+            <td>{{ item.location }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.voltageClass }}</td>
+            <td>{{ item.szType }}</td>
+            <td>{{ item.number }}</td>
+            <td>{{ formatDate(item.testDate) }}</td>
+            <td>{{ formatDate(item.nextTestDate) }}</td>
+            <td>{{ formatDate(item.lastInspectDate) }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.quantityByClass }}</td>
+            <td>{{ item.note }}</td>
+            <td>
+              <button @click="editSIZ(item)">Редактировать</button>
+              <button @click="deleteSIZ(item)">Удалить</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button @click="loadData">Обновить данные</button>
+    </div>
   </div>
 </template>
 
