@@ -55,7 +55,7 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import { mapState, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
@@ -66,18 +66,21 @@ export default {
     this.loadData(); // Загружаем данные при монтировании компонента
   },
   computed: {
-    ...mapState(["filteredSIZItems"]),
+    ...mapGetters(["getSizItems", "getFilteredSizItems"]),
+    filteredSIZItems() {
+      return this.getFilteredSizItems.length > 0
+        ? this.getFilteredSizItems
+        : this.getSizItems;
+    },
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.filteredSIZItems.map((item) => item.location))];
+      return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.filteredSIZItems.map((item) => item.type))];
+      return [...new Set(this.getSizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [
-        ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
-      ];
+      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
     },
     filteredSIZ() {
       return this.sizItems; // Используем данные напрямую из Vuex
