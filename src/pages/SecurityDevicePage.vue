@@ -66,14 +66,15 @@ export default {
     this.loadData(); // Загружаем данные при монтировании компонента
   },
   computed: {
-    // Используем только отфильтрованные данные для всех списков
-    ...mapGetters(["getFilteredSizItems"]),
-
+    ...mapGetters(["getSizItems", "getFilteredSizItems"]),
+    filteredSIZItems() {
+      return this.getFilteredSizItems.length > 0
+        ? this.getFilteredSizItems
+        : this.getSizItems;
+    },
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [
-        ...new Set(this.getFilteredSizItems.map((item) => item.location)),
-      ];
+      return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
       return [...new Set(this.getFilteredSizItems.map((item) => item.type))];
