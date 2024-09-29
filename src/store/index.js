@@ -68,7 +68,11 @@ export default createStore({
   mutations: {
     // методы для изменения состояния
     SET_SIZ_ITEMS(state, items) {
-      state.sizItems = items;
+      if (Array.isArray(items)) {
+        state.sizItems = items;
+      } else {
+        console.error("Получены некорректные данные, ожидался массив");
+      }
     },
     SET_FILTERED_SIZ_ITEMS(state, filteredItems) {
       state.filteredSIZItems = filteredItems;
