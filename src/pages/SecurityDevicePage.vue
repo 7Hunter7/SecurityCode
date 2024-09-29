@@ -8,6 +8,7 @@
       :voltageClasses="uniqueVoltageClasses"
       @filterChanged="handleFilterChange"
     />
+    <button @click="loadData">Обновить данные</button>
     <!-- Таблица СИЗ -->
     <table>
       <thead>
@@ -97,6 +98,17 @@ export default {
   },
   methods: {
     ...mapActions(["loadSIZItems", "deleteSIZ"]), // Экшены для загрузки и удаления данных
+
+    //Обновление данныx
+    async loadData() {
+      try {
+        // Вызов экшена Vuex для загрузки данных
+        await this.$store.dispatch("loadSIZItems");
+        console.log("Данные успешно обновлены");
+      } catch (error) {
+        console.error("Ошибка при обновлении данных", error);
+      }
+    },
 
     // Форматирование данных перед отображением
     formatDate(date) {
