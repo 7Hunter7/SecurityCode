@@ -4,6 +4,7 @@ import axios from "axios";
 export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
+    filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
     locations: [
       "new",
       "ТП 0,4/6-10кВ",
@@ -109,9 +110,9 @@ export default createStore({
     // Применение фильтров к данным
     applyFilters({ commit, state }, filters) {
       const filteredItems = state.sizItems.filter((item) => {
-        const matchesSearch = item.type
-          .toLowerCase()
-          .includes(filters.search.toLowerCase());
+        const matchesSearch = filters.search
+          ? item.type.toLowerCase().includes(filters.search.toLowerCase())
+          : true;
         const matchesLocation = filters.selectedLocation
           ? item.location === filters.selectedLocation
           : true;
