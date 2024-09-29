@@ -172,9 +172,6 @@ export default createStore({
   },
   getters: {
     // методы для чтения состояния
-    allSIZItems(state) {
-      return state.sizItems;
-    },
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
     getVoltageClasses: (state) => state.voltageClasses,
