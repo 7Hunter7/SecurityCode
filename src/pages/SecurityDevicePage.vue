@@ -55,112 +55,90 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "SecurityDevicePage",
   components: {
     FiltersComponent,
   },
-  data() {
-    return {
-      filteredSIZ: [], // Для фильтрованных данных
-    };
-  },
   computed: {
-    ...mapGetters(["allSIZItems"]),
-    // Получаем данные из хранилища Vuex
-
+    ...mapGetters(["getSizItems"]),
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      if (!Array.isArray(this.allSIZItems)) {
-        console.error("allSIZItems is not an array", this.allSIZItems);
-        return [];
-      }
-      return [...new Set(this.allSIZItems.map((item) => item.location))];
+      return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.allSIZItems.map((item) => item.type))];
+      return [...new Set(this.getSizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.allSIZItems.map((item) => item.voltageClass))];
+      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
+    },
+    filteredSIZ() {
+      return this.getSizItems; // Используем данные напрямую из Vuex
     },
   },
   mounted() {
-    this.loadallSIZItems();
-    // Загружаем данные при монтировании компонента
-  },
-  watch: {
-    allSIZItems() {
-      this.filteredSIZ = this.allSIZItems; // Обновляем данные для отображения при изменении state
-      this.calculateQuantityByClass();
-    },
+    this.loadData(); // Загружаем данные при монтировании компонента
   },
   methods: {
-    ...mapActions(["loadSIZItems", "deleteSIZ"]), // Экшены для загрузки и удаления данных
+    ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]), // Экшены для работы с Vuex
 
-    //Обновление данныx
+    // Обновление данных
     async loadData() {
-      if (!this.allSIZItems.length) {
-        try {
-          await this.loadSIZItems();
-          console.log("Данные успешно обновлены");
-        } catch (error) {
-          console.error("Ошибка при обновлении данных", error);
-        }
-      } else {
-        console.log("Данные уже загружены, обновление не требуется");
+      try {
+        await this.loadSIZItems(); // Загружаем данные через Vuex
+        console.log("Данные успешно обновлены");
+      } catch (error) {
+        console.error("Ошибка при обновлении данных", error);
       }
     },
 
-    // Форматирование данных перед отображением
+    // Форматирование дат
     formatDate(date) {
       if (!date) return "";
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Date(date).toLocaleDateString("ru-RU", options);
     },
+
     // Фильтрация данных
     handleFilterChange(filters) {
-      this.$store.dispatch("applyFilters", filters);
-
-      this.calculateQuantityByClass(); // Обновление расчета количества СЗ по классам
+      this.applyFilters(filters); // Отправляем фильтры в Vuex
+      this.calculateQuantityByClass(); // Обновляем расчет количества по классам
     },
+
+    // Подсчет количества по классам напряжения и местонахождению
     calculateQuantityByClass() {
-      if (Array.isArray(this.filteredSIZ)) {
-        const quantityByClass = {};
+      const quantityByClass = {};
 
-        // Подсчет количества по классам напряжения и местонахождению
-        console.log("filteredSIZ:", this.filteredSIZ);
+      this.filteredSIZ.forEach((item) => {
+        const key = `${item.type}_${item.voltageClass}_${item.location}`;
+        if (!quantityByClass[key]) {
+          quantityByClass[key] = 0;
+        }
+        quantityByClass[key] += parseInt(item.quantity, 10);
+      });
 
-        this.filteredSIZ.forEach((item) => {
-          const key = `${item.type}_${item.voltageClass}_${item.location}`;
-          if (!quantityByClass[key]) {
-            quantityByClass[key] = 0;
-          }
-          quantityByClass[key] += parseInt(item.quantity, 10);
-        });
-
-        // Применение данных обратно в объект filteredSIZ
-        this.filteredSIZ = this.filteredSIZ.map((item) => {
-          const key = `${item.type}_${item.voltageClass}_${item.location}`;
-          return {
-            ...item,
-            quantityByClass: quantityByClass[key],
-          };
-        });
-      } else {
-        console.error("filteredSIZ is not an array", this.filteredSIZ);
-      }
+      // Обновляем данные с расчетом количества по классам
+      this.filteredSIZ = this.filteredSIZ.map((item) => {
+        const key = `${item.type}_${item.voltageClass}_${item.location}`;
+        return {
+          ...item,
+          quantityByClass: quantityByClass[key],
+        };
+      });
     },
+
+    // Редактирование элемента
     editSIZ(item) {
-      this.$router.push({ name: "Edit Device", query: { id: item.id } });
-      // Переход на страницу редактирования с передачей ID
+      this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
     },
+
     // Удаление элемента
     async deleteSIZ(item) {
       if (confirm(`Вы уверены, что хотите удалить ${item.type}?`)) {
-        await this.deleteSIZ(item.id);
-        this.handleFilterChange(); // Обновляем фильтрованные данные
+        await this.deleteSIZ(item.id); // Удаляем элемент через Vuex
+        this.handleFilterChange(); // Обновляем фильтрацию после удаления
       }
     },
   },
