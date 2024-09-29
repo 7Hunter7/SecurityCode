@@ -101,12 +101,15 @@ export default {
 
     //Обновление данныx
     async loadData() {
-      try {
-        // Вызов экшена Vuex для загрузки данных
-        await this.loadSIZItems();
-        console.log("Данные успешно обновлены");
-      } catch (error) {
-        console.error("Ошибка при обновлении данных", error);
+      if (!this.allSIZItems.length) {
+        try {
+          await this.loadSIZItems();
+          console.log("Данные успешно обновлены");
+        } catch (error) {
+          console.error("Ошибка при обновлении данных", error);
+        }
+      } else {
+        console.log("Данные уже загружены, обновление не требуется");
       }
     },
 
