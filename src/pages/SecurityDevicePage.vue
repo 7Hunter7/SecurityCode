@@ -86,11 +86,15 @@ export default {
 
     // Обновление данных
     async loadData() {
-      try {
-        await this.loadSIZItems(); // Загружаем данные через Vuex
-        console.log("Данные успешно обновлены");
-      } catch (error) {
-        console.error("Ошибка при обновлении данных", error);
+      if (!this.getSizItems.length) {
+        try {
+          await this.loadSIZItems(); // Загружаем данные через Vuex
+          console.log("Данные успешно обновлены");
+        } catch (error) {
+          console.error("Ошибка при обновлении данных", error);
+        }
+      } else {
+        console.log("Данные уже загружены, обновление не требуется");
       }
     },
 
