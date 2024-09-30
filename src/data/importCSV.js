@@ -82,7 +82,7 @@ export async function importCSV() {
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
               voltageClass: row["Класс напряжения СЗ"],
-              szType: row["Тип СЗ"] || "", // Если тип СЗ отсутствует, использовать пустую строку
+              szType: row["Тип СЗ"] || "-", // Если тип СЗ отсутствует, использовать символ "-"
               number: row["№ СЗ"],
               testDate: testDate,
               nextTestDate: nextTestDate,
