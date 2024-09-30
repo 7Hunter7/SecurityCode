@@ -109,8 +109,38 @@ export default {
 
     // Фильтрация данных
     handleFilterChange(filters) {
-      this.applyFilters(filters); // Отправляем фильтры в Vuex
-      this.calculateQuantityByClass(); // Обновляем расчет количества по классам
+      let filteredItems = [...this.getSizItems];
+
+      // Применение каждого фильтра последовательно
+      if (filters.selectedLocation) {
+        filteredItems = filteredItems.filter(
+          (item) => item.location === filters.selectedLocation
+        );
+      }
+      if (filters.selectedType) {
+        filteredItems = filteredItems.filter(
+          (item) => item.type === filters.selectedType
+        );
+      }
+      if (filters.selectedVoltageClass) {
+        filteredItems = filteredItems.filter(
+          (item) => item.voltageClass === filters.selectedVoltageClass
+        );
+      }
+      // Применение фильтра по дате
+      if (filters.testDateFrom) {
+        filteredItems = filteredItems.filter(
+          (item) => new Date(item.testDate) >= new Date(filters.testDateFrom)
+        );
+      }
+      if (filters.testDateTo) {
+        filteredItems = filteredItems.filter(
+          (item) => new Date(item.testDate) <= new Date(filters.testDateTo)
+        );
+      }
+      // Применение фильтров в store через мутацию
+      this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
+      this.calculateQuantityByClass(); // Пересчитываем количество
     },
 
     // Подсчет количества по классам напряжения и местонахождению
