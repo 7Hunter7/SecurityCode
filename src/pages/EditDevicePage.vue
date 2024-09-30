@@ -33,6 +33,7 @@
         label="Дата испытания"
         type="date"
         v-model="siz.testDate"
+        :newValue.sync="newTestDate"
         @change="calculateNextTestDate"
         required
       />
@@ -40,16 +41,18 @@
         label="Дата следующего испытания"
         type="date"
         v-model="siz.nextTestDate"
+        :newValue.sync="newNextTestDate"
         required
       />
       <InputField
         label="Дата последнего осмотра"
         type="date"
         v-model="siz.lastInspectDate"
+        :newValue.sync="newLastInspectDate"
       />
       <InputField
         label="Количество"
-        type="number"
+        type="text"
         v-model="siz.quantity"
         :newValue.sync="newQuantity"
         min="1"
@@ -102,6 +105,10 @@ export default {
       newType: "",
       newVoltageClass: "",
       newSzType: "",
+      newTestDate: "",
+      newNextTestDate: "",
+      newLastInspectDate: "",
+      newQuantity: "",
       newNote: "",
     };
   },
@@ -115,6 +122,7 @@ export default {
       );
       if (existingSIZ) {
         this.siz = { ...existingSIZ }; // Заполняем форму существующими данными
+        this.siz.number = String(existingSIZ.number); // Приведение количества к строке
         this.siz.quantity = String(existingSIZ.quantity); // Приведение количества к строке
       } else {
         console.warn("Не удалось найти СИЗ с таким ID");
@@ -123,15 +131,24 @@ export default {
   },
   methods: {
     submitForm() {
-      ["location", "type", "voltageClass", "szType", "note"].forEach(
-        (field) => {
-          const newValue =
-            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
-          if (newValue) {
-            this.siz[field] = newValue;
-          }
+      [
+        "location",
+        "type",
+        "voltageClass",
+        "szType",
+        "number",
+        "testDate",
+        "nextTestDate",
+        "lastInspectDate",
+        "quantity",
+        "note",
+      ].forEach((field) => {
+        const newValue =
+          this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+        if (newValue) {
+          this.siz[field] = newValue;
         }
-      );
+      });
 
       this.$emit("updateSIZ", this.siz);
       this.$router.push("/security-device");
