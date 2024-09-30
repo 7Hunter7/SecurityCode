@@ -108,12 +108,14 @@ export default {
     ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
   },
   mounted() {
-    if (this.$route.params.id) {
+    if (this.$route.query.id) {
       const existingSIZ = this.$store.getters.getSizItems.find(
-        (item) => item.id === +this.$route.params.id
+        (item) => item.id === +this.$route.query.id
       );
       if (existingSIZ) {
-        this.siz = { ...existingSIZ };
+        this.siz = { ...existingSIZ }; // Заполняем форму существующими данными
+      } else {
+        console.warn("Не удалось найти СИЗ с таким ID");
       }
     }
   },
