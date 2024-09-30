@@ -27,7 +27,6 @@ const SIZItem = sequelize.define("SIZItem", {
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true, // Уникальное значение
   },
   testDate: {
     type: DataTypes.DATE,
