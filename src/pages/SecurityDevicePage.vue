@@ -43,6 +43,16 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <!-- Строка для подсчета общего количества СИЗ -->
+        <tr>
+          <td colspan="8" style="text-align: right"><strong>Всего:</strong></td>
+          <td>
+            <strong>{{ totalQuantity }}</strong>
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -77,6 +87,12 @@ export default {
       return [
         ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
       ];
+    },
+    // Подсчет общего количества СИЗ по колонке "Кол-во"
+    totalQuantity() {
+      return this.filteredSIZItems.reduce((total, item) => {
+        return total + parseInt(item.quantity, 10);
+      }, 0);
     },
   },
   methods: {
