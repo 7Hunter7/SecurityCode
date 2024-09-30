@@ -51,6 +51,7 @@
         label="Количество"
         type="number"
         v-model="siz.quantity"
+        :newValue.sync="newQuantity"
         min="1"
         required
       />
@@ -94,7 +95,7 @@ export default {
         testDate: "",
         nextTestDate: "",
         lastInspectDate: "",
-        quantity: 1,
+        quantity: "1",
         note: "",
       },
       newLocation: "",
@@ -114,6 +115,7 @@ export default {
       );
       if (existingSIZ) {
         this.siz = { ...existingSIZ }; // Заполняем форму существующими данными
+        this.siz.quantity = String(existingSIZ.quantity); // Приведение количества к строке
       } else {
         console.warn("Не удалось найти СИЗ с таким ID");
       }
