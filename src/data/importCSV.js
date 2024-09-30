@@ -61,15 +61,18 @@ export async function importCSV() {
           : null;
 
         try {
-          const existingItem = await SIZItem.findOne({
-            where: { number: row["№ СЗ"] },
+          const existingSIZ = await SIZItem.findOne({
+            where: {
+              number: row["№ СЗ"],
+              type: row["Вид СЗ"],
+              location: row["Местонахождение"],
+            },
           });
 
-          if (
-            !existingItem ||
-            new Date(existingItem.updatedAt) < new Date(latestUpdatedAt)
+          if (!existingSIZ) {
+            new Date(existingItem.updatedAt) < new Date(latestUpdatedAt);
             //Проверка последнего обновления данных в базе
-          ) {
+
             await SIZItem.create({
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
