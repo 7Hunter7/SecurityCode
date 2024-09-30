@@ -1,5 +1,6 @@
 <template>
   <div class="filters">
+    <!-- Поле для поиска -->
     <input
       v-model="search"
       placeholder="Поиск по СИЗ..."
@@ -72,16 +73,36 @@ export default {
       testDateTo: "",
     };
   },
-
+  watch: {
+    // Наблюдатель для любых изменений фильтров
+    search() {
+      this.updateFilters();
+    },
+    selectedLocation() {
+      this.updateFilters();
+    },
+    selectedType() {
+      this.updateFilters();
+    },
+    selectedVoltageClass() {
+      this.updateFilters();
+    },
+    testDateFrom() {
+      this.updateFilters();
+    },
+    testDateTo() {
+      this.updateFilters();
+    },
+  },
   methods: {
     updateFilters() {
       this.$emit("filterChanged", {
-        search: this.search,
-        selectedLocation: this.selectedLocation,
-        selectedType: this.selectedType,
-        selectedVoltageClass: this.selectedVoltageClass,
-        testDateFrom: this.testDateFrom,
-        testDateTo: this.testDateTo,
+        search: this.search || "",
+        selectedLocation: this.selectedLocation || "",
+        selectedType: this.selectedType || "",
+        selectedVoltageClass: this.selectedVoltageClass || "",
+        testDateFrom: this.testDateFrom || null,
+        testDateTo: this.testDateTo || null,
       });
     },
   },
