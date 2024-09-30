@@ -22,12 +22,12 @@ const SIZItem = sequelize.define("SIZItem", {
   szType: {
     type: DataTypes.STRING,
     allowNull: true, // Поле не обязательное
-    defaultValue: "", // Cтрока по умолчанию
+    defaultValue: "-", // Cтрока по умолчанию
   },
   number: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true, // Уникальное значение
+    unique: false, // Уникальное значение
   },
   testDate: {
     type: DataTypes.DATE,
