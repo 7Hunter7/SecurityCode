@@ -77,9 +77,9 @@ export async function importCSV() {
               voltageClass: row["Класс напряжения СЗ"],
               szType: row["Тип СЗ"] || "—", // Если тип СЗ отсутствует, использовать символ "-"
               number: row["№ СЗ"],
-              testDate: testDate ? testDate : "—",
-              nextTestDate: nextTestDate ? nextTestDate : "—",
-              lastInspectDate: lastInspectDate ? lastInspectDate : "—",
+              testDate: testDate,
+              nextTestDate: nextTestDate,
+              lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
               note: row["Примечание"] || "—",
             });
