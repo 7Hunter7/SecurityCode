@@ -60,14 +60,6 @@ export async function importCSV() {
             : formatDate(row["Дата последнего осмотра"])
           : null;
 
-        // Если даты испытания и следующего испытания пусты, пропустить строку
-        if (!testDate || !nextTestDate) {
-          console.log(
-            `Ошибка в строке с номером СЗ ${row["№ СЗ"]}: некорректные или отсутствующие даты испытания или следующего испытания.`
-          );
-          continue;
-        }
-
         try {
           const existingItem = await SIZItem.findOne({
             where: { number: row["№ СЗ"] },
