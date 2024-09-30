@@ -161,28 +161,6 @@ export default {
       }
       // Применение фильтров в store через мутацию
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
-      this.calculateQuantityByClass();
-    },
-
-    // Подсчет количества по классам напряжения и местонахождению
-    calculateQuantityByClass() {
-      const quantityByClass = {};
-
-      this.getFilteredSizItems.forEach((item) => {
-        const key = `${item.type}_${item.voltageClass}_${item.location}`;
-        if (!quantityByClass[key]) {
-          quantityByClass[key] = 0;
-        }
-        quantityByClass[key] += parseInt(item.quantity, 10);
-      });
-
-      return this.getFilteredSizItems.map((item) => {
-        const key = `${item.type}_${item.voltageClass}_${item.location}`;
-        return {
-          ...item,
-          quantityByClass: quantityByClass[key],
-        };
-      });
     },
 
     // Редактирование элемента
