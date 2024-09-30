@@ -48,17 +48,17 @@ export async function importCSV() {
           ? isValidDate(row["Дата испытания"])
             ? new Date(row["Дата испытания"])
             : formatDate(row["Дата испытания"])
-          : null;
+          : "—";
         const nextTestDate = row["Дата следующего испытания"]
           ? isValidDate(row["Дата следующего испытания"])
             ? new Date(row["Дата следующего испытания"])
             : formatDate(row["Дата следующего испытания"])
-          : null;
+          : "—";
         const lastInspectDate = row["Дата последнего осмотра"]
           ? isValidDate(row["Дата последнего осмотра"])
             ? new Date(row["Дата последнего осмотра"])
             : formatDate(row["Дата последнего осмотра"])
-          : null;
+          : "—";
 
         try {
           const existingSIZ = await SIZItem.findOne({
@@ -77,9 +77,9 @@ export async function importCSV() {
               voltageClass: row["Класс напряжения СЗ"],
               szType: row["Тип СЗ"] || "—", // Если тип СЗ отсутствует, использовать символ "-"
               number: row["№ СЗ"],
-              testDate: testDate || "—",
-              nextTestDate: nextTestDate || "—",
-              lastInspectDate: lastInspectDate || "—",
+              testDate: testDate,
+              nextTestDate: nextTestDate,
+              lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
               note: row["Примечание"] || "—",
             });
