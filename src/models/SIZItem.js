@@ -46,12 +46,12 @@ const SIZItem = sequelize.define("SIZItem", {
   quantity: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 1, // Устанавливаем значение по умолчанию
+    defaultValue: 1, // Значение по умолчанию
   },
   note: {
     type: DataTypes.STRING,
-    allowNull: true, // Поле не обязательное
-    defaultValue: "—", // Пустая строка по умолчанию
+    allowNull: true,
+    defaultValue: "—",
   },
 });
 
