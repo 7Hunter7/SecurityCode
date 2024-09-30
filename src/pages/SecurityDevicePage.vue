@@ -77,15 +77,10 @@ export default {
       return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.getFilteredSizItems.map((item) => item.type))];
+      return [...new Set(this.getSizItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [
-        ...new Set(this.getFilteredSizItems.map((item) => item.voltageClass)),
-      ];
-    },
-    filteredSIZ() {
-      return this.sizItems; // Используем данные напрямую из Vuex
+      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
     },
   },
   methods: {
