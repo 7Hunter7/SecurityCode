@@ -22,24 +22,27 @@ const SIZItem = sequelize.define("SIZItem", {
   szType: {
     type: DataTypes.STRING,
     allowNull: true, // Поле не обязательное
-    defaultValue: "-", // Cтрока по умолчанию
+    defaultValue: "—", // Cтрока по умолчанию
   },
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: false, // Уникальное значение
+    unique: true, // Уникальное значение
   },
   testDate: {
     type: DataTypes.DATE,
-    allowNull: true, // Поле не обязательное
+    allowNull: true,
+    defaultValue: "—",
   },
   nextTestDate: {
     type: DataTypes.DATE,
-    allowNull: true, // Поле не обязательное
+    allowNull: true,
+    defaultValue: "—",
   },
   lastInspectDate: {
     type: DataTypes.DATE,
-    allowNull: true, // Поле не обязательное
+    allowNull: true,
+    defaultValue: "—",
   },
   quantity: {
     type: DataTypes.INTEGER,
@@ -49,7 +52,7 @@ const SIZItem = sequelize.define("SIZItem", {
   note: {
     type: DataTypes.STRING,
     allowNull: true, // Поле не обязательное
-    defaultValue: "", // Пустая строка по умолчанию
+    defaultValue: "—", // Пустая строка по умолчанию
   },
 });
 
