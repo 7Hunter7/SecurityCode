@@ -52,7 +52,7 @@
       />
       <InputField
         label="Количество"
-        type="text"
+        type="number"
         v-model="siz.quantity"
         :newValue.sync="newQuantity"
         min="1"
@@ -80,7 +80,7 @@ import {
   getLastInspectDate,
   getAutomaticNote,
 } from "../utils/dateUtils.js";
-import { mapState } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "EditDevicePage",
@@ -114,22 +114,35 @@ export default {
   },
   computed: {
     ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
+    ...mapGetters(["getSizItems"]),
   },
   mounted() {
-    if (this.$route.query.id) {
-      const existingSIZ = this.$store.getters.getSizItems.find(
-        (item) => item.id === +this.$route.query.id
-      );
-      if (existingSIZ) {
-        this.siz = { ...existingSIZ }; // Заполняем форму существующими данными
-        this.siz.number = String(existingSIZ.number); // Приведение количества к строке
-        this.siz.quantity = String(existingSIZ.quantity); // Приведение количества к строке
-      } else {
-        console.warn("Не удалось найти СИЗ с таким ID");
-      }
-    }
+    this.loadData(); // Загрузка данных при монтировании компонента
   },
   methods: {
+    ...mapActions(["loadSIZItems"]),
+    loadData() {
+      // Проверка наличия данных в store
+      if (!this.getSizItems.length) {
+        this.loadSIZItems().then(() => this.fillFormData());
+      } else {
+        this.fillFormData();
+      }
+    },
+    fillFormData() {
+      if (this.$route.query.id) {
+        const existingSIZ = this.getSizItems.find(
+          (item) => item.id === +this.$route.query.id
+        );
+        if (existingSIZ) {
+          this.siz = { ...existingSIZ };
+          this.siz.number = String(existingSIZ.number);
+          this.siz.quantity = String(existingSIZ.quantity);
+        } else {
+          console.warn("Не удалось найти СИЗ с таким ID");
+        }
+      }
+    },
     submitForm() {
       [
         "location",
