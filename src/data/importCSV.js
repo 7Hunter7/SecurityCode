@@ -74,13 +74,13 @@ export async function importCSV() {
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
               voltageClass: row["Класс напряжения СЗ"],
-              szType: row["Тип СЗ"] || "-", // Если тип СЗ отсутствует, использовать символ "-"
+              szType: row["Тип СЗ"] || "—", // Если тип СЗ отсутствует, использовать символ "-"
               number: row["№ СЗ"],
-              testDate: testDate,
-              nextTestDate: nextTestDate,
-              lastInspectDate: lastInspectDate || null, // Если дата осмотра отсутствует, использовать null
+              testDate: testDate || "—",
+              nextTestDate: nextTestDate || "—",
+              lastInspectDate: lastInspectDate || "—",
               quantity: parseInt(row["Количество"], 10),
-              note: row["Примечание"] || "", // Если примечание отсутствует, использовать пустую строку
+              note: row["Примечание"] || "—",
             });
             console.log("Данные успешно сохранены:", row);
           } else {
