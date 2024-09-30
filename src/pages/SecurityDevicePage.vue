@@ -111,30 +111,39 @@ export default {
 
     // Фильтрация данных
     handleFilterChange(filters) {
-      let filteredItems = [...this.getSizItems];
-
-      // Применение каждого фильтра последовательно
+      let filteredItems = [...this.getSizItems]; //Полный набор данных
+      // Фильтр по строке поиска
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        filteredItems = filteredItems.filter((item) =>
+          item.type.toLowerCase().includes(searchTerm)
+        );
+      }
+      // Фильтр по местоположению
       if (filters.selectedLocation) {
         filteredItems = filteredItems.filter(
           (item) => item.location === filters.selectedLocation
         );
       }
+      // Фильтр по типу СЗ
       if (filters.selectedType) {
         filteredItems = filteredItems.filter(
           (item) => item.type === filters.selectedType
         );
       }
+      // Фильтр по классу напряжения
       if (filters.selectedVoltageClass) {
         filteredItems = filteredItems.filter(
           (item) => item.voltageClass === filters.selectedVoltageClass
         );
       }
-      // Применение фильтра по дате
+      // Фильтр по дате испытания "от"
       if (filters.testDateFrom) {
         filteredItems = filteredItems.filter(
           (item) => new Date(item.testDate) >= new Date(filters.testDateFrom)
         );
       }
+      // Фильтр по дате испытания "до"
       if (filters.testDateTo) {
         filteredItems = filteredItems.filter(
           (item) => new Date(item.testDate) <= new Date(filters.testDateTo)
@@ -142,7 +151,7 @@ export default {
       }
       // Применение фильтров в store через мутацию
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
-      this.calculateQuantityByClass(); // Пересчитываем количество
+      this.calculateQuantityByClass();
     },
 
     // Подсчет количества по классам напряжения и местонахождению
