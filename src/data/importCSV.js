@@ -70,7 +70,7 @@ export async function importCSV() {
           });
 
           if (!existingSIZ) {
-            new Date(existingItem.updatedAt) < new Date(latestUpdatedAt);
+            new Date(existingSIZ.updatedAt) < new Date(latestUpdatedAt);
             //Проверка последнего обновления данных в базе
 
             await SIZItem.create({
