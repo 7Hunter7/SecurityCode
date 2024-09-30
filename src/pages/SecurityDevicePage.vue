@@ -74,13 +74,15 @@ export default {
     },
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.getSizItems.map((item) => item.location))];
+      return [...new Set(this.filteredSIZItems.map((item) => item.location))];
     },
     uniqueTypes() {
-      return [...new Set(this.getSizItems.map((item) => item.type))];
+      return [...new Set(this.filteredSIZItems.map((item) => item.type))];
     },
     uniqueVoltageClasses() {
-      return [...new Set(this.getSizItems.map((item) => item.voltageClass))];
+      return [
+        ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
+      ];
     },
   },
   methods: {
