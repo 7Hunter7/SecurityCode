@@ -70,9 +70,7 @@ export async function importCSV() {
           });
 
           if (!existingSIZ) {
-            new Date(existingSIZ.updatedAt) < new Date(latestUpdatedAt);
-            //Проверка последнего обновления данных в базе
-
+            // Если записи нет, создаем новую
             await SIZItem.create({
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
@@ -87,9 +85,17 @@ export async function importCSV() {
             });
             console.log("Данные успешно сохранены:", row);
           } else {
-            console.log(
-              `Запись с номером СЗ ${row["№ СЗ"]} уже существует, пропуск сохранения.`
-            );
+            // Если запись уже существует, сравниваем даты обновления
+            if (
+              latestUpdatedAt &&
+              new Date(existingSIZ.updatedAt) < new Date(latestUpdatedAt)
+            ) {
+              console.log(`Запись с номером СЗ ${row["№ СЗ"]} обновлена.`);
+            } else {
+              console.log(
+                `Запись с номером СЗ ${row["№ СЗ"]} уже существует, пропуск сохранения.`
+              );
+            }
           }
         } catch (error) {
           console.error("Ошибка при сохранении данных:", error.message, row);
