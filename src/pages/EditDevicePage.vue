@@ -116,6 +116,7 @@ export default {
       newType: "",
       newVoltageClass: "",
       newSzType: "",
+      newNumber: "",
       newTestDate: "",
       newNextTestDate: "",
       newLastInspectDate: "",
