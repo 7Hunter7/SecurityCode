@@ -9,26 +9,36 @@
         :options="locations"
         v-model="siz.location"
         :newValue.sync="newLocation"
+        required
       />
       <InputField
         label="Вид СЗ"
         :options="types"
         v-model="siz.type"
         :newValue.sync="newType"
+        required
       />
       <InputField
         label="Класс напряжения (кВ)"
         :options="voltageClasses"
         v-model="siz.voltageClass"
         :newValue.sync="newVoltageClass"
+        required
       />
       <InputField
         label="Тип СЗ"
         :options="szTypes"
         v-model="siz.szType"
         :newValue.sync="newSzType"
+        required
       />
-      <InputField label="№ СЗ" type="text" v-model="siz.number" required />
+      <InputField
+        label="№ СЗ"
+        type="text"
+        v-model="siz.number"
+        :newValue.sync="newNumber"
+        required
+      />
       <InputField
         label="Дата испытания"
         type="date"
@@ -49,6 +59,7 @@
         type="date"
         v-model="siz.lastInspectDate"
         :newValue.sync="newLastInspectDate"
+        required
       />
       <InputField
         label="Количество"
