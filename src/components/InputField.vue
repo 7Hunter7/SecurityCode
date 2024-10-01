@@ -2,12 +2,25 @@
   <div class="form-group">
     <label :for="fieldId">{{ label }}</label>
     <div>
-      <select v-model="localValue" :id="fieldId" required>
+      <!-- Проверяем, нужно ли рендерить select -->
+      <select v-if="options" v-model="localValue" :id="fieldId" required>
         <option value="">{{ placeholder }}</option>
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
+
+      <!-- Если 'options' не переданы, рендерим input -->
+      <input
+        v-else
+        :type="inputType"
+        v-model="localValue"
+        :id="fieldId"
+        :placeholder="placeholder"
+        required
+      />
+
+      <!-- Показ поля для ввода нового значения, если выбрано "new" -->
       <input
         v-if="localValue === 'new'"
         v-model="localNewValue"
@@ -21,13 +34,17 @@
 <script>
 export default {
   props: {
-    modelValue: String,
+    modelValue: [String, Number], // Поддержка строк и чисел
     newValue: String,
     fieldId: String,
     label: String,
-    options: Array,
-    placeholder: String,
-    newPlaceholder: String,
+    options: Array, // Опции для select
+    placeholder: String, // Текст placeholder
+    newPlaceholder: String, // Placeholder для нового значения
+    inputType: {
+      type: String,
+      default: "text", // Тип input по умолчанию
+    },
   },
   computed: {
     localValue: {
@@ -35,7 +52,7 @@ export default {
         return this.modelValue;
       },
       set(value) {
-        this.$emit("update:modelValue", value);
+        this.$emit("update:modelValue", value); // Синхронизация с родительским компонентом
       },
     },
     localNewValue: {
@@ -43,7 +60,7 @@ export default {
         return this.newValue;
       },
       set(value) {
-        this.$emit("update:newValue", value);
+        this.$emit("update:newValue", value); // Синхронизация нового значения
       },
     },
   },
