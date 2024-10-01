@@ -47,6 +47,7 @@
         label="Количество"
         type="number"
         v-model="siz.quantity"
+        :inputType="'number'"
         min="1"
         required
       />
