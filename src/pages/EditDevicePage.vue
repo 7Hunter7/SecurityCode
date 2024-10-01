@@ -8,42 +8,26 @@
         label="Местонахождение"
         :options="locations"
         v-model="siz.location"
-        :newValue.sync="newLocation"
         required
       />
-      <InputField
-        label="Вид СЗ"
-        :options="types"
-        v-model="siz.type"
-        :newValue.sync="newType"
-        required
-      />
+      <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
       <InputField
         label="Класс напряжения (кВ)"
         :options="voltageClasses"
         v-model="siz.voltageClass"
-        :newValue.sync="newVoltageClass"
         required
       />
       <InputField
         label="Тип СЗ"
         :options="szTypes"
         v-model="siz.szType"
-        :newValue.sync="newSzType"
         required
       />
-      <InputField
-        label="№ СЗ"
-        type="text"
-        v-model="siz.number"
-        :newValue.sync="newNumber"
-        required
-      />
+      <InputField label="№ СЗ" type="text" v-model="siz.number" required />
       <InputField
         label="Дата испытания"
         type="date"
         v-model="siz.testDate"
-        :newValue.sync="newTestDate"
         @change="calculateNextTestDate"
         required
       />
@@ -51,30 +35,22 @@
         label="Дата следующего испытания"
         type="date"
         v-model="siz.nextTestDate"
-        :newValue.sync="newNextTestDate"
         required
       />
       <InputField
         label="Дата последнего осмотра"
         type="date"
         v-model="siz.lastInspectDate"
-        :newValue.sync="newLastInspectDate"
         required
       />
       <InputField
         label="Количество"
         type="number"
         v-model="siz.quantity"
-        :newValue.sync="newQuantity"
         min="1"
         required
       />
-      <InputField
-        label="Примечания"
-        :options="notes"
-        v-model="siz.note"
-        :newValue.sync="newNote"
-      />
+      <InputField label="Примечания" :options="notes" v-model="siz.note" />
 
       <!-- Кнопка для сохранения изменений -->
       <div class="form-actions">
@@ -112,16 +88,6 @@ export default {
         quantity: "1",
         note: "",
       },
-      newLocation: "",
-      newType: "",
-      newVoltageClass: "",
-      newSzType: "",
-      newNumber: "",
-      newTestDate: "",
-      newNextTestDate: "",
-      newLastInspectDate: "",
-      newQuantity: "",
-      newNote: "",
     };
   },
   computed: {
@@ -156,25 +122,6 @@ export default {
       }
     },
     submitForm() {
-      [
-        "location",
-        "type",
-        "voltageClass",
-        "szType",
-        "number",
-        "testDate",
-        "nextTestDate",
-        "lastInspectDate",
-        "quantity",
-        "note",
-      ].forEach((field) => {
-        const newValue =
-          this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
-        if (newValue) {
-          this.siz[field] = newValue;
-        }
-      });
-
       this.$emit("updateSIZ", this.siz);
       this.$router.push("/security-device");
     },
