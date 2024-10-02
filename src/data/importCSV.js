@@ -3,7 +3,11 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
-import { isValidDate, formatDate } from "../utils/dateUtils.js"; // Импорт функций для работы с датами
+import {
+  isValidDate,
+  formatDate,
+  getAutomaticNote,
+} from "../utils/dateUtils.js"; // Импорт функций для работы с данными
 
 // Определяем __dirname в стиле ES-модулей
 const __filename = fileURLToPath(import.meta.url);
@@ -25,8 +29,10 @@ export async function importCSV() {
     order: [["updatedAt", "DESC"]],
   });
   const latestUpdatedAt = latestRecord ? latestRecord.updatedAt : null;
-
   const results = [];
+
+  // Определяем типы СИЗ, для которых не нужно генерировать примечание
+  const PZ_TYPES = ["ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "ЗПЛ"];
 
   fs.createReadStream(filePath)
     .pipe(csv({ separator: ";" }))
@@ -60,6 +66,16 @@ export async function importCSV() {
             : formatDate(row["Дата последнего осмотра"])
           : null;
 
+        // Вычисляем разницу во времени для генерации примечания
+        const differenceInMs = nextTestDate - new Date();
+
+        let note = row["Примечание"] || ""; // Если уже есть примечание, используем его
+
+        // Если тип СИЗ не относится к "ПЗ", генерируем автоматическое примечание
+        if (!PZ_TYPES.includes(row["Вид СЗ"]) && !note) {
+          note = getAutomaticNote(differenceInMs);
+        }
+
         try {
           const existingSIZ = await SIZItem.findOne({
             where: {
@@ -81,7 +97,7 @@ export async function importCSV() {
               nextTestDate: nextTestDate,
               lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
-              note: row["Примечание"] || "—",
+              note: note, // Примечание генерируется автоматически или загружается из CSV
             });
             console.log("Данные успешно сохранены:", row);
           } else {
