@@ -33,13 +33,10 @@ export function getLastInspectDate() {
 export function getAutomaticNote(differenceInMs) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
   if (differenceInMs > oneMonthInMs) {
-    return "Осмотрено, Испытано";
-  } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
+    return "Осмотрено. СИЗ испытано.";
+  } else if (differenceInMs <= oneMonthInMs && differenceInMs > 0) {
     return "Необходимо отправить на испытания!";
-  } else if (differenceInMs < 0) {
-    return "Испытание просрочено!";
-  }
-  return "Осмотрено";
+  } else return "Испытание просрочено!";
 }
 
 // Функция для проверки валидности даты
