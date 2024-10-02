@@ -55,20 +55,3 @@ export function formatDate(dateStr) {
   // Формируем дату в формате YYYY-MM-DD
   return `${year}-${month}-${day}`;
 }
-
-// Функция для подсчета количества СЗ по классам
-export function calculateQuantityByClass(items) {
-  const quantityByClass = {};
-
-  items.forEach((item) => {
-    const key = `${item.type}_${item.voltageClass}_${item.location}`;
-
-    if (!quantityByClass[key]) {
-      quantityByClass[key] = 0;
-    }
-
-    quantityByClass[key] += item.quantity;
-  });
-
-  return quantityByClass;
-}
