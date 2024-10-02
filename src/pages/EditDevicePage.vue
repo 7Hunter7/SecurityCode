@@ -27,20 +27,23 @@
       <InputField
         label="Дата испытания"
         type="date"
-        v-model="siz.testDate"
+        v-model="formattedTestDate"
+        @input="updateTestDate"
         @change="calculateNextTestDate"
         required
       />
       <InputField
         label="Дата следующего испытания"
         type="date"
-        v-model="siz.nextTestDate"
+        v-model="formattedNextTestDate"
+        @input="updateNextTestDate"
         required
       />
       <InputField
         label="Дата последнего осмотра"
         type="date"
-        v-model="siz.lastInspectDate"
+        v-model="formattedLastInspectDate"
+        @input="updateLastInspectDate"
         required
       />
       <InputField
@@ -69,6 +72,7 @@ import {
   getAutomaticNote,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
+import { format } from "date-fns"; // Форматирование дат
 
 export default {
   name: "EditDevicePage",
@@ -89,6 +93,9 @@ export default {
         quantity: "1",
         note: "",
       },
+      formattedTestDate: "", // Форматированная дата для отображения
+      formattedNextTestDate: "",
+      formattedLastInspectDate: "",
     };
   },
   computed: {
@@ -117,14 +124,33 @@ export default {
           this.siz = { ...existingSIZ };
           this.siz.number = String(existingSIZ.number);
           this.siz.quantity = String(existingSIZ.quantity);
+
+          // Преобразуем даты в нужный формат
+          this.formattedTestDate = this.formatDate(this.siz.testDate);
+          this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
+          this.formattedLastInspectDate = this.formatDate(
+            this.siz.lastInspectDate
+          );
         } else {
           console.warn("Не удалось найти СИЗ с таким ID");
         }
       }
     },
-    submitForm() {
-      this.$emit("updateSIZ", this.siz);
-      this.$router.push("/security-device");
+    formatDate(date) {
+      if (!date) return "";
+      return format(new Date(date), "dd.MM.yyyy"); // Используем формат дд.мм.гггг
+    },
+    updateTestDate(event) {
+      this.siz.testDate = event.target.value;
+      this.formattedTestDate = this.formatDate(this.siz.testDate);
+    },
+    updateNextTestDate(event) {
+      this.siz.nextTestDate = event.target.value;
+      this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
+    },
+    updateLastInspectDate(event) {
+      this.siz.lastInspectDate = event.target.value;
+      this.formattedLastInspectDate = this.formatDate(this.siz.lastInspectDate);
     },
     calculateNextTestDate() {
       if (this.siz.testDate && this.siz.type) {
@@ -136,6 +162,10 @@ export default {
         const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
         this.siz.note = getAutomaticNote(differenceInMs);
       }
+    },
+    submitForm() {
+      this.$emit("updateSIZ", this.siz);
+      this.$router.push("/security-device");
     },
   },
 };
