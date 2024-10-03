@@ -6,7 +6,7 @@ import SIZItem from "../models/SIZItem.js";
 import {
   isValidDate,
   formatDate,
-  getAutomaticNote,
+  getAutomaticInspectionResult,
 } from "../utils/dateUtils.js"; // Импорт функций для работы с данными
 
 // Определяем __dirname в стиле ES-модулей
@@ -24,14 +24,7 @@ export async function importCSV() {
     return;
   }
 
-  // Получаем максимальный updatedAt из базы данных
-  const latestRecord = await SIZItem.findOne({
-    order: [["updatedAt", "DESC"]],
-  });
-  const latestUpdatedAt = latestRecord ? latestRecord.updatedAt : null;
-  const results = [];
-
-  // Определяем типы СИЗ, для которых не нужно генерировать примечание
+  // Определяем типы СИЗ, для которых не нужно генерировать примечание об испытании
   const PZ_TYPES = ["ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "ЗПЛ"];
 
   fs.createReadStream(filePath)
@@ -67,15 +60,28 @@ export async function importCSV() {
           : null;
 
         // Вычисляем разницу во времени для генерации примечания
-        const differenceInMs = nextTestDate - new Date();
+        const differenceInMs = nextTestDate ? nextTestDate - new Date() : null;
 
-        let note = row["Примечание"] || ""; // Если уже есть примечание, используем его
+        let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
         // Если тип СИЗ не относится к "ПЗ", генерируем автоматическое примечание
-        if (!PZ_TYPES.includes(row["Вид СЗ"]) && !note) {
-          note = getAutomaticNote(differenceInMs);
+        if (!PZ_TYPES.includes(row["Вид СЗ"]) && !inspectionResult) {
+          inspectionResult = getAutomaticInspectionResult(
+            differenceInMs,
+            lastInspectDate
+          );
+        }
+        // Если относится к "ПЗ", добавляем "Осмотрено" к уже существующему примечанию, если осмотр был менее месяца назад
+        if (PZ_TYPES.includes(row["Вид СЗ"]) && lastInspectDate) {
+          const inspectDiff = new Date() - new Date(lastInspectDate);
+          const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
+
+          if (inspectDiff <= oneMonthInMs) {
+            inspectionResult = `${inspectionResult} Осмотрено`.trim(); // Добавляем "Осмотрено" к существующему примечанию
+          }
         }
 
+        // Создаем или обновляем запись в базе данных
         try {
           const existingSIZ = await SIZItem.findOne({
             where: {
@@ -97,10 +103,18 @@ export async function importCSV() {
               nextTestDate: nextTestDate,
               lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
-              note: note, // Примечание генерируется автоматически или загружается из CSV
+              inspectionResult: inspectionResult, // Примечание генерируется автоматически или загружается из CSV
             });
             console.log("Данные успешно сохранены:", row);
           } else {
+            // Получаем максимальный updatedAt из базы данных
+            const latestRecord = await SIZItem.findOne({
+              order: [["updatedAt", "DESC"]],
+            });
+            const latestUpdatedAt = latestRecord
+              ? latestRecord.updatedAt
+              : null;
+            const results = [];
             // Если запись уже существует, сравниваем даты обновления
             if (
               latestUpdatedAt &&
