@@ -30,15 +30,27 @@ export function getLastInspectDate() {
 }
 
 // Функция для автоматического выставления примечания в зависимости от разницы дат
-export function getAutomaticNote(differenceInMs) {
+export function getAutomaticInspectionResult(
+  differenceInMs,
+  lastInspectDate = null
+) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-  if (differenceInMs > oneMonthInMs) {
-    return "Осмотрено. СИЗ испытано.";
-  } else if (differenceInMs <= oneMonthInMs && differenceInMs > 0) {
-    return "Необходимо отправить на испытания!";
-  } else return "Испытание просрочено!";
-}
 
+  if (lastInspectDate) {
+    const inspectDiff = new Date() - new Date(lastInspectDate);
+    if (inspectDiff <= oneMonthInMs) {
+      return "Осмотрено"; // Если последний осмотр был менее месяца назад
+    } else if (inspectDiff > oneMonthInMs) {
+      return "Необходимо выполнить осмотр СЗ";
+    }
+
+    if (differenceInMs > oneMonthInMs) {
+      return "Осмотрено. СЗ испытано.";
+    } else if (differenceInMs <= oneMonthInMs && differenceInMs > 0) {
+      return "Необходимо отправить на испытания!";
+    } else return "Испытание просрочено!";
+  }
+}
 // Функция для проверки валидности даты
 export function isValidDate(date) {
   return !isNaN(Date.parse(date));
