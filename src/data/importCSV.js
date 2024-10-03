@@ -25,8 +25,15 @@ export async function importCSV() {
   }
 
   // Определяем типы СИЗ, для которых не нужно генерировать примечание об испытании
-  const PZ_TYPES = ["ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "ЗПЛ"];
+  const PZ_TYPES = ["ПЗ", "ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "ЗП", "ЗПЛ"];
 
+  // Получаем максимальный updatedAt из базы данных
+  const latestRecord = await SIZItem.findOne({
+    order: [["updatedAt", "DESC"]],
+  });
+  const latestUpdatedAt = latestRecord ? latestRecord.updatedAt : null;
+
+  const results = [];
   fs.createReadStream(filePath)
     .pipe(csv({ separator: ";" }))
     .on("data", (data) => {
@@ -107,14 +114,6 @@ export async function importCSV() {
             });
             console.log("Данные успешно сохранены:", row);
           } else {
-            // Получаем максимальный updatedAt из базы данных
-            const latestRecord = await SIZItem.findOne({
-              order: [["updatedAt", "DESC"]],
-            });
-            const latestUpdatedAt = latestRecord
-              ? latestRecord.updatedAt
-              : null;
-            const results = [];
             // Если запись уже существует, сравниваем даты обновления
             if (
               latestUpdatedAt &&
