@@ -54,7 +54,11 @@
         min="1"
         required
       />
-      <InputField label="Примечания" :options="notes" v-model="siz.note" />
+      <InputField
+        label="Результат осмотра"
+        :options="inspectionResult"
+        v-model="siz.inspectionResult"
+      />
 
       <!-- Кнопка для сохранения изменений -->
       <div class="form-actions">
@@ -91,7 +95,7 @@ export default {
         nextTestDate: "",
         lastInspectDate: "",
         quantity: "1",
-        note: "",
+        inspectionResult: "",
       },
       formattedTestDate: "", // Форматированная дата для отображения
       formattedNextTestDate: "",
@@ -99,7 +103,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
+    ...mapState([
+      "locations",
+      "types",
+      "voltageClasses",
+      "szTypes",
+      "inspectionResult",
+    ]),
     ...mapGetters(["getSizItems"]),
   },
   mounted() {
@@ -160,7 +170,8 @@ export default {
         );
         this.siz.lastInspectDate = getLastInspectDate();
         const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
-        this.siz.note = getAutomaticNote(differenceInMs);
+        this.siz.inspectionResult =
+          getAutomaticInspectionResult(differenceInMs);
       }
     },
     submitForm() {
