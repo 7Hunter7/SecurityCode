@@ -73,7 +73,7 @@ import InputField from "../components/InputField.vue";
 import {
   calculateNextTestDate,
   getLastInspectDate,
-  getAutomaticNote,
+  getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { format } from "date-fns"; // Форматирование дат
@@ -108,7 +108,7 @@ export default {
       "types",
       "voltageClasses",
       "szTypes",
-      "inspectionResult",
+      "inspectionResults",
     ]),
     ...mapGetters(["getSizItems"]),
   },
