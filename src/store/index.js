@@ -84,7 +84,7 @@ export default createStore({
       "ЗПП-35-3/3-25",
       "ЗПП-35-3/3-35",
     ],
-    notes: [
+    inspectionResult: [
       "new",
       "Осмотрено",
       "Испытано",
@@ -212,6 +212,6 @@ export default createStore({
     getTypes: (state) => state.types,
     getVoltageClasses: (state) => state.voltageClasses,
     getSzTypes: (state) => state.szTypes,
-    getNotes: (state) => state.notes,
+    getInspectionResult: (state) => state.inspectionResult,
   },
 });
