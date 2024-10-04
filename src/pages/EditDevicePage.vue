@@ -56,7 +56,7 @@
       />
       <InputField
         label="Результат осмотра"
-        :options="inspectionResult"
+        :options="inspectionResults"
         v-model="siz.inspectionResult"
       />
 
