@@ -113,17 +113,17 @@
         />
       </div>
 
-      <!-- Примечания -->
+      <!-- Результаты осмотра -->
       <InputField
-        fieldId="note"
-        label="Примечания:"
-        v-bind:modelValue="siz.note"
-        v-on:update:modelValue="(value) => (siz.note = value)"
-        :options="notes"
-        placeholder="Выберите примечание"
-        newPlaceholder="Добавить новое примечание"
-        v-bind:newValue="newNote"
-        v-on:update:newValue="(value) => (newNote = value)"
+        fieldId="inspectionResult"
+        label="Результат осмотра:"
+        v-bind:modelValue="siz.inspectionResult"
+        v-on:update:modelValue="(value) => (siz.inspectionResult = value)"
+        :options="inspectionResults"
+        placeholder="Выберите результат осмотра"
+        newPlaceholder="Добавить новый результат осмотра"
+        v-bind:newValue="newInspectionResult"
+        v-on:update:newValue="(value) => (newInspectionResult = value)"
       />
 
       <!-- Кнопка добавления -->
@@ -140,7 +140,7 @@ import { mapState } from "vuex";
 import {
   calculateNextTestDate,
   getLastInspectDate,
-  getAutomaticNote,
+  getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
 
 export default {
@@ -160,17 +160,23 @@ export default {
         nextTestDate: "",
         lastInspectDate: "",
         quantity: 1,
-        note: "",
+        inspectionResult: "",
       },
       newLocation: "",
       newType: "",
       newVoltageClass: "",
       newSzType: "",
-      newNote: "",
+      newInspectionResult: "",
     };
   },
   computed: {
-    ...mapState(["locations", "types", "voltageClasses", "szTypes", "notes"]),
+    ...mapState([
+      "locations",
+      "types",
+      "voltageClasses",
+      "szTypes",
+      "inspectionResults",
+    ]),
   },
   methods: {
     calculateNextTestDate() {
@@ -179,28 +185,32 @@ export default {
         new Date(this.siz.testDate)
       );
       this.updateLastInspectDate();
-      this.updateNote();
+      this.updateInspectionResult();
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
     },
-    updateNote() {
+    updateInspectionResult() {
       const currentDate = new Date();
       const nextTestDate = new Date(this.siz.nextTestDate);
       const differenceInMs = nextTestDate - currentDate;
 
-      this.siz.note = getAutomaticNote(differenceInMs);
+      this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
     },
     submitForm() {
-      ["location", "type", "voltageClass", "szType", "note"].forEach(
-        (field) => {
-          const newValue =
-            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
-          if (newValue) {
-            this.siz[field] = newValue;
-          }
+      [
+        "location",
+        "type",
+        "voltageClass",
+        "szType",
+        "inspectionResult",
+      ].forEach((field) => {
+        const newValue =
+          this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+        if (newValue) {
+          this.siz[field] = newValue;
         }
-      );
+      });
       this.$emit("addSIZ", this.siz);
       this.$router.push("/security-device");
     },
