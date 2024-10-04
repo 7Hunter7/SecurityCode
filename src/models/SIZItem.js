@@ -48,10 +48,9 @@ const SIZItem = sequelize.define("SIZItem", {
     allowNull: false,
     defaultValue: 1, // Значение по умолчанию
   },
-  note: {
+  inspectionResult: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: "—",
   },
 });
 
