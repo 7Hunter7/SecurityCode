@@ -36,25 +36,34 @@ export function getAutomaticInspectionResult(
   existingInspectionResult = ""
 ) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-  // Если есть дата последнего осмотра
+  let inspectionNote = "";
+  let testNote = "";
+
+  // Проверка даты последнего осмотра
   if (lastInspectDate) {
     const inspectDiff = new Date() - new Date(lastInspectDate);
-    // Если последний осмотр был менее месяца назад
     if (inspectDiff <= oneMonthInMs) {
-      return `${existingInspectionResult} Осмотрено.`.trim();
-    } else if (inspectDiff > oneMonthInMs) {
-      return `${existingInspectionResult} Необходимо выполнить осмотр!`.trim();
+      inspectionNote = "Осмотрено";
+    } else {
+      inspectionNote = "Необходимо выполнить осмотр!";
     }
   }
-  // Оценка разницы между текущей и следующей датой испытания
-  if (differenceInMs > oneMonthInMs) {
-    return `${existingInspectionResult} Испытано`.trim();
-  } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-    return `${existingInspectionResult} Необходимо отправить на испытания!`.trim();
-  } else if (differenceInMs < 0) {
-    return `${existingInspectionResult} Испытание просрочено!`.trim();
+
+  // Проверка даты следующего испытания
+  if (differenceInMs !== null) {
+    if (differenceInMs > oneMonthInMs) {
+      testNote = "Испытано";
+    } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
+      testNote = "Необходимо отправить на испытания!";
+    } else if (differenceInMs < 0) {
+      testNote = "Испытание просрочено!";
+    }
   }
-  return existingInspectionResult.trim();
+
+  // Объединение результатов проверок в одну строку
+  const combinedNote =
+    `${existingInspectionResult} ${inspectionNote} ${testNote}`.trim();
+  return combinedNote.replace(/\s+/g, " ").trim(); // Удаление лишних пробелов
 }
 
 // Функция для проверки валидности даты
