@@ -32,25 +32,31 @@ export function getLastInspectDate() {
 // Функция для автоматического выставления примечания в зависимости от разницы дат
 export function getAutomaticInspectionResult(
   differenceInMs,
-  lastInspectDate = null
+  lastInspectDate = null,
+  existingInspectionResult = ""
 ) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-
+  // Если есть дата последнего осмотра
   if (lastInspectDate) {
     const inspectDiff = new Date() - new Date(lastInspectDate);
+    // Если последний осмотр был менее месяца назад
     if (inspectDiff <= oneMonthInMs) {
-      return "Осмотрено"; // Если последний осмотр был менее месяца назад
+      return `${existingInspectionResult} Осмотрено.`.trim();
     } else if (inspectDiff > oneMonthInMs) {
-      return "Необходимо выполнить осмотр СЗ";
+      return `${existingInspectionResult} Необходимо выполнить осмотр!`.trim();
     }
-
-    if (differenceInMs > oneMonthInMs) {
-      return "Осмотрено. СЗ испытано.";
-    } else if (differenceInMs <= oneMonthInMs && differenceInMs > 0) {
-      return "Необходимо отправить на испытания!";
-    } else return "Испытание просрочено!";
   }
+  // Оценка разницы между текущей и следующей датой испытания
+  if (differenceInMs > oneMonthInMs) {
+    return `${existingInspectionResult} Испытано`.trim();
+  } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
+    return `${existingInspectionResult} Необходимо отправить на испытания!`.trim();
+  } else if (differenceInMs < 0) {
+    return `${existingInspectionResult} Испытание просрочено!`.trim();
+  }
+  return existingInspectionResult.trim();
 }
+
 // Функция для проверки валидности даты
 export function isValidDate(date) {
   return !isNaN(Date.parse(date));
