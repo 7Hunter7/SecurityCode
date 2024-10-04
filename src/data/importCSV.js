@@ -71,18 +71,14 @@ export async function importCSV() {
 
         let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
-        // Если тип СИЗ не относится к "ПЗ", генерируем автоматическое примечание
+        // Выполнение обеих проверок
         if (!PZ_TYPES.includes(row["Вид СЗ"])) {
-          // Применение функции getAutomaticInspectionResult с проверкой
           inspectionResult = getAutomaticInspectionResult(
             differenceInMs,
             lastInspectDate,
             inspectionResult
           );
-        }
-
-        // Логика для ПЗ, добавляем "Осмотрено", если последний осмотр был менее месяца назад
-        if (PZ_TYPES.includes(row["Вид СЗ"]) && lastInspectDate) {
+        } else if (lastInspectDate) {
           inspectionResult = getAutomaticInspectionResult(
             null,
             lastInspectDate,
@@ -112,7 +108,7 @@ export async function importCSV() {
               nextTestDate: nextTestDate,
               lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
-              inspectionResult: inspectionResult, // Примечание генерируется автоматически или загружается из CSV
+              inspectionResult: inspectionResult, // Объединенный результат проверок
             });
             console.log("Данные успешно сохранены:", row);
           } else {
