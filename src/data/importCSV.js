@@ -72,20 +72,22 @@ export async function importCSV() {
         let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
         // Если тип СИЗ не относится к "ПЗ", генерируем автоматическое примечание
-        if (!PZ_TYPES.includes(row["Вид СЗ"]) && !inspectionResult) {
+        if (!PZ_TYPES.includes(row["Вид СЗ"])) {
+          // Применение функции getAutomaticInspectionResult с проверкой
           inspectionResult = getAutomaticInspectionResult(
             differenceInMs,
-            lastInspectDate
+            lastInspectDate,
+            inspectionResult
           );
         }
-        // Если относится к "ПЗ", добавляем "Осмотрено" к уже существующему примечанию, если осмотр был менее месяца назад
-        if (PZ_TYPES.includes(row["Вид СЗ"]) && lastInspectDate) {
-          const inspectDiff = new Date() - new Date(lastInspectDate);
-          const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
 
-          if (inspectDiff <= oneMonthInMs) {
-            inspectionResult = `${inspectionResult} Осмотрено`.trim(); // Добавляем "Осмотрено" к существующему примечанию
-          }
+        // Логика для ПЗ, добавляем "Осмотрено", если последний осмотр был менее месяца назад
+        if (PZ_TYPES.includes(row["Вид СЗ"]) && lastInspectDate) {
+          inspectionResult = getAutomaticInspectionResult(
+            null,
+            lastInspectDate,
+            inspectionResult
+          );
         }
 
         // Создаем или обновляем запись в базе данных
