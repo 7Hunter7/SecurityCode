@@ -21,7 +21,7 @@
           <th>Дата следующего испытания</th>
           <th>Дата последнего осмотра</th>
           <th>Кол-во</th>
-          <th>Примечания</th>
+          <th>Результат осмотра</th>
           <th>Действия</th>
         </tr>
       </thead>
@@ -36,7 +36,7 @@
           <td>{{ formatDate(item.nextTestDate) }}</td>
           <td>{{ formatDate(item.lastInspectDate) }}</td>
           <td>{{ item.quantity }}</td>
-          <td>{{ item.note }}</td>
+          <td>{{ item.inspectionResult }}</td>
           <td>
             <button @click="editSIZ(item)">Редактировать</button>
             <button @click="deleteSIZ(item)">Удалить</button>
