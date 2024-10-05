@@ -90,7 +90,7 @@ export function getAutomaticInspectionResult(
   if (lastInspectDate) {
     const inspectDiff = new Date() - new Date(lastInspectDate);
     inspectionNote =
-      inspectDiff >= oneMonthInMs ? INSPECTED : INSPECTION_REQUIRED;
+      inspectDiff <= oneMonthInMs ? INSPECTED : INSPECTION_REQUIRED;
   }
 
   // Проверка даты следующего испытания
