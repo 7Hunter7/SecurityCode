@@ -94,7 +94,7 @@ export function getAutomaticInspectionResult(
   }
 
   // Проверка даты следующего испытания
-  if (differenceInMs !== undefined && differenceInMs !== null) {
+  if (differenceInMs) {
     if (differenceInMs > oneMonthInMs) {
       testNote = TESTED;
     } else if (differenceInMs >= 0) {
