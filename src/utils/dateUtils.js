@@ -1,3 +1,10 @@
+import { parse, isValid, format } from "date-fns"; // Подключение библиотеки date-fns для работы с датами
+
+// Функция для парсинга даты из строки
+function parseDate(dateStr) {
+  return parse(dateStr, "dd.MM.yyyy", new Date());
+}
+
 // Функция для расчета следующей даты испытания
 export function calculateNextTestDate(sizType, testDate) {
   let monthsToAdd = 0;
@@ -117,15 +124,13 @@ export function getAutomaticInspectionResult(
 }
 
 // Функция для проверки валидности даты
-export function isValidDate(date) {
-  return !isNaN(Date.parse(date));
+export function isValidDate(dateStr) {
+  const parsedDate = parseDate(dateStr);
+  return isValid(parsedDate);
 }
 
-// функция для преобразования даты
+// Функция для преобразования даты из ДД.ММ.ГГГГ в YYYY-MM-DD
 export function formatDate(dateStr) {
-  // Разделяем строку даты по точке
-  const [day, month, year] = dateStr.split(".");
-
-  // Формируем дату в формате YYYY-MM-DD
-  return `${year}-${month}-${day}`;
+  const parsedDate = parseDate(dateStr);
+  return format(parsedDate, "yyyy-MM-dd");
 }
