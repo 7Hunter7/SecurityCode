@@ -66,8 +66,18 @@ export async function importCSV() {
             : formatDate(row["Дата последнего осмотра"])
           : null;
 
+        // Логирование, чтобы увидеть, какие даты парсятся и используются
+        console.log("testDate:", testDate);
+        console.log("nextTestDate:", nextTestDate);
+        console.log("lastInspectDate:", lastInspectDate);
+
         // Вычисляем разницу во времени для генерации примечания
-        const differenceInMs = nextTestDate ? nextTestDate - new Date() : null;
+        const differenceInMs = nextTestDate
+          ? nextTestDate.getTime() - new Date().getTime()
+          : null;
+
+        // Логирование, чтобы увидеть разницу
+        console.log("differenceInMs:", differenceInMs);
 
         let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
