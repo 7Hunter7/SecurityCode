@@ -71,22 +71,12 @@ export function getLastInspectDate() {
 // Функция для автоматического выставления примечания в зависимости от разницы дат
 export function getAutomaticInspectionResult(
   differenceInMs,
-  lastInspectDate = null,
+  lastInspectDate,
   existingInspectionResult = ""
 ) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
   let inspectionNote = "";
   let testNote = "";
-
-  // Проверка даты последнего осмотра
-  if (lastInspectDate) {
-    const inspectDiff = new Date() - new Date(lastInspectDate);
-    if (inspectDiff <= oneMonthInMs) {
-      inspectionNote = "Осмотрено";
-    } else {
-      inspectionNote = "Необходимо выполнить осмотр!";
-    }
-  }
 
   // Проверка даты следующего испытания
   if (differenceInMs !== null) {
@@ -96,6 +86,16 @@ export function getAutomaticInspectionResult(
       testNote = "Необходимо отправить на испытания!";
     } else if (differenceInMs < 0) {
       testNote = "Испытание просрочено!";
+    }
+  }
+
+  // Проверка даты последнего осмотра
+  if (lastInspectDate) {
+    const inspectDiff = new Date() - new Date(lastInspectDate);
+    if (inspectDiff <= oneMonthInMs) {
+      inspectionNote = "Осмотрено";
+    } else {
+      inspectionNote = "Необходимо выполнить осмотр!";
     }
   }
 
