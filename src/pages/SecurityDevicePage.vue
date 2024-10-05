@@ -293,7 +293,7 @@ button:hover {
 /* Класс для желтой мигающей рамки */
 .blink-orange {
   border: 3px solid orange;
-  animation: blink-orange 2s infinite;
+  animation: blink-orange 1.5s infinite;
 }
 /* Класс для красной мигающей рамки */
 .blink-red {
