@@ -73,12 +73,14 @@ export async function importCSV() {
 
         // Выполнение проверок
         if (!PZ_TYPES.includes(row["Вид СЗ"])) {
+          // Для всех СИЗ кроме ПЗ выполняем обе проверки
           inspectionResult = getAutomaticInspectionResult(
             differenceInMs,
             lastInspectDate,
-            null
+            inspectionResult
           );
         } else {
+          // Для ПЗ проверяем только осмотр
           inspectionResult = getAutomaticInspectionResult(
             null,
             lastInspectDate,
