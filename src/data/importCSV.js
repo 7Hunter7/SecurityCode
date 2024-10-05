@@ -25,7 +25,7 @@ export async function importCSV() {
   }
 
   // Определяем типы СИЗ, для которых не нужно генерировать примечание об испытании
-  const PZ_TYPES = ["ПЗ", "ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "ЗП", "ЗПЛ"];
+  const PZ_TYPES = ["ПЗ", "ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "КШЗ"];
 
   // Получаем максимальный updatedAt из базы данных
   const latestRecord = await SIZItem.findOne({
@@ -78,7 +78,7 @@ export async function importCSV() {
             lastInspectDate,
             inspectionResult
           );
-        } else if (lastInspectDate) {
+        } else {
           inspectionResult = getAutomaticInspectionResult(
             null,
             lastInspectDate,
@@ -102,13 +102,13 @@ export async function importCSV() {
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
               voltageClass: row["Класс напряжения СЗ"],
-              szType: row["Тип СЗ"] || "—", // Если тип СЗ отсутствует, использовать символ "-"
+              szType: row["Тип СЗ"] || "—",
               number: row["№ СЗ"],
               testDate: testDate,
               nextTestDate: nextTestDate,
               lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
-              inspectionResult: inspectionResult, // Объединенный результат проверок
+              inspectionResult: inspectionResult,
             });
             console.log("Данные успешно сохранены:", row);
           } else {
