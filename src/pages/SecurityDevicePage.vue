@@ -26,7 +26,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in filteredSIZItems" :key="item.id">
+        <tr class="table-row" v-for="item in filteredSIZItems" :key="item.id">
           <td>{{ item.location }}</td>
           <td>{{ item.type }}</td>
           <td>{{ item.voltageClass }}</td>
@@ -36,7 +36,7 @@
           <td>{{ formatDate(item.nextTestDate) }}</td>
           <td>{{ formatDate(item.lastInspectDate) }}</td>
           <td>{{ item.quantity }}</td>
-          <td>{{ item.inspectionResult }}</td>
+          <td class="inspection-result">{{ item.inspectionResult }}</td>
           <td>
             <button @click="editSIZ(item)">Редактировать</button>
             <button @click="deleteSIZ(item)">Удалить</button>
@@ -68,6 +68,31 @@ export default {
   },
   mounted() {
     this.loadData(); // Загружаем данные при монтировании компонента
+
+    // Код для динамического добавления классов на основе результата осмотра
+    const rows = document.querySelectorAll(".table-row");
+
+    rows.forEach((row) => {
+      // Получаем результат осмотра
+      const inspectionResult =
+        row.querySelector(".inspection-result").textContent;
+
+      // Обрабатываем каждое условие и добавляем соответствующие классы для текста
+      if (inspectionResult.includes("Осмотрено.")) {
+        row.querySelector(".inspection-result").classList.add("green-text");
+      }
+      if (inspectionResult.includes("Испытано.")) {
+        row.querySelector(".inspection-result").classList.add("green-text");
+      }
+      if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
+        row.querySelector(".inspection-result").classList.add("yellow-text");
+        row.classList.add("blink-yellow"); // Добавляем мигание строки
+      }
+      if (inspectionResult.includes("Испытание просрочено!")) {
+        row.querySelector(".inspection-result").classList.add("red-text");
+        row.classList.add("blink-red"); // Добавляем мигание строки
+      }
+    });
   },
   computed: {
     ...mapGetters(["getSizItems", "getFilteredSizItems"]),
