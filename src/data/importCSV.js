@@ -53,23 +53,29 @@ export async function importCSV() {
         const testDate = row["Дата испытания"]
           ? isValidDate(row["Дата испытания"])
             ? new Date(row["Дата испытания"])
-            : formatDate(row["Дата испытания"])
+            : new Date(formatDate(row["Дата испытания"]))
           : null;
         const nextTestDate = row["Дата следующего испытания"]
           ? isValidDate(row["Дата следующего испытания"])
             ? new Date(row["Дата следующего испытания"])
-            : formatDate(row["Дата следующего испытания"])
+            : new Date(formatDate(row["Дата следующего испытания"]))
           : null;
         const lastInspectDate = row["Дата последнего осмотра"]
           ? isValidDate(row["Дата последнего осмотра"])
             ? new Date(row["Дата последнего осмотра"])
-            : formatDate(row["Дата последнего осмотра"])
+            : new Date(formatDate(row["Дата последнего осмотра"]))
           : null;
 
         // Логирование, чтобы увидеть, какие даты парсятся и используются
         console.log("testDate:", testDate);
         console.log("nextTestDate:", nextTestDate);
         console.log("lastInspectDate:", lastInspectDate);
+
+        // Проверяем, что nextTestDate — это объект Date
+        if (!(nextTestDate instanceof Date) || isNaN(nextTestDate)) {
+          console.error("Ошибка преобразования nextTestDate:", nextTestDate);
+          continue; // Пропускаем эту строку, если дата некорректна
+        }
 
         // Вычисляем разницу во времени для генерации примечания
         const differenceInMs = nextTestDate
