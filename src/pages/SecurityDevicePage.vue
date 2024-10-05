@@ -66,32 +66,10 @@ export default {
   components: {
     FiltersComponent,
   },
-  mounted() {
-    this.loadData(); // Загружаем данные при монтировании компонента
-
-    // Код для динамического добавления классов на основе результата осмотра
-    const rows = document.querySelectorAll(".table-row");
-
-    rows.forEach((row) => {
-      // Получаем результат осмотра
-      const inspectionResult =
-        row.querySelector(".inspection-result").textContent;
-
-      // Обрабатываем каждое условие и добавляем соответствующие классы для текста
-      if (inspectionResult.includes("Осмотрено.")) {
-        row.querySelector(".inspection-result").classList.add("green-text");
-      }
-      if (inspectionResult.includes("Испытано.")) {
-        row.querySelector(".inspection-result").classList.add("green-text");
-      }
-      if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
-        row.querySelector(".inspection-result").classList.add("orange-text");
-        row.classList.add("blink-orange"); // Добавляем мигание строки
-      }
-      if (inspectionResult.includes("Испытание просрочено!")) {
-        row.querySelector(".inspection-result").classList.add("red-text");
-        row.classList.add("blink-red"); // Добавляем мигание строки
-      }
+  async mounted() {
+    await this.loadData(); // Асинхронная загрузка данных
+    this.$nextTick(() => {
+      this.applyStyles();
     });
   },
   computed: {
@@ -199,6 +177,32 @@ export default {
         await this.deleteSIZ(item.id); // Удаляем элемент через Vuex
         await this.loadData();
       }
+    },
+
+    // Применение стилей на основе результата осмотра
+    applyStyles() {
+      const rows = document.querySelectorAll(".table-row");
+      rows.forEach((row) => {
+        // Получаем результат осмотра
+        const inspectionResult =
+          row.querySelector(".inspection-result").textContent;
+
+        // Обрабатываем каждое условие и добавляем соответствующие классы для текста
+        if (inspectionResult.includes("Осмотрено.")) {
+          row.querySelector(".inspection-result").classList.add("green-text");
+        }
+        if (inspectionResult.includes("Испытано.")) {
+          row.querySelector(".inspection-result").classList.add("green-text");
+        }
+        if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
+          row.querySelector(".inspection-result").classList.add("orange-text");
+          row.classList.add("blink-orange"); // Добавляем мигание строки
+        }
+        if (inspectionResult.includes("Испытание просрочено!")) {
+          row.querySelector(".inspection-result").classList.add("red-text");
+          row.classList.add("blink-red"); // Добавляем мигание строки
+        }
+      });
     },
   },
 };
