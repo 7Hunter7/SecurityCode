@@ -78,24 +78,24 @@ export function getAutomaticInspectionResult(
   let inspectionNote = "";
   let testNote = "";
 
-  // Проверка даты следующего испытания
-  if (differenceInMs !== null) {
-    if (differenceInMs > oneMonthInMs) {
-      testNote = "Испытано";
-    } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-      testNote = "Необходимо отправить на испытания!";
-    } else if (differenceInMs < 0) {
-      testNote = "Испытание просрочено!";
-    }
-  }
-
   // Проверка даты последнего осмотра
   if (lastInspectDate) {
     const inspectDiff = new Date() - new Date(lastInspectDate);
     if (inspectDiff <= oneMonthInMs) {
-      inspectionNote = "Осмотрено";
+      inspectionNote = "Осмотрено.";
     } else {
       inspectionNote = "Необходимо выполнить осмотр!";
+    }
+  }
+
+  // Проверка даты следующего испытания
+  if (differenceInMs) {
+    if (differenceInMs > oneMonthInMs) {
+      testNote = "Испытано.";
+    } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
+      testNote = "Необходимо отправить на испытания!";
+    } else if (differenceInMs < 0) {
+      testNote = "Испытание просрочено!";
     }
   }
 
