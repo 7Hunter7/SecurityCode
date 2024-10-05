@@ -85,8 +85,8 @@ export default {
         row.querySelector(".inspection-result").classList.add("green-text");
       }
       if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
-        row.querySelector(".inspection-result").classList.add("yellow-text");
-        row.classList.add("blink-yellow"); // Добавляем мигание строки
+        row.querySelector(".inspection-result").classList.add("orange-text");
+        row.classList.add("blink-orange"); // Добавляем мигание строки
       }
       if (inspectionResult.includes("Испытание просрочено!")) {
         row.querySelector(".inspection-result").classList.add("red-text");
@@ -255,23 +255,23 @@ button:hover {
   color: green;
 }
 /* Желтый текст для "Необходимо выполнить осмотр!" */
-.yellow-text {
-  color: yellow;
+.orange-text {
+  color: orange;
 }
 /* Красный текст для "Испытание просрочено!" */
 .red-text {
   color: red;
 }
 /* Анимация мигания желтой рамки */
-@keyframes blink-yellow {
+@keyframes blink-orange {
   0% {
-    border-color: yellow;
+    border-color: orange;
   }
   50% {
     border-color: transparent;
   }
   100% {
-    border-color: yellow;
+    border-color: orange;
   }
 }
 /* Анимация мигания красной рамки */
@@ -287,13 +287,13 @@ button:hover {
   }
 }
 /* Класс для желтой мигающей рамки */
-.blink-yellow {
-  border: 2px solid yellow;
-  animation: blink-yellow 1s infinite;
+.blink-orange {
+  border: 3px solid orange;
+  animation: blink-orange 2s infinite;
 }
 /* Класс для красной мигающей рамки */
 .blink-red {
-  border: 2px solid red;
+  border: 3px solid red;
   animation: blink-red 1s infinite;
 }
 </style>
