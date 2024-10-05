@@ -2,18 +2,21 @@
 export function calculateNextTestDate(sizType, testDate) {
   let monthsToAdd = 0;
 
+  // СИЗ со сроками испытания - 1 раз в 6 мес.
   const sixMonthsItems = [
     "Диэлектрические перчатки",
     "Перчатки диэлектрические",
     "Лестница изолирующая",
     "Стремянка изолирующая",
+    "Подставка изолирующая",
     "Изолирующая лестница",
     "Изолирующая стремянка",
+    "Изолирующая подставка",
     "Приставая изолирующая лестница",
     "Приставая изолирующая стремянка",
     "Приставая изолирующая лестница (стремянка)",
   ];
-
+  // СИЗ со сроками испытания - 1 раз в 12 мес.
   const twelveMonthsItems = [
     "Диэлектрические галоши",
     "Галоши диэлектрические",
@@ -26,7 +29,7 @@ export function calculateNextTestDate(sizType, testDate) {
     "Изолирующий инструмент",
     "Изолирующий инструмент, комплект",
   ];
-
+  // СИЗ со сроками испытания - 1 раз в 24 мес.
   const twentyFourMonthsItems = [
     "Электроизмерительные клещи",
     "Клещи электроизмерительные",
@@ -42,7 +45,7 @@ export function calculateNextTestDate(sizType, testDate) {
     "Изолирующая штанга КШЗ",
     "КШЗ (с изолирующей штангой)",
   ];
-
+  // СИЗ со сроками испытания - 1 раз в 36 мес.
   const thirtySixMonthsItems = ["Диэлектрические боты", "Боты диэлектрические"];
 
   if (sixMonthsItems.includes(sizType)) {
@@ -72,7 +75,8 @@ export function getLastInspectDate() {
 export function getAutomaticInspectionResult(
   differenceInMs,
   lastInspectDate,
-  existingInspectionResult = ""
+  existingInspectionResult = "",
+  isPZ = false // Добавляем флаг для типов ПЗ
 ) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
 
@@ -93,8 +97,8 @@ export function getAutomaticInspectionResult(
       inspectDiff <= oneMonthInMs ? INSPECTED : INSPECTION_REQUIRED;
   }
 
-  // Проверка даты следующего испытания
-  if (differenceInMs) {
+  // Проверка даты следующего испытания (если не ПЗ)
+  if (!isPZ && differenceInMs !== null && differenceInMs !== undefined) {
     if (differenceInMs > oneMonthInMs) {
       testNote = TESTED;
     } else if (differenceInMs >= 0) {
