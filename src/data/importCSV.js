@@ -71,9 +71,6 @@ export async function importCSV() {
           ? nextTestDate.getTime() - new Date().getTime()
           : null;
 
-        // Логирование, чтобы увидеть разницу
-        console.log("differenceInMs:", differenceInMs);
-
         let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
         // Выполнение проверок
