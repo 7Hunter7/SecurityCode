@@ -66,17 +66,6 @@ export async function importCSV() {
             : new Date(formatDate(row["Дата последнего осмотра"]))
           : null;
 
-        // Логирование, чтобы увидеть, какие даты парсятся и используются
-        console.log("testDate:", testDate);
-        console.log("nextTestDate:", nextTestDate);
-        console.log("lastInspectDate:", lastInspectDate);
-
-        // Проверяем, что nextTestDate — это объект Date
-        if (!(nextTestDate instanceof Date) || isNaN(nextTestDate)) {
-          console.error("Ошибка преобразования nextTestDate:", nextTestDate);
-          continue; // Пропускаем эту строку, если дата некорректна
-        }
-
         // Вычисляем разницу во времени для генерации примечания
         const differenceInMs = nextTestDate
           ? nextTestDate.getTime() - new Date().getTime()
