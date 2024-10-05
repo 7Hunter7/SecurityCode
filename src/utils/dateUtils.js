@@ -75,34 +75,41 @@ export function getAutomaticInspectionResult(
   existingInspectionResult = ""
 ) {
   const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
+
+  // Константы сообщений
+  const INSPECTED = "Осмотрено.";
+  const INSPECTION_REQUIRED = "Необходимо выполнить осмотр!";
+  const TESTED = "Испытано.";
+  const TEST_REQUIRED = "Необходимо отправить на испытания!";
+  const TEST_OVERDUE = "Испытание просрочено!";
+
   let inspectionNote = "";
   let testNote = "";
 
   // Проверка даты последнего осмотра
   if (lastInspectDate) {
     const inspectDiff = new Date() - new Date(lastInspectDate);
-    if (inspectDiff <= oneMonthInMs) {
-      inspectionNote = "Осмотрено.";
-    } else {
-      inspectionNote = "Необходимо выполнить осмотр!";
-    }
+    inspectionNote =
+      inspectDiff >= oneMonthInMs ? INSPECTED : INSPECTION_REQUIRED;
   }
 
   // Проверка даты следующего испытания
-  if (differenceInMs) {
+  if (differenceInMs !== undefined && differenceInMs !== null) {
     if (differenceInMs > oneMonthInMs) {
-      testNote = "Испытано.";
-    } else if (differenceInMs <= oneMonthInMs && differenceInMs >= 0) {
-      testNote = "Необходимо отправить на испытания!";
-    } else if (differenceInMs < 0) {
-      testNote = "Испытание просрочено!";
+      testNote = TESTED;
+    } else if (differenceInMs >= 0) {
+      testNote = TEST_REQUIRED;
+    } else {
+      testNote = TEST_OVERDUE;
     }
   }
 
-  // Объединение результатов проверок в одну строку
-  const combinedNote =
-    `${existingInspectionResult} ${inspectionNote} ${testNote}`.trim();
-  return combinedNote.replace(/\s+/g, " ").trim(); // Удаление лишних пробелов
+  // Объединение результатов
+  const combinedNote = [existingInspectionResult, inspectionNote, testNote]
+    .filter(Boolean) // Убираем пустые строки
+    .join(" "); // Объединяем с одним пробелом
+
+  return combinedNote.trim(); // Убираем возможные пробелы по краям
 }
 
 // Функция для проверки валидности даты
