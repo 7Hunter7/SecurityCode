@@ -250,4 +250,50 @@ button:hover {
   background-color: #007bff;
   color: white;
 }
+/* Зеленый текст для "Осмотрено." и "Испытано." */
+.green-text {
+  color: green;
+}
+/* Желтый текст для "Необходимо выполнить осмотр!" */
+.yellow-text {
+  color: yellow;
+}
+/* Красный текст для "Испытание просрочено!" */
+.red-text {
+  color: red;
+}
+/* Анимация мигания желтой рамки */
+@keyframes blink-yellow {
+  0% {
+    border-color: yellow;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: yellow;
+  }
+}
+/* Анимация мигания красной рамки */
+@keyframes blink-red {
+  0% {
+    border-color: red;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: red;
+  }
+}
+/* Класс для желтой мигающей рамки */
+.blink-yellow {
+  border: 2px solid yellow;
+  animation: blink-yellow 1s infinite;
+}
+/* Класс для красной мигающей рамки */
+.blink-red {
+  border: 2px solid red;
+  animation: blink-red 1s infinite;
+}
 </style>
