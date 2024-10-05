@@ -71,12 +71,12 @@ export async function importCSV() {
 
         let inspectionResult = row["Результат осмотра"] || ""; // Если уже есть примечание, используем его
 
-        // Выполнение обеих проверок
+        // Выполнение проверок
         if (!PZ_TYPES.includes(row["Вид СЗ"])) {
           inspectionResult = getAutomaticInspectionResult(
             differenceInMs,
             lastInspectDate,
-            inspectionResult
+            null
           );
         } else {
           inspectionResult = getAutomaticInspectionResult(
