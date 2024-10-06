@@ -34,13 +34,15 @@
         >
           <td class="location">{{ item.location }}</td>
           <td class="type">{{ item.type }}</td>
-          <td>{{ item.voltageClass }}</td>
-          <td>{{ item.szType }}</td>
-          <td>{{ item.number }}</td>
-          <td>{{ formatDate(item.testDate) }}</td>
-          <td>{{ formatDate(item.nextTestDate) }}</td>
-          <td>{{ formatDate(item.lastInspectDate) }}</td>
-          <td>{{ item.quantity }}</td>
+          <td class="voltageClass">{{ item.voltageClass }}</td>
+          <td class="szType">{{ item.szType }}</td>
+          <td class="number">{{ item.number }}</td>
+          <td class="testDate">{{ formatDate(item.testDate) }}</td>
+          <td class="nextTestDate">{{ formatDate(item.nextTestDate) }}</td>
+          <td class="lastInspectDate">
+            {{ formatDate(item.lastInspectDate) }}
+          </td>
+          <td class="quantity">{{ item.quantity }}</td>
           <td class="inspection-result">{{ item.inspectionResult }}</td>
           <td>
             <button @click="editSIZ(item)">Редактировать</button>
@@ -245,9 +247,12 @@ export default {
           inspectionResult.includes("Необходимо выполнить осмотр!") &&
           !this.shownInspectionNotifications.has(itemId)
         ) {
-          toast.warning(`Необходимо выполнить осмотр ${type} ${location}!`, {
-            timeout: 7000,
-          });
+          toast.warning(
+            `Необходимо выполнить осмотр СИЗ: ${type} ${location}!`,
+            {
+              timeout: 7000,
+            }
+          );
           this.shownInspectionNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
         // Проверка просрочки испытаний
@@ -256,7 +261,7 @@ export default {
           !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Внимание! Необходимо выполнить испытания ${type} ${location}!`,
+            `Внимание! Необходимо выполнить испытания СИЗ: ${type} ${location}!`,
             {
               timeout: 10000,
             }
