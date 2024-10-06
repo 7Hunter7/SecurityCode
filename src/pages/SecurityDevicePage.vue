@@ -70,11 +70,9 @@ export default {
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
 
-    const toast = useToast(); // Инициализация уведомлений
-
     this.$nextTick(() => {
-      this.applyStyles();
-      this.checkForOverdueInspectionsAndTests();
+      this.applyStyles(); // Применение стилей
+      this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
     });
   },
   computed: {
@@ -218,6 +216,7 @@ export default {
 
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
+      const toast = useToast(); // Инициализация уведомлений
       const rows = document.querySelectorAll(".table-row");
 
       rows.forEach((row) => {
