@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         <tr class="table-row" v-for="item in filteredSIZItems" :key="item.id">
-          <td>{{ item.location }}</td>
+          <td class="location">{{ item.location }}</td>
           <td>{{ item.type }}</td>
           <td>{{ item.voltageClass }}</td>
           <td>{{ item.szType }}</td>
@@ -68,9 +68,11 @@ export default {
   },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
-    //Применение стилей
+
+    // Проверка после рендеринга
     this.$nextTick(() => {
       this.applyStyles();
+      this.checkForOverdueInspectionsAndTests();
     });
   },
   computed: {
@@ -166,9 +168,10 @@ export default {
       // Применение фильтров в store через мутацию
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
 
-      // Применение стилей после фильтрации элементов
+      // Проверка при фильтрации
       this.$nextTick(() => {
         this.applyStyles();
+        this.checkForOverdueInspectionsAndTests();
       });
     },
 
@@ -209,6 +212,44 @@ export default {
           row.classList.add("blink-red"); // Добавляем мигание строки
         }
       });
+    },
+
+    // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
+    checkForOverdueInspectionsAndTests() {
+      const rows = document.querySelectorAll(".table-row");
+
+      rows.forEach((row) => {
+        const inspectionResult =
+          row.querySelector(".inspection-result").textContent;
+        const location = row.querySelector(".location").textContent;
+        // Если просрочен осмотр
+        if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
+          this.showNotification(
+            `Необходимо выполнить осмотр СИЗ ${location}!`,
+            "warning"
+          );
+        }
+        // Если просрочено испытание
+        if (inspectionResult.includes("Испытание просрочено!")) {
+          this.showNotification(
+            `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
+            "danger"
+          );
+        }
+      });
+    },
+
+    // Метод для показа уведомлений
+    showNotification(message, type) {
+      if (Notification.permission === "granted") {
+        new Notification(message);
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification(message);
+          }
+        });
+      }
     },
   },
 };
