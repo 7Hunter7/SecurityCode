@@ -26,7 +26,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="table-row" v-for="item in filteredSIZItems" :key="item.id">
+        <tr
+          class="table-row"
+          v-for="item in filteredSIZItems"
+          :key="item.id"
+          :data-id="item.id"
+        >
           <td class="location">{{ item.location }}</td>
           <td>{{ item.type }}</td>
           <td>{{ item.voltageClass }}</td>
@@ -73,6 +78,7 @@ export default {
       shownTestNotifications: new Set(), // Отслеживание уведомлений по испытаниям
     };
   },
+  // Отслеживание изменений
   watch: {
     filteredSIZItems() {
       // Сбрасываем трекер уведомлений при изменении фильтров
@@ -235,17 +241,17 @@ export default {
         // Проверка просрочки осмотра
         if (
           inspectionResult.includes("Необходимо выполнить осмотр!") &&
-          !this.shownInspectionNotifications.has(item.id)
+          !this.shownInspectionNotifications.has(row.dataset.id)
         ) {
           toast.warning(`Необходимо выполнить осмотр СИЗ ${location}!`, {
             timeout: 7000,
           });
-          this.shownInspectionNotifications.add(item.id); // Добавляем в трекер уведомлений
+          this.shownInspectionNotifications.add(row.dataset.id); // Добавляем в трекер уведомлений
         }
         // Проверка просрочки испытаний
         if (
           inspectionResult.includes("Испытание просрочено!") &
-          !this.shownTestNotifications.has(item.id)
+          !this.shownTestNotifications.has(row.dataset.id)
         ) {
           toast.error(
             `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
@@ -253,7 +259,7 @@ export default {
               timeout: 10000,
             }
           );
-          this.shownTestNotifications.add(item.id); // Добавляем в трекер уведомлений
+          this.shownTestNotifications.add(row.dataset.id); // Добавляем в трекер уведомлений
         }
       });
     },
