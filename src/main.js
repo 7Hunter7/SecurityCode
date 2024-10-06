@@ -4,12 +4,12 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import Toast from "vue-toastification";
+import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 // Настройка уведомлений
 const options = {
-  position: "top-right", // Позиция для всплывающих уведомлений
+  position: POSITION.TOP_RIGHT, // Позиция уведомлений
   timeout: 5000, // Время показа уведомления
   closeOnClick: true,
   pauseOnFocusLoss: true,
@@ -26,5 +26,5 @@ const options = {
 const app = createApp(App);
 app.use(router);
 app.use(store);
-app.use(Toast, options); // Подключение toastification
+app.use(Toast, options); // Подключение toastification с опциями
 app.mount("#app");
