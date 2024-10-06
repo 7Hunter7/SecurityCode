@@ -87,7 +87,6 @@ export default {
       this.resetNotificationsTracker();
       this.$nextTick(() => {
         this.applyStyles();
-        this.checkForOverdueInspectionsAndTests();
       });
     },
   },
@@ -241,6 +240,7 @@ export default {
           row.querySelector(".inspection-result").textContent;
         const location = row.querySelector(".location").textContent;
         const type = row.querySelector(".type").textContent;
+        const number = row.querySelector(".number").textContent;
         const itemId = row.dataset.id; // Уникальный идентификатор строки из data-id
         // Проверка просрочки осмотра
         if (
@@ -248,7 +248,7 @@ export default {
           !this.shownInspectionNotifications.has(itemId)
         ) {
           toast.warning(
-            `Необходимо выполнить осмотр СИЗ: ${type} ${location}!`,
+            `Необходимо выполнить осмотр СИЗ: ${type} №${number} ${location}!`,
             {
               timeout: 7000,
             }
@@ -261,7 +261,7 @@ export default {
           !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Внимание! Необходимо выполнить испытания СИЗ: ${type} ${location}!`,
+            `Необходимо выполнить испытания СИЗ: ${type} №${number} ${location}!`,
             {
               timeout: 10000,
             }
