@@ -1,9 +1,9 @@
-import express from "express";
+import { Router } from "express";
 import SIZItem from "../models/SIZItem.js";
 import { sizItemValidationSchema } from "../validation/sizValidation.js";
 import logger from "../logger.js"; // Подключаем Winston
 
-const router = express.Router();
+const router = Router();
 
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
