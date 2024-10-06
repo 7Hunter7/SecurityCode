@@ -33,7 +33,7 @@
           :data-id="item.id"
         >
           <td class="location">{{ item.location }}</td>
-          <td>{{ item.type }}</td>
+          <td class="type">{{ item.type }}</td>
           <td>{{ item.voltageClass }}</td>
           <td>{{ item.szType }}</td>
           <td>{{ item.number }}</td>
@@ -238,28 +238,30 @@ export default {
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
         const location = row.querySelector(".location").textContent;
+        const type = row.querySelector(".type").textContent;
+        const itemId = row.dataset.id; // Уникальный идентификатор строки из data-id
         // Проверка просрочки осмотра
         if (
           inspectionResult.includes("Необходимо выполнить осмотр!") &&
-          !this.shownInspectionNotifications.has(row.dataset.id)
+          !this.shownInspectionNotifications.has(itemId)
         ) {
-          toast.warning(`Необходимо выполнить осмотр СИЗ ${location}!`, {
+          toast.warning(`Необходимо выполнить осмотр ${type} ${location}!`, {
             timeout: 7000,
           });
-          this.shownInspectionNotifications.add(row.dataset.id); // Добавляем в трекер уведомлений
+          this.shownInspectionNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
         // Проверка просрочки испытаний
         if (
           inspectionResult.includes("Испытание просрочено!") &
-          !this.shownTestNotifications.has(row.dataset.id)
+          !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
+            `Внимание! Необходимо выполнить испытания ${type} ${location}!`,
             {
               timeout: 10000,
             }
           );
-          this.shownTestNotifications.add(row.dataset.id); // Добавляем в трекер уведомлений
+          this.shownTestNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
       });
     },
