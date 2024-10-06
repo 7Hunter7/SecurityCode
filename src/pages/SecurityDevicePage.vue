@@ -67,6 +67,22 @@ export default {
   components: {
     FiltersComponent,
   },
+  data() {
+    return {
+      shownInspectionNotifications: new Set(), // Отслеживание уведомлений по осмотру
+      shownTestNotifications: new Set(), // Отслеживание уведомлений по испытаниям
+    };
+  },
+  watch: {
+    filteredSIZItems() {
+      // Сбрасываем трекер уведомлений при изменении фильтров
+      this.resetNotificationsTracker();
+      this.$nextTick(() => {
+        this.applyStyles();
+        this.checkForOverdueInspectionsAndTests();
+      });
+    },
+  },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
 
@@ -167,19 +183,15 @@ export default {
       }
       // Применение фильтров в store через мутацию
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
-
-      // Проверка при фильтрации
       this.$nextTick(() => {
         this.applyStyles();
         this.checkForOverdueInspectionsAndTests();
       });
     },
-
     // Редактирование элемента
     editSIZ(item) {
       this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
     },
-
     // Удаление элемента
     async deleteSIZ(item) {
       if (confirm(`Вы уверены, что хотите удалить ${item.type}?`)) {
@@ -187,7 +199,6 @@ export default {
         await this.loadData();
       }
     },
-
     // Применение стилей на основе результата осмотра
     applyStyles() {
       const rows = document.querySelectorAll(".table-row");
@@ -196,7 +207,6 @@ export default {
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
 
-        // Обрабатываем каждое условие и добавляем соответствующие классы для текста
         if (inspectionResult.includes("Осмотрено.")) {
           row.querySelector(".inspection-result").classList.add("green-text");
         }
@@ -205,15 +215,14 @@ export default {
         }
         if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
           row.querySelector(".inspection-result").classList.add("orange-text");
-          row.classList.add("blink-orange"); // Добавляем мигание строки
+          row.classList.add("blink-orange");
         }
         if (inspectionResult.includes("Испытание просрочено!")) {
           row.querySelector(".inspection-result").classList.add("red-text");
-          row.classList.add("blink-red"); // Добавляем мигание строки
+          row.classList.add("blink-red");
         }
       });
     },
-
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
       const toast = useToast(); // Инициализация уведомлений
@@ -223,22 +232,35 @@ export default {
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
         const location = row.querySelector(".location").textContent;
-        // Если просрочен осмотр
-        if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
+        // Проверка просрочки осмотра
+        if (
+          inspectionResult.includes("Необходимо выполнить осмотр!") &&
+          !this.shownInspectionNotifications.has(itemId)
+        ) {
           toast.warning(`Необходимо выполнить осмотр СИЗ ${location}!`, {
-            timeout: 10000,
+            timeout: 7000,
           });
+          this.shownInspectionNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
-        // Если просрочено испытание
-        if (inspectionResult.includes("Испытание просрочено!")) {
+        // Проверка просрочки испытаний
+        if (
+          inspectionResult.includes("Испытание просрочено!") &
+          !this.shownTestNotifications.has(itemId)
+        ) {
           toast.error(
             `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
             {
               timeout: 10000,
             }
           );
+          this.shownTestNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
       });
+    },
+    // Сбрасываем трекеры при обновлении фильтров
+    resetNotificationsTracker() {
+      this.shownInspectionNotifications.clear();
+      this.shownTestNotifications.clear();
     },
   },
 };
