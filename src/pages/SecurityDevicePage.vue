@@ -68,6 +68,7 @@ export default {
   },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
+    //Применение стилей
     this.$nextTick(() => {
       this.applyStyles();
     });
@@ -81,7 +82,7 @@ export default {
     },
     // Динамическое заполнение выпадающих списков
     uniqueLocations() {
-      return [...new Set(this.filteredSIZItems.map((item) => item.location))];
+      return [...new Set(this.getSizItems.map((item) => item.location))];
     },
     uniqueTypes() {
       return [...new Set(this.filteredSIZItems.map((item) => item.type))];
@@ -164,6 +165,11 @@ export default {
       }
       // Применение фильтров в store через мутацию
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
+
+      // Применение стилей после фильтрации элементов
+      this.$nextTick(() => {
+        this.applyStyles();
+      });
     },
 
     // Редактирование элемента
