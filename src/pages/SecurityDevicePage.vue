@@ -240,19 +240,6 @@ export default {
         }
       });
     },
-
-    // Метод для показа уведомлений
-    showNotification(message, type) {
-      if (Notification.permission === "granted") {
-        new Notification(message);
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            new Notification(message);
-          }
-        });
-      }
-    },
   },
 };
 </script>
