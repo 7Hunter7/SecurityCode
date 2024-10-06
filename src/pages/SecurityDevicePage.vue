@@ -226,14 +226,14 @@ export default {
         const location = row.querySelector(".location").textContent;
         // Если просрочен осмотр
         if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
-          toast.warning(`Необходимо выполнить осмотр СИЗ ${device.location}!`, {
-            timeout: 10000, // Настройте таймер по желанию
+          toast.warning(`Необходимо выполнить осмотр СИЗ ${location}!`, {
+            timeout: 10000,
           });
         }
         // Если просрочено испытание
         if (inspectionResult.includes("Испытание просрочено!")) {
           toast.error(
-            `Внимание! Необходимо выполнить испытания СИЗ ${device.location}!`,
+            `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
             {
               timeout: 10000,
             }
