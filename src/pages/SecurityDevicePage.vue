@@ -192,7 +192,6 @@ export default {
       this.$store.commit("SET_FILTERED_SIZ_ITEMS", filteredItems);
       this.$nextTick(() => {
         this.applyStyles();
-        this.checkForOverdueInspectionsAndTests();
       });
     },
     // Редактирование элемента
