@@ -235,17 +235,17 @@ export default {
         // Проверка просрочки осмотра
         if (
           inspectionResult.includes("Необходимо выполнить осмотр!") &&
-          !this.shownInspectionNotifications.has(itemId)
+          !this.shownInspectionNotifications.has(item.id)
         ) {
           toast.warning(`Необходимо выполнить осмотр СИЗ ${location}!`, {
             timeout: 7000,
           });
-          this.shownInspectionNotifications.add(itemId); // Добавляем в трекер уведомлений
+          this.shownInspectionNotifications.add(item.id); // Добавляем в трекер уведомлений
         }
         // Проверка просрочки испытаний
         if (
           inspectionResult.includes("Испытание просрочено!") &
-          !this.shownTestNotifications.has(itemId)
+          !this.shownTestNotifications.has(item.id)
         ) {
           toast.error(
             `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
@@ -253,7 +253,7 @@ export default {
               timeout: 10000,
             }
           );
-          this.shownTestNotifications.add(itemId); // Добавляем в трекер уведомлений
+          this.shownTestNotifications.add(item.id); // Добавляем в трекер уведомлений
         }
       });
     },
