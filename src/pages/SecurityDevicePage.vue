@@ -260,7 +260,7 @@ export default {
           !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Необходимо выполнить испытания СИЗ: ${type} №${number} ${location}!`,
+            `Необходимо выполнить испытания СИЗ: ${type} №${number} ${location}`,
             {
               timeout: 10000,
             }
