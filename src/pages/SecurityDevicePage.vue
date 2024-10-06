@@ -60,6 +60,7 @@
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
 import { mapGetters, mapActions } from "vuex";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "SecurityDevicePage",
@@ -69,7 +70,8 @@ export default {
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
 
-    // Проверка после рендеринга
+    const toast = useToast(); // Инициализация уведомлений
+
     this.$nextTick(() => {
       this.applyStyles();
       this.checkForOverdueInspectionsAndTests();
@@ -224,16 +226,17 @@ export default {
         const location = row.querySelector(".location").textContent;
         // Если просрочен осмотр
         if (inspectionResult.includes("Необходимо выполнить осмотр!")) {
-          this.showNotification(
-            `Необходимо выполнить осмотр СИЗ ${location}!`,
-            "warning"
-          );
+          toast.warning(`Необходимо выполнить осмотр СИЗ ${device.location}!`, {
+            timeout: 10000, // Настройте таймер по желанию
+          });
         }
         // Если просрочено испытание
         if (inspectionResult.includes("Испытание просрочено!")) {
-          this.showNotification(
-            `Внимание! Необходимо выполнить испытания СИЗ ${location}!`,
-            "danger"
+          toast.error(
+            `Внимание! Необходимо выполнить испытания СИЗ ${device.location}!`,
+            {
+              timeout: 10000,
+            }
           );
         }
       });
