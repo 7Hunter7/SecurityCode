@@ -19,7 +19,7 @@
     "csv-parser": "^3.0.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
-    "express": "^4.20.0",
+    "express": "^2.5.11",
     "firebase": "^10.13.1",
     "firebase-admin": "^12.5.0",
     "joi": "^17.13.3",
@@ -29,7 +29,7 @@
     "sqlite3": "^5.1.7",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
-    "vue-toastification": "^1.7.14",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuex": "^4.1.0",
     "winston": "^3.14.2"
   },
