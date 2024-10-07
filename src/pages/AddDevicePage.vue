@@ -136,7 +136,7 @@
 
 <script>
 import InputField from "../components/InputField.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import {
   calculateNextTestDate,
   getLastInspectDate,
@@ -179,6 +179,7 @@ export default {
     ]),
   },
   methods: {
+    ...mapActions(["addSIZ"]),
     calculateNextTestDate() {
       this.siz.nextTestDate = calculateNextTestDate(
         this.siz.type,
@@ -198,6 +199,7 @@ export default {
       this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
     },
     submitForm() {
+      // Применяем новые значения, если они добавлены
       [
         "location",
         "type",
@@ -211,7 +213,7 @@ export default {
           this.siz[field] = newValue;
         }
       });
-      this.$emit("addSIZ", this.siz);
+      this.addSIZ(this.siz); // Добавляем новый элемент
       this.$router.push("/security-device");
     },
   },
