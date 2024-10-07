@@ -73,34 +73,13 @@ export default {
       nextTestDateTo: "",
     };
   },
-  watch: {
-    // Наблюдатель для любых изменений фильтров
-    search() {
-      this.updateFilters();
-    },
-    selectedLocation() {
-      this.updateFilters();
-    },
-    selectedType() {
-      this.updateFilters();
-    },
-    selectedVoltageClass() {
-      this.updateFilters();
-    },
-    nextTestDateFrom() {
-      this.updateFilters();
-    },
-    nextTestDateTo() {
-      this.updateFilters();
-    },
-  },
   methods: {
     updateFilters() {
       this.$emit("filterChanged", {
-        search: this.search || "",
-        selectedLocation: this.selectedLocation || "",
-        selectedType: this.selectedType || "",
-        selectedVoltageClass: this.selectedVoltageClass || "",
+        search: this.search,
+        selectedLocation: this.selectedLocation,
+        selectedType: this.selectedType,
+        selectedVoltageClass: this.selectedVoltageClass,
         nextTestDateFrom: this.nextTestDateFrom || null,
         nextTestDateTo: this.nextTestDateTo || null,
       });
