@@ -23,7 +23,7 @@ app.use(express.json());
 
 // Подключение маршрутов
 app.use(
-  "/api/siz-items",
+  "/api",
   (req, res, next) => {
     console.log("Запрос получен на /api/siz-items");
     next();
