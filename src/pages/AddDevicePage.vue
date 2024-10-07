@@ -137,6 +137,7 @@
 <script>
 import InputField from "../components/InputField.vue";
 import { mapState, mapActions } from "vuex";
+import { createSIZItem } from "../services/apiService.js";
 import {
   calculateNextTestDate,
   getLastInspectDate,
@@ -198,7 +199,7 @@ export default {
 
       this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
     },
-    submitForm() {
+    async submitForm() {
       // Применяем новые значения, если они добавлены
       [
         "location",
@@ -213,8 +214,13 @@ export default {
           this.siz[field] = newValue;
         }
       });
-      this.addSIZ(this.siz); // Добавляем новый элемент
-      this.$router.push("/security-device");
+      try {
+        const response = await createSIZItem(this.siz);
+        console.log("СИЗ успешно добавлено:", response.data);
+        this.$router.push("/security-device"); // Переход  на страницу /security-device после успешного добавления
+      } catch (error) {
+        console.error("Ошибка при добавлении СИЗ:", error);
+      }
     },
   },
 };
