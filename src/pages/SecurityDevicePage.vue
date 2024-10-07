@@ -154,8 +154,11 @@ export default {
       // Фильтр по строке поиска
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        filteredItems = filteredItems.filter((item) =>
-          item.type.toLowerCase().includes(searchTerm)
+        filteredItems = filteredItems.filter(
+          (item) =>
+            item.type.toLowerCase().includes(searchTerm) ||
+            item.szType.toLowerCase().includes(searchTerm) ||
+            item.number.toString().includes(searchTerm)
         );
       }
       // Фильтр по местоположению

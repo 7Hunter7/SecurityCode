@@ -138,7 +138,9 @@ export default createStore({
     applyFilters({ commit, state }, filters) {
       const filteredItems = state.sizItems.filter((item) => {
         const matchesSearch = filters.search
-          ? item.type.toLowerCase().includes(filters.search.toLowerCase())
+          ? item.type.toLowerCase().includes(filters.search.toLowerCase()) ||
+            item.szType.toLowerCase().includes(filters.search.toLowerCase()) ||
+            item.number.toString().includes(filters.search)
           : true;
         const matchesLocation = filters.selectedLocation
           ? item.location === filters.selectedLocation
