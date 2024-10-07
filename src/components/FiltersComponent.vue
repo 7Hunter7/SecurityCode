@@ -1,11 +1,14 @@
 <template>
   <div class="filters">
+    <h2>Поиск СИЗ по типу/виду/номеру</h2>
     <!-- Поле для поиска -->
     <input
       v-model="search"
       placeholder="Поиск по СИЗ..."
       @input="updateFilters"
     />
+    <br />
+    <h2>Фильтрация СИЗ</h2>
     <!-- Фильтр по местонахождению -->
     <select v-model="selectedLocation" @change="updateFilters">
       <option value="">Местонахождение</option>
