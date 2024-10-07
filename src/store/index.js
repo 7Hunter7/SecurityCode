@@ -151,11 +151,23 @@ export default createStore({
         const matchesVoltageClass = filters.selectedVoltageClass
           ? item.voltageClass === filters.selectedVoltageClass
           : true;
-        const matchesDateFrom = filters.testDateFrom
-          ? new Date(item.testDate) >= new Date(filters.testDateFrom)
+
+        // Преобразование дат в ISO формат перед сравнением
+        const itemNextTestDate = new Date(item.nextTestDate)
+          .toISOString()
+          .split("T")[0];
+        const filterDateFrom = filters.nextTestDateFrom
+          ? new Date(filters.nextTestDateFrom).toISOString().split("T")[0]
+          : null;
+        const filterDateTo = filters.nextTestDateTo
+          ? new Date(filters.nextTestDateTo).toISOString().split("T")[0]
+          : null;
+
+        const matchesDateFrom = filterDateFrom
+          ? itemNextTestDate >= filterDateFrom
           : true;
-        const matchesDateTo = filters.testDateTo
-          ? new Date(item.testDate) <= new Date(filters.testDateTo)
+        const matchesDateTo = filterDateTo
+          ? itemNextTestDate <= filterDateTo
           : true;
 
         return (

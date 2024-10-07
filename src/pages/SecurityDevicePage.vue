@@ -180,15 +180,25 @@ export default {
         );
       }
       // Фильтр по дате испытания "от"
-      if (filters.testDateFrom) {
+      if (filters.nextTestDateFrom) {
+        const filterDateFrom = new Date(filters.nextTestDateFrom)
+          .toISOString()
+          .split("T")[0];
         filteredItems = filteredItems.filter(
-          (item) => new Date(item.testDate) >= new Date(filters.testDateFrom)
+          (item) =>
+            new Date(item.nextTestDate).toISOString().split("T")[0] >=
+            filterDateFrom
         );
       }
       // Фильтр по дате испытания "до"
-      if (filters.testDateTo) {
+      if (filters.nextTestDateTo) {
+        const filterDateTo = new Date(filters.nextTestDateTo)
+          .toISOString()
+          .split("T")[0];
         filteredItems = filteredItems.filter(
-          (item) => new Date(item.testDate) <= new Date(filters.testDateTo)
+          (item) =>
+            new Date(item.nextTestDate).toISOString().split("T")[0] <=
+            filterDateTo
         );
       }
       // Применение фильтров в store через мутацию
