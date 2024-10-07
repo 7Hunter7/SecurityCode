@@ -213,9 +213,15 @@ export default {
     },
     // Удаление элемента
     async deleteSIZ(item) {
-      if (confirm(`Вы уверены, что хотите удалить ${item.type}?`)) {
-        await this.deleteSIZ(item.id); // Удаляем элемент через Vuex
-        await this.loadData();
+      if (
+        confirm(`Вы уверены, что хотите удалить ${item.type} ${item.number}?`)
+      ) {
+        try {
+          await this.$store.dispatch("deleteSIZ", item.id);
+          console.log("СИЗ успешно удалено");
+        } catch (error) {
+          console.error("Ошибка при удалении СИЗ", error);
+        }
       }
     },
     // Применение стилей на основе результата осмотра
