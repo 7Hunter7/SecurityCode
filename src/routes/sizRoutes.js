@@ -38,6 +38,7 @@ router.get("/", async (req, res, next) => {
 
 // Добавить новое СИЗ с проверкой уникальности
 router.post("/", async (req, res, next) => {
+  console.log("Запрос на добавление СИЗ получен:", req.body);
   const { error } = sizItemValidationSchema.validate(req.body);
   if (error) {
     const err = new Error(error.details[0].message);
