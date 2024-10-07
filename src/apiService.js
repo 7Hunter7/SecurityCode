@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/siz-items";
+const API_URL = "/api/siz-items";
 
 // Получение всех записей СИЗ
 export const getSIZItems = () => axios.get(API_URL);
