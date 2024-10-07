@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(
   "/api",
   (req, res, next) => {
-    console.log("Запрос получен на /api/siz-items");
+    console.log("Запрос получен на /api");
     next();
   },
   sizRoutes
