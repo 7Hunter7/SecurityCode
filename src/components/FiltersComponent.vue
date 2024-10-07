@@ -33,14 +33,14 @@
     <input
       id="date-from"
       type="date"
-      v-model="testDateFrom"
+      v-model="nextTestDateFrom"
       @change="updateFilters"
     />
     <label for="date-to">Дата следующего испытания (до)</label>
     <input
       id="date-to"
       type="date"
-      v-model="testDateTo"
+      v-model="nextTestDateTo"
       @change="updateFilters"
     />
   </div>
@@ -69,8 +69,8 @@ export default {
       selectedLocation: "",
       selectedType: "",
       selectedVoltageClass: "",
-      testDateFrom: "",
-      testDateTo: "",
+      nextTestDateFrom: "",
+      nextTestDateTo: "",
     };
   },
   watch: {
@@ -87,10 +87,10 @@ export default {
     selectedVoltageClass() {
       this.updateFilters();
     },
-    testDateFrom() {
+    nextTestDateFrom() {
       this.updateFilters();
     },
-    testDateTo() {
+    nextTestDateTo() {
       this.updateFilters();
     },
   },
@@ -101,8 +101,8 @@ export default {
         selectedLocation: this.selectedLocation || "",
         selectedType: this.selectedType || "",
         selectedVoltageClass: this.selectedVoltageClass || "",
-        testDateFrom: this.testDateFrom || null,
-        testDateTo: this.testDateTo || null,
+        nextTestDateFrom: this.nextTestDateFrom || null,
+        nextTestDateTo: this.nextTestDateTo || null,
       });
     },
   },
