@@ -17,7 +17,7 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/api/siz-items"),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
