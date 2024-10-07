@@ -107,6 +107,7 @@ export default createStore({
       state.filteredSIZItems = filteredItems;
     },
     ADD_SIZ(state, newSIZ) {
+      console.log(`Новое СИЗ передано в store: ${newSIZ}`);
       state.sizItems.push(newSIZ); // Добавление нового СИЗ
     },
     UPDATE_SIZ(state, updatedSIZ) {
