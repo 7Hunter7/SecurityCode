@@ -209,7 +209,9 @@ export default {
     },
     // Редактирование элемента
     editSIZ(item) {
-      this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
+      this.loadData(true).then(() => {
+        this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
+      });
     },
     // Удаление элемента
     async deleteSIZ(item) {
