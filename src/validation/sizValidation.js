@@ -13,5 +13,5 @@ export const sizItemValidationSchema = Joi.object({
   nextTestDate: Joi.date().required(),
   lastInspectDate: Joi.date().optional(), // Поле не обязательное
   quantity: Joi.number().integer().min(1).required(),
-  note: Joi.string().max(255).allow(""),
+  inspectionResult: Joi.string().max(255).allow(""),
 });
