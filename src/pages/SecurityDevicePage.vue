@@ -128,8 +128,8 @@ export default {
     ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]),
 
     // Обновление данных
-    async loadData() {
-      if (!this.getSizItems.length) {
+    async loadData(forceUpdate = false) {
+      if (!this.getSizItems.length || forceUpdate) {
         try {
           await this.loadSIZItems(); // Загружаем данные через Vuex
           console.log("Данные успешно обновлены");
