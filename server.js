@@ -10,10 +10,18 @@ import { importCSV } from "./src/data/importCSV.js"; // Импорт функц�
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Настройка CORS для текущего домена
+// Настройка CORS
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"]; // Разрешить запросы только с этих доменов
 const corsOptions = {
-  origin: "http://localhost:5173", // Разрешить запросы только с этого домена
-  methods: ["GET", "POST", "PUT", "DELETE"], // Ограничить методы запросов
+  origin: (origin, callback) => {
+    // Разрешаем запросы, если источник есть в списке
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"], // Разрешённые методы запросов
   allowedHeaders: ["Content-Type", "Authorization"], // Разрешённые заголовки
 };
 app.use(cors(corsOptions));
