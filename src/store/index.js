@@ -5,7 +5,7 @@ export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
-    newSIZ: [], // Хранилище для новых СИЗ
+    // newSIZ: [], // Хранилище для новых СИЗ
     locations: [
       "new",
       "ПС 35 кВ Жуково",
@@ -189,7 +189,10 @@ export default createStore({
         if (!newSIZ.location || !newSIZ.type || !newSIZ.number) {
           throw new Error("Заполните все обязательные поля!");
         }
-        const response = await axios.post("/api/siz-items", newSIZ); // Запрос на сервер
+        const response = await axios.post(
+          "http://localhost:3000/api/siz-items",
+          newSIZ
+        ); // Запрос на сервер
         commit("ADD_SIZ", response.data); // Добавляем в store данные из ответа сервера
       } catch (error) {
         console.error("Ошибка при добавлении СИЗ:", error);
