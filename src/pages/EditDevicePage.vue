@@ -176,9 +176,14 @@ export default {
           getAutomaticInspectionResult(differenceInMs);
       }
     },
-    submitForm() {
-      this.$emit("updateSIZ", this.siz);
-      this.$router.push("/security-device");
+    async submitForm() {
+      try {
+        const response = await updateSIZItem(this.siz.id);
+        console.log("СИЗ успешно обновлено:", response.data);
+        this.$router.push("/security-device");
+      } catch (error) {
+        console.error("Ошибка при обновлении СИЗ:", error);
+      }
     },
   },
 };
