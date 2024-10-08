@@ -27,7 +27,7 @@
       <InputField
         label="Дата испытания"
         type="date"
-        v-model="formattedTestDate"
+        v-model="siz.testDate"
         @input="updateTestDate"
         @change="calculateNextTestDate"
         required
@@ -35,14 +35,14 @@
       <InputField
         label="Дата следующего испытания"
         type="date"
-        v-model="formattedNextTestDate"
+        v-model="siz.nextTestDate"
         @input="updateNextTestDate"
         required
       />
       <InputField
         label="Дата последнего осмотра"
         type="date"
-        v-model="formattedLastInspectDate"
+        v-model="siz.lastInspectDate"
         @input="updateLastInspectDate"
         required
       />
@@ -76,7 +76,7 @@ import {
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { format } from "date-fns"; // Форматирование дат
+import { format, parseISO } from "date-fns"; // Форматирование дат
 
 export default {
   name: "EditDevicePage",
@@ -135,10 +135,12 @@ export default {
           this.siz.number = String(existingSIZ.number);
           this.siz.quantity = String(existingSIZ.quantity);
 
-          // Преобразуем даты в нужный формат
-          this.formattedTestDate = this.formatDate(this.siz.testDate);
-          this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
-          this.formattedLastInspectDate = this.formatDate(
+          // Преобразуем даты в формат yyyy-MM-dd для input
+          this.siz.testDate = this.formatDateForInput(this.siz.testDate);
+          this.siz.nextTestDate = this.formatDateForInput(
+            this.siz.nextTestDate
+          );
+          this.siz.lastInspectDate = this.formatDateForInput(
             this.siz.lastInspectDate
           );
         } else {
@@ -146,24 +148,21 @@ export default {
         }
       }
     },
-    formatDate(date) {
+    formatDateForInput(date) {
       // Проверяем, является ли дата валидной
       if (!date || isNaN(new Date(date).getTime())) {
-        return "—"; // Возвращаем дефолтное значение для пустой или некорректной даты
+        return ""; // Возвращаем пустую строку для пустой или некорректной даты
       }
-      return format(new Date(date), "dd.MM.yyyy"); // Используем формат дд.мм.гггг
+      return format(new Date(date), "yyyy-MM-dd"); // Формат для input [yyyy-MM-dd]
     },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
-      this.formattedTestDate = this.formatDate(this.siz.testDate);
     },
     updateNextTestDate(event) {
       this.siz.nextTestDate = event.target.value;
-      this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
     },
     updateLastInspectDate(event) {
       this.siz.lastInspectDate = event.target.value;
-      this.formattedLastInspectDate = this.formatDate(this.siz.lastInspectDate);
     },
     calculateNextTestDate() {
       if (this.siz.testDate && this.siz.type) {
