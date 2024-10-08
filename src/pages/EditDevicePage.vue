@@ -147,7 +147,10 @@ export default {
       }
     },
     formatDate(date) {
-      if (!date) return "";
+      // Проверяем, является ли дата валидной
+      if (!date || isNaN(new Date(date).getTime())) {
+        return "—"; // Возвращаем дефолтное значение для пустой или некорректной даты
+      }
       return format(new Date(date), "dd.MM.yyyy"); // Используем формат дд.мм.гггг
     },
     updateTestDate(event) {
