@@ -77,6 +77,7 @@ import {
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { format, parseISO } from "date-fns"; // Форматирование дат
+import { updateSIZItem } from "../services/apiService.js";
 
 export default {
   name: "EditDevicePage",
@@ -177,8 +178,20 @@ export default {
       }
     },
     async submitForm() {
+      const updatedSIZ = {
+        location: this.siz.location,
+        type: this.siz.type,
+        voltageClass: this.siz.voltageClass,
+        szType: this.siz.szType,
+        number: this.siz.number,
+        testDate: this.siz.testDate,
+        nextTestDate: this.siz.nextTestDate,
+        lastInspectDate: this.siz.lastInspectDate,
+        quantity: this.siz.quantity,
+        inspectionResult: this.siz.inspectionResult,
+      };
       try {
-        const response = await updateSIZItem(this.siz.id);
+        const response = await updateSIZItem(this.siz.id, updatedSIZ);
         console.log("СИЗ успешно обновлено:", response.data);
         this.$router.push("/security-device");
       } catch (error) {
