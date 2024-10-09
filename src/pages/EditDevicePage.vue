@@ -113,17 +113,24 @@ export default {
     ]),
     ...mapGetters(["getSizItems"]),
   },
-  mounted() {
-    this.loadData(); // Загрузка данных при монтировании компонента
+  async mounted() {
+    await this.loadData(); // Асинхронная загрузка данных
   },
   methods: {
     ...mapActions(["loadSIZItems"]),
-    loadData() {
-      // Проверка наличия данных в store
-      if (!this.getSizItems.length) {
-        this.loadSIZItems().then(() => this.fillFormData());
-      } else {
-        this.fillFormData();
+    async loadData() {
+      try {
+        // Загружаем данные независимо от их текущего состояния
+        await this.loadSIZItems();
+        console.log("Данные успешно обновлены");
+        // Проверка наличия данных в store
+        if (!this.getSizItems.length) {
+          this.loadSIZItems().then(() => this.fillFormData());
+        } else {
+          this.fillFormData();
+        }
+      } catch (error) {
+        console.error("Ошибка при обновлении данных", error);
       }
     },
     fillFormData() {
