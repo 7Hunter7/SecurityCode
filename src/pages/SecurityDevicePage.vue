@@ -98,6 +98,9 @@ export default {
       this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
     });
   },
+  async onUpdated() {
+    await this.loadData(true);
+  },
   computed: {
     ...mapGetters(["getSizItems", "getFilteredSizItems"]),
     filteredSIZItems() {
@@ -223,7 +226,9 @@ export default {
           console.log("СИЗ успешно удалено");
         } catch (error) {
           console.error("Ошибка при удалении СИЗ", error);
+          н;
         }
+        this.$nextTick(() => this.loadData(true)); // Принудительное обновление при удалении СИЗ
       }
     },
     // Применение стилей на основе результата осмотра
