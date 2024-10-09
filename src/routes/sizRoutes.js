@@ -1,5 +1,6 @@
 import express from "express";
 import SIZItem from "../models/SIZItem.js";
+import History from "../models/History.js";
 import { sizItemValidationSchema } from "../validation/sizValidation.js";
 import logger from "../logger.js"; // Подключаем Winston
 
@@ -57,8 +58,17 @@ router.post("/", async (req, res, next) => {
       logger.warn("Попытка добавить дублирующее СИЗ");
       return next(err);
     }
-
     const newItem = await SIZItem.create(req.body);
+
+    // Логируем добавление СИЗ
+    await History.create({
+      action: "create",
+      entityId: newItem.id,
+      entityType: "SIZ",
+      userId: req.user?.id || null, // Если у вас есть учет пользователей
+      details: { newData: req.body },
+    });
+
     logger.info(`СИЗ успешно добавлено с ID: ${newItem.id}`);
     res.status(201).json(newItem);
   } catch (err) {
@@ -89,8 +99,17 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       );
       return next(err);
     }
-
     await req.sizItem.update(req.body); // Обновляем запись
+
+    // Логируем редактирование СИЗ
+    await History.create({
+      action: "update",
+      entityId: item.id,
+      entityType: "SIZ",
+      userId: req.user?.id || null,
+      details: { oldData, newData: req.body },
+    });
+
     logger.info(`СИЗ с ID: ${req.sizItem.id} успешно обновлено`);
     res
       .status(200)
@@ -105,6 +124,16 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 router.delete("/:id", findSIZById, async (req, res, next) => {
   try {
     await req.sizItem.destroy();
+
+    // Логируем удаление СИЗ
+    await History.create({
+      action: "delete",
+      entityId: item.id,
+      entityType: "SIZ",
+      userId: req.user?.id || null,
+      details: { newData: req.body },
+    });
+
     logger.info(`СИЗ с ID: ${req.sizItem.id} успешно удалено`);
     res.status(204).send(); // Успешное удаление, без тела
   } catch (err) {
