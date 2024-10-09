@@ -20,8 +20,8 @@
           <td>{{ item.action }}</td>
           <td>{{ item.entityType }}</td>
           <td>{{ item.entityId }}</td>
-          <td>{{ item.userId || "Неизвестно" }}</td>
-          <td>{{ JSON.stringify(item.details) }}</td>
+          <td>{{ item.userId || "Неизвестен" }}</td>
+          <td v-html="formatDetails(item.details)"></td>
         </tr>
       </tbody>
     </table>
@@ -44,6 +44,25 @@ const loadHistory = async () => {
   } catch (error) {
     console.error("Ошибка при загрузке истории:", error);
   }
+};
+
+// Функция для форматирования details
+const formatDetails = (details) => {
+  if (!details) return "";
+
+  // Формируем строку с детализированной информацией
+  return `
+    <div>Местонахождение: ${details.location || "—"}</div>
+    <div>Вид СЗ: ${details.type || "—"}</div>
+    <div>Класс напряжения: ${details.voltageClass || "—"}</div>
+    <div>Тип СЗ: ${details.szType || "—"}</div>
+    <div>№ СЗ: ${details.number || "—"}</div>
+    <div>Дата испытания: ${details.testDate || "—"}</div>
+    <div>Дата следующего испытания: ${details.nextTestDate || "—"}</div>
+    <div>Дата последнего осмотра: ${details.lastInspectDate || "—"}</div>
+    <div>Количество: ${details.quantity || "—"}</div>
+    <div>Результат осмотра: ${details.inspectionResult || "—"}</div>
+  `;
 };
 
 // Загрузка данных, когда компонент готов
