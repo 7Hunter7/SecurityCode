@@ -1,6 +1,8 @@
 <template>
   <main>
     <h1>История изменений</h1>
+
+    <!-- Таблица с историей изменений -->
     <table>
       <thead>
         <tr>
@@ -30,17 +32,21 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const history = ref([]);
+const history = ref([]); // Реактивная переменная для хранения массива записей истории
 
+// Функция для сохранения данных истории с сервера
 const loadHistory = async () => {
   try {
+    // Запрос данных с сервера
     const response = await axios.get("/api/history");
+    // Сохранение полученных данных
     history.value = response.data;
   } catch (error) {
     console.error("Ошибка при загрузке истории:", error);
   }
 };
 
+// Загрузка данных, когда компонент готов
 onMounted(() => {
   loadHistory();
 });
