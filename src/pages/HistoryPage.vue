@@ -26,6 +26,24 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+const history = ref([]);
+
+const loadHistory = async () => {
+  try {
+    const response = await axios.get("/api/history");
+    history.value = response.data;
+  } catch (error) {
+    console.error("Ошибка при загрузке истории:", error);
+  }
+};
+
+onMounted(() => {
+  loadHistory();
+});
+</script>
 
 <style scoped></style>
