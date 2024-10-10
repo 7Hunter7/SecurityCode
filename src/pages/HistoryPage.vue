@@ -48,21 +48,29 @@ const loadHistory = async () => {
 
 // Функция для форматирования details
 const formatDetails = (details) => {
-  if (!details) return "";
+  if (!details) return "—";
 
-  // Формируем строку с детализированной информацией
-  return `
-    <div>Местонахождение: ${details.location || "—"}</div>
-    <div>Вид СЗ: ${details.type || "—"}</div>
-    <div>Класс напряжения: ${details.voltageClass || "—"}</div>
-    <div>Тип СЗ: ${details.szType || "—"}</div>
-    <div>№ СЗ: ${details.number || "—"}</div>
-    <div>Дата испытания: ${details.testDate || "—"}</div>
-    <div>Дата следующего испытания: ${details.nextTestDate || "—"}</div>
-    <div>Дата последнего осмотра: ${details.lastInspectDate || "—"}</div>
-    <div>Количество: ${details.quantity || "—"}</div>
-    <div>Результат осмотра: ${details.inspectionResult || "—"}</div>
+  // Проверяем, если details строка, преобразуем её в объект
+  let parsedDetails;
+  try {
+    parsedDetails = typeof details === "string" ? JSON.parse(details) : details;
+    // Формируем строку с детализированной информацией
+    return `
+    <div>Местонахождение: ${parsedDetails.location || "—"}</div>
+    <div>Вид СЗ: ${parsedDetails.type || "—"}</div>
+    <div>Класс напряжения: ${parsedDetails.voltageClass || "—"}</div>
+    <div>Тип СЗ: ${parsedDetails.szType || "—"}</div>
+    <div>№ СЗ: ${parsedDetails.number || "—"}</div>
+    <div>Дата испытания: ${parsedDetails.testDate || "—"}</div>
+    <div>Дата следующего испытания: ${parsedDetails.nextTestDate || "—"}</div>
+    <div>Дата последнего осмотра: ${parsedDetails.lastInspectDate || "—"}</div>
+    <div>Количество: ${parsedDetails.quantity || "—"}</div>
+    <div>Результат осмотра: ${parsedDetails.inspectionResult || "—"}</div>
   `;
+  } catch (error) {
+    console.error("Ошибка при парсинге details:", error);
+    return "Некорректные данные";
+  }
 };
 
 // Загрузка данных, когда компонент готов
