@@ -62,7 +62,7 @@ router.post("/", async (req, res, next) => {
 
     // Логируем добавление СИЗ
     await History.create({
-      action: "create",
+      action: "Добавлен",
       entityId: newItem.id,
       entityType: "SIZ",
       userId: req.user?.id || null, // Если у вас есть учет пользователей
@@ -103,7 +103,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем редактирование СИЗ
     await History.create({
-      action: "update",
+      action: "Исправлен",
       entityId: item.id,
       entityType: "SIZ",
       userId: req.user?.id || null,
@@ -127,7 +127,7 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем удаление СИЗ
     await History.create({
-      action: "delete",
+      action: "Удален",
       entityId: item.id,
       entityType: "SIZ",
       userId: req.user?.id || null,
