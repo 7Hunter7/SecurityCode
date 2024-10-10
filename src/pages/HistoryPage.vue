@@ -48,27 +48,25 @@ const loadHistory = async () => {
 
 // Функция для форматирования details
 const formatDetails = (details) => {
-  if (!details) return "—";
-
-  // Проверяем, если details строка, преобразуем её в объект
-  let parsedDetails;
+  if (!details || !details.newData) return "—";
   try {
-    parsedDetails = typeof details === "string" ? JSON.parse(details) : details;
+    const data = details.newData; // Берем объект newData
     // Формируем строку с детализированной информацией
+
     return `
-    <div>Местонахождение: ${parsedDetails.location || "—"}</div>
-    <div>Вид СЗ: ${parsedDetails.type || "—"}</div>
-    <div>Класс напряжения: ${parsedDetails.voltageClass || "—"}</div>
-    <div>Тип СЗ: ${parsedDetails.szType || "—"}</div>
-    <div>№ СЗ: ${parsedDetails.number || "—"}</div>
-    <div>Дата испытания: ${parsedDetails.testDate || "—"}</div>
-    <div>Дата следующего испытания: ${parsedDetails.nextTestDate || "—"}</div>
-    <div>Дата последнего осмотра: ${parsedDetails.lastInspectDate || "—"}</div>
-    <div>Количество: ${parsedDetails.quantity || "—"}</div>
-    <div>Результат осмотра: ${parsedDetails.inspectionResult || "—"}</div>
-  `;
+    <div>Место: ${data.location || "—"}</div>
+    <div>Вид: ${data.type || "—"}</div>
+    <div>Класс: ${data.voltageClass || "—"} кВ</div>
+    <div>Тип: ${data.szType || "—"}</div>
+    <div>№: ${data.number || "—"}</div>
+    <div>Кол-во: ${data.quantity || "—"}</div>
+    <div>Дата исп.: ${data.testDate || "—"}</div>
+    <div>Дата след. исп.: ${data.nextTestDate || "—"}</div>
+    <div>Дата осмотра: ${data.lastInspectDate || "—"}</div>
+    <div>Результат: ${data.inspectionResult || "—"}</div>
+    `;
   } catch (error) {
-    console.error("Ошибка при парсинге details:", error);
+    console.error("Ошибка при обработке данных:", error);
     return "Некорректные данные";
   }
 };
