@@ -6,11 +6,11 @@ const History = sequelize.define("History", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  entityId: {
+  sizNumber: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  entityType: {
+  sizType: {
     type: DataTypes.STRING,
     allowNull: false,
   },
