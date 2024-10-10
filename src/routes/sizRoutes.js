@@ -62,9 +62,9 @@ router.post("/", async (req, res, next) => {
 
     // Логируем добавление СИЗ
     await History.create({
-      action: "Добавлен",
-      entityId: newItem.id,
-      entityType: "SIZ",
+      action: "Добавление",
+      entityType: req.body.type,
+      entityNumber: req.body.number,
       userId: req.user?.id || null, // Если у вас есть учет пользователей
       details: { newData: req.body },
     });
@@ -103,9 +103,9 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем редактирование СИЗ
     await History.create({
-      action: "Исправлен",
-      entityId: item.id,
-      entityType: "SIZ",
+      action: "Редактирование",
+      entityType: req.body.type,
+      entityNumber: req.body.number,
       userId: req.user?.id || null,
       details: { oldData, newData: req.body },
     });
@@ -127,9 +127,9 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем удаление СИЗ
     await History.create({
-      action: "Удален",
-      entityId: item.id,
-      entityType: "SIZ",
+      action: "Удаление",
+      entityType: req.body.type,
+      entityNumber: req.body.number,
       userId: req.user?.id || null,
       details: { newData: req.body },
     });
