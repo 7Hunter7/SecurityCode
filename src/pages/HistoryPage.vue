@@ -8,8 +8,8 @@
         <tr>
           <th>Дата</th>
           <th>Действие</th>
-          <th>Тип</th>
-          <th>ID</th>
+          <th>Тип СЗ</th>
+          <th>№ СЗ</th>
           <th>Пользователь</th>
           <th>Детали</th>
         </tr>
@@ -18,8 +18,8 @@
         <tr v-for="item in history" :key="item.id">
           <td>{{ new Date(item.timestamp).toLocaleString() }}</td>
           <td>{{ item.action }}</td>
-          <td>{{ item.entityType }}</td>
-          <td>{{ item.entityId }}</td>
+          <td>{{ item.sizType }}</td>
+          <td>{{ item.sizNumber }}</td>
           <td>{{ item.userId || "Неизвестен" }}</td>
           <td v-html="formatDetails(item.details)"></td>
         </tr>
