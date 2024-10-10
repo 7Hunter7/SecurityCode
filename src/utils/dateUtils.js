@@ -129,3 +129,8 @@ export function formatDate(dateStr) {
   const parsedDate = parse(dateStr, "dd.MM.yyyy", new Date());
   return format(parsedDate, "yyyy-MM-dd");
 }
+// Функция для преобразования даты из YYYY-MM-DD в ДД.ММ.ГГГГ
+export function reverseformatDate(dateStr) {
+  const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
+  return format(parsedDate, "dd.MM.yyyy");
+}
