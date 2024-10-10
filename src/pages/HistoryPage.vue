@@ -31,15 +31,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { reverseformatDate } from "../utils/dateUtils.js";
 
 const history = ref([]); // Реактивная переменная для хранения массива записей истории
 
 // Функция для сохранения данных истории с сервера
 const loadHistory = async () => {
   try {
-    // Запрос данных с сервера
     const response = await axios.get("/api/history");
-    // Сохранение полученных данных
     history.value = response.data;
   } catch (error) {
     console.error("Ошибка при загрузке истории:", error);
@@ -50,8 +49,12 @@ const loadHistory = async () => {
 const formatDetails = (details) => {
   if (!details || !details.newData) return "—";
   try {
-    const data = details.newData; // Берем объект newData
-    // Формируем строку с детализированной информацией
+    const data = details.newData;
+
+    // Перобразование дат
+    const testDate = reverseformatDate(data.testDate);
+    const nextTestDate = reverseformatDate(data.nextTestDate);
+    const lastInspectDate = reverseformatDate(data.lastInspectDate);
 
     return `
     <div>Место: ${data.location || "—"}</div>
@@ -60,9 +63,9 @@ const formatDetails = (details) => {
     <div>Тип: ${data.szType || "—"}</div>
     <div>№: ${data.number || "—"}</div>
     <div>Кол-во: ${data.quantity || "—"}</div>
-    <div>Дата исп.: ${data.testDate || "—"}</div>
-    <div>Дата след. исп.: ${data.nextTestDate || "—"}</div>
-    <div>Дата осмотра: ${data.lastInspectDate || "—"}</div>
+    <div>Дата исп.: ${testDate || "—"}</div>
+    <div>Дата след. исп.: ${nextTestDate || "—"}</div>
+    <div>Дата осмотра: ${lastInspectDate || "—"}</div>
     <div>Результат: ${data.inspectionResult || "—"}</div>
     `;
   } catch (error) {
