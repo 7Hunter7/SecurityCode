@@ -2,16 +2,8 @@ import { DataTypes } from "sequelize";
 import sequelize from "../data/db.js";
 
 const History = sequelize.define("History", {
-  action: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  sizNumber: {
+  id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  sizType: {
-    type: DataTypes.STRING,
     allowNull: false,
   },
   timestamp: {
@@ -21,6 +13,18 @@ const History = sequelize.define("History", {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: true,
+  },
+  action: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  sizType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  sizNumber: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   details: {
     type: DataTypes.JSON,
