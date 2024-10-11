@@ -2,6 +2,9 @@
   <main>
     <h1>История изменений</h1>
 
+    <!-- Кнопка для очистки всей истории -->
+    <button @click="clearHistory" class="clear-button">Очистить историю</button>
+
     <!-- Таблица с историей изменений -->
     <table>
       <thead>
@@ -22,6 +25,10 @@
           <td>{{ item.sizNumber }}</td>
           <td>{{ item.userId || "Неизвестен" }}</td>
           <td v-html="formatDetails(item.details)"></td>
+          <!-- Кнопка для удаления отдельного события -->
+          <td>
+            <button @click="deleteEvent(item.id)">Удалить событие</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -35,7 +42,7 @@ import { reverseformatDate } from "../utils/dateUtils.js";
 
 const history = ref([]); // Реактивная переменная для хранения массива записей истории
 
-// Функция для сохранения данных истории с сервера
+// Функция для загрузки истории с сервера
 const loadHistory = async () => {
   try {
     const response = await axios.get("/api/history");
@@ -45,7 +52,7 @@ const loadHistory = async () => {
   }
 };
 
-// Функция для форматирования details
+// Функция для форматирования строковых данных details
 const formatDetails = (details) => {
   if (!details || !details.newData) return "—";
   try {
@@ -74,6 +81,32 @@ const formatDetails = (details) => {
   }
 };
 
+// Функция для очистки всей истории
+const clearHistory = async () => {
+  if (confirm("Вы уверены, что хотите очистить всю историю?")) {
+    try {
+      await axios.delete("/api/history");
+      history.value = []; // Очищаем историю на клиенте
+      console.log("История успешно очищена");
+    } catch (error) {
+      console.error("Ошибка при очистке истории:", error);
+    }
+  }
+};
+
+// Функция для удаления отдельного события
+const deleteEvent = async (id) => {
+  if (confirm("Вы уверены, что хотите удалить это событие?")) {
+    try {
+      await axios.delete(`/api/history/${id}`);
+      history.value = history.value.filter((item) => item.id !== id); // Удаляем событие из истории на клиенте
+      console.log(`Событие с ID ${id} удалено`);
+    } catch (error) {
+      console.error(`Ошибка при удалении события с ID ${id}:`, error);
+    }
+  }
+};
+
 // Загрузка данных, когда компонент готов
 onMounted(() => {
   loadHistory();
@@ -85,15 +118,33 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
-
 th,
 td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
-
 th {
   background-color: #f4f4f4;
+}
+/* Стили для кнопок */
+button {
+  padding: 6px 12px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+}
+button:hover {
+  background-color: #0056b3;
+}
+.clear-button {
+  margin-bottom: 10px;
+  background-color: #dc3545;
+}
+.clear-button:hover {
+  background-color: #c82333;
 }
 </style>
