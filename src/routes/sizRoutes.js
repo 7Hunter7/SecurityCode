@@ -62,9 +62,10 @@ router.post("/", async (req, res, next) => {
 
     // Логируем добавление СИЗ
     await History.create({
+      id: newItem.id,
       action: "Добавление",
-      sizType: req.body.type,
-      sizNumber: req.body.number,
+      sizType: newItem.type,
+      sizNumber: newItem.number,
       userId: req.user?.id || null, // Если у вас есть учет пользователей
       details: { newData: req.body },
     });
@@ -103,9 +104,10 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем редактирование СИЗ
     await History.create({
+      id: req.sizItem.id,
       action: "Редактирование",
-      sizType: req.body.type,
-      sizNumber: req.body.number,
+      sizType: req.sizItem.type,
+      sizNumber: req.sizItem.number,
       userId: req.user?.id || null,
       details: { oldData, newData: req.body },
     });
@@ -127,9 +129,10 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
 
     // Логируем удаление СИЗ
     await History.create({
+      id: req.sizItem.id,
       action: "Удаление",
-      sizType: req.body.type,
-      sizNumber: req.body.number,
+      sizType: req.sizItem.type,
+      sizNumber: req.sizItem.number,
       userId: req.user?.id || null,
       details: { newData: req.body },
     });
