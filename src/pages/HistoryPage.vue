@@ -20,15 +20,14 @@
       <tbody>
         <tr v-for="item in history" :key="item.id">
           <td>{{ new Date(item.timestamp).toLocaleString() }}</td>
-          <td>{{ item.action }}</td>
+          <td>
+            {{ item.action }}
+            <button @click="deleteEvent(item.id)">Удалить событие</button>
+          </td>
           <td>{{ item.sizType }}</td>
           <td>{{ item.sizNumber }}</td>
           <td>{{ item.userId || "Неизвестен" }}</td>
           <td v-html="formatDetails(item.details)"></td>
-          <!-- Кнопка для удаления отдельного события -->
-          <td>
-            <button @click="deleteEvent(item.id)">Удалить событие</button>
-          </td>
         </tr>
       </tbody>
     </table>
@@ -52,29 +51,50 @@ const loadHistory = async () => {
   }
 };
 
-// Функция для форматирования строковых данных details
+// Функция для форматирования строковых данных details с подсветкой изменений
 const formatDetails = (details) => {
   if (!details || !details.newData) return "—";
   try {
-    const data = details.newData;
+    const { oldData = {}, newData = {} } = details;
 
     // Перобразование дат
-    const testDate = reverseformatDate(data.testDate);
-    const nextTestDate = reverseformatDate(data.nextTestDate);
-    const lastInspectDate = reverseformatDate(data.lastInspectDate);
+    const testDate = reverseformatDate(newData.testDate);
+    const nextTestDate = reverseformatDate(newData.nextTestDate);
+    const lastInspectDate = reverseformatDate(newData.lastInspectDate);
 
-    return `
-    <div>Место: ${data.location || "—"}</div>
-    <div>Вид: ${data.type || "—"}</div>
-    <div>Класс: ${data.voltageClass || "—"} кВ</div>
-    <div>Тип: ${data.szType || "—"}</div>
-    <div>№: ${data.number || "—"}</div>
-    <div>Кол-во: ${data.quantity || "—"}</div>
-    <div>Дата исп.: ${testDate || "—"}</div>
-    <div>Дата след. исп.: ${nextTestDate || "—"}</div>
-    <div>Дата осмотра: ${lastInspectDate || "—"}</div>
-    <div>Результат: ${data.inspectionResult || "—"}</div>
-    `;
+    // Создание массива полей для отображения
+    const fields = [
+      { label: "Место", key: "location" },
+      { label: "Вид", key: "type" },
+      { label: "Класс", key: "voltageClass", suffix: " кВ" },
+      { label: "Тип", key: "szType" },
+      { label: "№", key: "number" },
+      { label: "Кол-во", key: "quantity" },
+      { label: "Дата исп.", key: "testDate", format: testDate },
+      { label: "Дата след. исп.", key: "nextTestDate", format: nextTestDate },
+      {
+        label: "Дата осмотра",
+        key: "lastInspectDate",
+        format: lastInspectDate,
+      },
+      { label: "Результат", key: "inspectionResult" },
+    ];
+    // Итоговый формат
+    let formattedDetails = "";
+
+    //Обход массива полей и сравнение значений
+    fields.forEach(({ label, key, suffix = "", format }) => {
+      const oldValue = oldData[key] || "—";
+      const newValue = newData[key] || "—";
+      const displayValue = format || newValue;
+      //Добавление строки с подсветкой изменений (если есть изменения)
+      if (oldValue !== newValue) {
+        formattedDetails += `<div>${label}: <span class="red-text">${displayValue}${suffix}</span> (было: ${oldValue}${suffix})</div>`;
+      } else {
+        formattedDetails += `<div>${label}: ${displayValue}${suffix}</div>`;
+      }
+    });
+    return formattedDetails; // Результат
   } catch (error) {
     console.error("Ошибка при обработке данных:", error);
     return "Некорректные данные";
@@ -126,6 +146,9 @@ td {
 }
 th {
   background-color: #f4f4f4;
+}
+.red-text {
+  color: red;
 }
 /* Стили для кнопок */
 button {
