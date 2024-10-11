@@ -58,9 +58,27 @@ const formatDetails = (details) => {
     const { oldData = {}, newData = {} } = details;
 
     // Перобразование дат
-    const testDate = reverseformatDate(newData.testDate);
-    const nextTestDate = reverseformatDate(newData.nextTestDate);
-    const lastInspectDate = reverseformatDate(newData.lastInspectDate);
+
+    const testDateOld = oldData.testDate
+      ? reverseformatDate(oldData.testDate)
+      : "—";
+    const testDateNew = newData.testDate
+      ? reverseformatDate(newData.testDate)
+      : "—";
+
+    const nextTestDateOld = oldData.nextTestDate
+      ? reverseformatDate(oldData.nextTestDate)
+      : "—";
+    const nextTestDateNew = newData.nextTestDate
+      ? reverseformatDate(newData.nextTestDate)
+      : "—";
+
+    const lastInspectDateOld = oldData.lastInspectDate
+      ? reverseformatDate(oldData.lastInspectDate)
+      : "—";
+    const lastInspectDateNew = newData.lastInspectDate
+      ? reverseformatDate(newData.lastInspectDate)
+      : "—";
 
     // Создание массива полей для отображения
     const fields = [
@@ -70,12 +88,23 @@ const formatDetails = (details) => {
       { label: "Тип", key: "szType" },
       { label: "№", key: "number" },
       { label: "Кол-во", key: "quantity" },
-      { label: "Дата исп.", key: "testDate", format: testDate },
-      { label: "Дата след. исп.", key: "nextTestDate", format: nextTestDate },
+      {
+        label: "Дата исп.",
+        key: "testDate",
+        oldValue: testDateOld,
+        newValue: testDateNew,
+      },
+      {
+        label: "Дата след. исп.",
+        key: "nextTestDate",
+        oldValue: nextTestDateOld,
+        newValue: nextTestDateNew,
+      },
       {
         label: "Дата осмотра",
         key: "lastInspectDate",
-        format: lastInspectDate,
+        oldValue: lastInspectDateOld,
+        newValue: lastInspectDateNew,
       },
       { label: "Результат", key: "inspectionResult" },
     ];
@@ -83,18 +112,29 @@ const formatDetails = (details) => {
     let formattedDetails = "";
 
     //Обход массива полей и сравнение значений
-    fields.forEach(({ label, key, suffix = "", format }) => {
-      const oldValue = oldData[key] || "—";
-      const newValue = newData[key] || "—";
-      const displayValue = format || newValue;
-      //Добавление строки с подсветкой изменений (если есть изменения)
-      if (oldValue !== newValue) {
-        formattedDetails += `<div>${label}: <span class="red-text">${displayValue}${suffix}</span> (было: ${oldValue}${suffix})</div>`;
+    fields.forEach(({ label, key, suffix = "", oldValue, newValue }) => {
+      // Если это поле связано с датой, используем заранее подготовленные старые и новые значения
+      const oldDisplayValue =
+        oldValue !== undefined ? oldValue : oldData[key] || "—";
+      const newDisplayValue =
+        newValue !== undefined ? newValue : newData[key] || "—";
+
+      // Сравниваем старое и новое значение для определения изменения
+      if (oldDisplayValue !== newDisplayValue) {
+        // Подсвечиваем красным цветом и добавляем (было: старое значение), если старое значение не "—"
+        formattedDetails += `<div>${label}: <span class="red-text">${newDisplayValue}${suffix}</span>`;
+        if (oldDisplayValue !== "—") {
+          formattedDetails += ` (было: ${oldDisplayValue}${suffix})</div>`;
+        } else {
+          formattedDetails += `</div>`;
+        }
       } else {
-        formattedDetails += `<div>${label}: ${displayValue}${suffix}</div>`;
+        // Если изменений нет, выводим строку без подсветки
+        formattedDetails += `<div>${label}: ${newDisplayValue}${suffix}</div>`;
       }
     });
-    return formattedDetails; // Результат
+
+    return formattedDetails;
   } catch (error) {
     console.error("Ошибка при обработке данных:", error);
     return "Некорректные данные";
