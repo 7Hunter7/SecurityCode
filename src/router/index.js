@@ -15,11 +15,6 @@ const router = createRouter({
       component: HomePage,
     },
     {
-      path: "/inventory",
-      name: "Inventory",
-      component: () => import("../pages/InventoryPage.vue"),
-    },
-    {
       path: "/history",
       name: "History",
       component: () => import("../pages/HistoryPage.vue"),
