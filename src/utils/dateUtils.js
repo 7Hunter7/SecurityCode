@@ -65,7 +65,7 @@ export function calculateNextTestDate(sizType, testDate) {
   const nextTestDate = new Date(
     testDate.setMonth(testDate.getMonth() + monthsToAdd)
   );
-  return nextTestDate.toISOString().substr(0, 10);
+  return format(nextTestDate, "yyyy-MM-dd"); // Форматируем дату как строку
 }
 
 // Функция для получения текущей даты последнего осмотра
