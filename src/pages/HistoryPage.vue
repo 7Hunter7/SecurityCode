@@ -87,7 +87,7 @@ const formatDetails = (details) => {
           : newValue;
 
       // Проверка изменений
-      if (displayOldValue !== displayNewValue) {
+      if (displayOldValue !== displayNewValue && displayOldValue !== "—") {
         return `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span> (было: ${displayOldValue}${suffix})</div>`;
       }
       return `<div>${label}: ${displayNewValue}${suffix}</div>`;
