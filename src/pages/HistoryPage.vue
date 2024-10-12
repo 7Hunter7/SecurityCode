@@ -72,42 +72,28 @@ const formatDetails = (details) => {
       { label: "Результат", key: "inspectionResult" },
     ];
 
-    let formattedDetails = "";
-
-    fields.forEach(({ label, key, suffix = "" }) => {
+    let formattedDetails = fields.map(({ label, key, suffix = "" }) => {
       const oldValue = oldData[key] || "—";
       const newValue = newData[key] || "—";
 
-      // Сравниваем исходные значения дат
-      if (oldValue !== newValue) {
-        // Преобразуем даты для отображения
-        const displayOldValue =
-          key.includes("Date") && oldValue !== "—"
-            ? reverseformatDate(oldValue) // Преобразование только для отображения
-            : oldValue;
-        const displayNewValue =
-          key.includes("Date") && newValue !== "—"
-            ? reverseformatDate(newValue) // Преобразование только для отображения
-            : newValue;
+      // Преобразование дат для отображения
+      const displayOldValue =
+        key.includes("Date") && oldValue !== "—"
+          ? reverseformatDate(oldValue)
+          : oldValue;
+      const displayNewValue =
+        key.includes("Date") && newValue !== "—"
+          ? reverseformatDate(newValue)
+          : newValue;
 
-        // Добавляем строку с подсветкой изменений
-        formattedDetails += `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span>`;
-        if (displayOldValue !== "—") {
-          formattedDetails += ` (было: ${displayOldValue}${suffix})</div>`;
-        } else {
-          formattedDetails += `</div>`;
-        }
-      } else {
-        // Если изменений нет, просто выводим значение
-        const displayValue =
-          key.includes("Date") && newValue !== "—"
-            ? reverseformatDate(newValue)
-            : newValue;
-        formattedDetails += `<div>${label}: ${displayValue}${suffix}</div>`;
+      // Проверка изменений
+      if (displayOldValue !== displayNewValue) {
+        return `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span> (было: ${displayOldValue}${suffix})</div>`;
       }
+      return `<div>${label}: ${displayNewValue}${suffix}</div>`;
     });
 
-    return formattedDetails;
+    return formattedDetails.join(""); // Преобразуем массив в строку HTML
   } catch (error) {
     console.error("Ошибка при обработке данных:", error);
     return "Некорректные данные";
