@@ -57,29 +57,6 @@ const formatDetails = (details) => {
   try {
     const { oldData = {}, newData = {} } = details;
 
-    // Перобразование дат
-
-    const testDateOld = oldData.testDate
-      ? reverseformatDate(oldData.testDate)
-      : "—";
-    const testDateNew = newData.testDate
-      ? reverseformatDate(newData.testDate)
-      : "—";
-
-    const nextTestDateOld = oldData.nextTestDate
-      ? reverseformatDate(oldData.nextTestDate)
-      : "—";
-    const nextTestDateNew = newData.nextTestDate
-      ? reverseformatDate(newData.nextTestDate)
-      : "—";
-
-    const lastInspectDateOld = oldData.lastInspectDate
-      ? reverseformatDate(oldData.lastInspectDate)
-      : "—";
-    const lastInspectDateNew = newData.lastInspectDate
-      ? reverseformatDate(newData.lastInspectDate)
-      : "—";
-
     // Создание массива полей для отображения
     const fields = [
       { label: "Место", key: "location" },
@@ -88,49 +65,44 @@ const formatDetails = (details) => {
       { label: "Тип", key: "szType" },
       { label: "№", key: "number" },
       { label: "Кол-во", key: "quantity" },
-      {
-        label: "Дата исп.",
-        key: "testDate",
-        oldValue: testDateOld,
-        newValue: testDateNew,
-      },
-      {
-        label: "Дата след. исп.",
-        key: "nextTestDate",
-        oldValue: nextTestDateOld,
-        newValue: nextTestDateNew,
-      },
-      {
-        label: "Дата осмотра",
-        key: "lastInspectDate",
-        oldValue: lastInspectDateOld,
-        newValue: lastInspectDateNew,
-      },
+      { label: "Дата исп.", key: "testDate" },
+      { label: "Дата след. исп.", key: "nextTestDate" },
+      { label: "Дата осмотра", key: "lastInspectDate" },
       { label: "Результат", key: "inspectionResult" },
     ];
     // Итоговый формат
     let formattedDetails = "";
 
     //Обход массива полей и сравнение значений
-    fields.forEach(({ label, key, suffix = "", oldValue, newValue }) => {
-      // Если это поле связано с датой, используем заранее подготовленные старые и новые значения
-      const oldDisplayValue =
-        oldValue !== undefined ? oldValue : oldData[key] || "—";
-      const newDisplayValue =
-        newValue !== undefined ? newValue : newData[key] || "—";
+    fields.forEach(({ label, key, suffix = "" }) => {
+      const oldValue = oldData[key] || "—";
+      const newValue = newData[key] || "—";
 
-      // Сравниваем старое и новое значение для определения изменения
-      if (oldDisplayValue !== newDisplayValue) {
-        // Подсвечиваем красным цветом и добавляем (было: старое значение), если старое значение не "—"
-        formattedDetails += `<div>${label}: <span class="red-text">${newDisplayValue}${suffix}</span>`;
-        if (oldDisplayValue !== "—") {
-          formattedDetails += ` (было: ${oldDisplayValue}${suffix})</div>`;
+      // Проверка и преобразование дат только если значение является валидной датой
+      const displayOldValue =
+        key.includes("Date") &&
+        oldValue !== "—" &&
+        !isNaN(new Date(oldValue).getTime())
+          ? reverseformatDate(oldValue)
+          : oldValue;
+      const displayNewValue =
+        key.includes("Date") &&
+        newValue !== "—" &&
+        !isNaN(new Date(newValue).getTime())
+          ? reverseformatDate(newValue)
+          : newValue;
+
+      // Сравниваем данные до преобразования дат
+      if (oldValue !== newValue) {
+        formattedDetails += `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span>`;
+        if (displayOldValue !== "—") {
+          formattedDetails += ` (было: ${displayOldValue}${suffix})</div>`;
         } else {
+          // Если изменений нет, выводим строку без подсветки
           formattedDetails += `</div>`;
         }
       } else {
-        // Если изменений нет, выводим строку без подсветки
-        formattedDetails += `<div>${label}: ${newDisplayValue}${suffix}</div>`;
+        formattedDetails += `<div>${label}: ${displayNewValue}${suffix}</div>`;
       }
     });
 
