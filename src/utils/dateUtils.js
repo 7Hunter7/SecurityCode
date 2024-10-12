@@ -133,7 +133,7 @@ export function getAutomaticInspectionResult(
 // Функция для проверки валидности даты
 export function isValidDate(date) {
   const parsedDate = parse(date, "yyyy-MM-dd", new Date());
-  return isValid(parsedDate);
+  return isValid(parsedDate) && !isNaN(parsedDate.getTime());
 }
 
 // Функция для преобразования даты из ДД.ММ.ГГГГ в YYYY-MM-DD
