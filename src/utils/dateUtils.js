@@ -2,6 +2,11 @@ import { parse, isValid, format } from "date-fns"; // Подключение б�
 
 // Функция для расчета следующей даты испытания
 export function calculateNextTestDate(sizType, testDate) {
+  if (isNaN(testDate.getTime())) {
+    console.error("Неверный формат даты:", testDate);
+    return null;
+  }
+
   let monthsToAdd = 0;
 
   // СИЗ со сроками испытания - 1 раз в 6 мес.
@@ -65,6 +70,13 @@ export function calculateNextTestDate(sizType, testDate) {
   const nextTestDate = new Date(
     testDate.setMonth(testDate.getMonth() + monthsToAdd)
   );
+
+  // Проверяем на валидность итоговой даты
+  if (isNaN(nextTestDate.getTime())) {
+    console.error("Неверная итоговая дата:", nextTestDate);
+    return null;
+  }
+
   return format(nextTestDate, "yyyy-MM-dd"); // Форматируем дату как строку
 }
 
