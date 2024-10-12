@@ -53,7 +53,8 @@ const loadHistory = async () => {
 
 // Функция для форматирования строковых данных details с подсветкой изменений
 const formatDetails = (details) => {
-  if (!details || !details.newData) return "—";
+  if (!details || !details.newData)
+    return [{ label: "—", value: "—", changed: false }];
 
   try {
     const { oldData = {}, newData = {} } = details;
@@ -72,7 +73,7 @@ const formatDetails = (details) => {
       { label: "Результат", key: "inspectionResult" },
     ];
 
-    let formattedDetails = fields.map(({ label, key, suffix = "" }) => {
+    return fields.map(({ label, key, suffix = "" }) => {
       const oldValue = oldData[key] || "—";
       const newValue = newData[key] || "—";
 
@@ -86,17 +87,17 @@ const formatDetails = (details) => {
           ? reverseformatDate(newValue)
           : newValue;
 
-      // Проверка изменений
-      if (displayOldValue !== displayNewValue && displayOldValue !== "—") {
-        return `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span> (было: ${displayOldValue}${suffix})</div>`;
-      }
-      return `<div>${label}: ${displayNewValue}${suffix}</div>`;
+      return {
+        label,
+        value: `${displayNewValue}${suffix}`,
+        changed: displayOldValue !== displayNewValue && displayOldValue !== "—",
+        oldValue:
+          displayOldValue !== "—" ? `${displayOldValue}${suffix}` : null,
+      };
     });
-
-    return formattedDetails.join(""); // Преобразуем массив в строку HTML
   } catch (error) {
     console.error("Ошибка при обработке данных:", error);
-    return "Некорректные данные";
+    return [{ label: "Некорректные данные", value: "—", changed: false }];
   }
 };
 
