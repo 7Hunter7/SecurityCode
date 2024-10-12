@@ -197,6 +197,9 @@ export default {
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
+
+      console.log("Данные для обновления:", updatedSIZ); // Отладка данных
+
       try {
         const response = await updateSIZItem(this.siz.id, updatedSIZ);
         console.log("СИЗ успешно обновлено:", response.data);
