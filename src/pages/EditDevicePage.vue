@@ -191,9 +191,9 @@ export default {
         voltageClass: this.siz.voltageClass,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
-        testDate: this.siz.testDate,
-        nextTestDate: this.siz.nextTestDate,
-        lastInspectDate: this.siz.lastInspectDate,
+        testDate: this.siz.testDate.split("T")[0], // Убираем время из даты
+        nextTestDate: this.siz.nextTestDate.split("T")[0], // Убираем время из даты
+        lastInspectDate: this.siz.lastInspectDate.split("T")[0], // Убираем время из даты
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
