@@ -70,7 +70,7 @@ export function calculateNextTestDate(sizType, testDate) {
 
 // Функция для получения текущей даты последнего осмотра
 export function getLastInspectDate() {
-  return new Date().toISOString().split("T")[0];
+  return format(new Date(), "yyyy-MM-dd"); // Возвращаем текущую дату в нужном формате
 }
 
 // Функция для автоматического выставления примечания в зависимости от разницы дат
