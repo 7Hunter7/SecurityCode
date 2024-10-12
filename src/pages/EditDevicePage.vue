@@ -190,11 +190,11 @@ export default {
         type: this.siz.type,
         voltageClass: this.siz.voltageClass,
         szType: this.siz.szType,
-        number: this.siz.number,
+        number: Number(this.siz.number), // Преобразование в число
         testDate: this.siz.testDate,
         nextTestDate: this.siz.nextTestDate,
         lastInspectDate: this.siz.lastInspectDate,
-        quantity: this.siz.quantity,
+        quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
       try {
