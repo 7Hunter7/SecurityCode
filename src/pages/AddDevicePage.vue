@@ -214,6 +214,11 @@ export default {
           this.siz[field] = newValue;
         }
       });
+
+      // Преобразование числовых значений
+      this.siz.number = Number(this.siz.number); // Преобразуем номер в число
+      this.siz.quantity = Number(this.siz.quantity); // Преобразуем количество в число
+
       try {
         const response = await createSIZItem(this.siz);
         console.log("СИЗ успешно добавлено:", response.data);
