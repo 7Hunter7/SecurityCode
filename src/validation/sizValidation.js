@@ -9,9 +9,15 @@ export const sizItemValidationSchema = Joi.object({
     .required(),
   szType: Joi.string().allow(""),
   number: Joi.number().integer().required(),
-  testDate: Joi.date().required(),
-  nextTestDate: Joi.date().required(),
-  lastInspectDate: Joi.date().optional(), // Поле не обязательное
+  testDate: Joi.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/) // Проверка формата даты (yyyy-MM-dd)
+    .required(),
+  nextTestDate: Joi.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/) // Проверка формата даты (yyyy-MM-dd)
+    .required(),
+  lastInspectDate: Joi.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/) // Проверка формата даты (yyyy-MM-dd)
+    .optional(),
   quantity: Joi.number().integer().min(1).required(),
   inspectionResult: Joi.string().max(255).allow(""),
 });
