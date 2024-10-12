@@ -76,7 +76,9 @@ const formatDetails = (details) => {
 
     fields.forEach(({ label, key, suffix = "" }) => {
       const oldValue = oldData[key] || "—";
+      console.log(oldValue);
       const newValue = newData[key] || "—";
+      console.log(newValue);
 
       // Сравниваем исходные значения дат
       if (oldValue !== newValue) {
