@@ -27,7 +27,19 @@
           <td>{{ item.sizType }}</td>
           <td>{{ item.sizNumber }}</td>
           <td>{{ item.userId || "Неизвестен" }}</td>
-          <td v-html="formatDetails(item.details)"></td>
+          <td>
+            <div
+              v-for="detail in formatDetails(item.details)"
+              :key="detail.label"
+            >
+              <span :class="{ 'red-text': detail.changed }">
+                {{ detail.label }}: {{ detail.value }}
+              </span>
+              <span v-if="detail.oldValue">
+                (было: {{ detail.oldValue }})
+              </span>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
