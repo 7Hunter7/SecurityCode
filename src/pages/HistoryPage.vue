@@ -78,31 +78,31 @@ const formatDetails = (details) => {
       const oldValue = oldData[key] || "—";
       const newValue = newData[key] || "—";
 
-      // Проверка и преобразование дат только если значение является валидной датой
-      const displayOldValue =
-        key.includes("Date") &&
-        oldValue !== "—" &&
-        !isNaN(new Date(oldValue).getTime())
-          ? reverseformatDate(oldValue)
-          : oldValue;
-      const displayNewValue =
-        key.includes("Date") &&
-        newValue !== "—" &&
-        !isNaN(new Date(newValue).getTime())
-          ? reverseformatDate(newValue)
-          : newValue;
-
       // Сравниваем данные до преобразования дат
       if (oldValue !== newValue) {
-        formattedDetails += `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span>`;
-        if (displayOldValue !== "—") {
-          formattedDetails += ` (было: ${displayOldValue}${suffix})</div>`;
+        // Преобразуем даты только для отображения
+        const displayoldValue =
+          key.includes("Date") && oldValue !== "—"
+            ? reverseformatDate(oldValue)
+            : oldValue;
+        const displaynewValue =
+          key.includes("Date") && newValue !== "—"
+            ? reverseformatDate(newValue)
+            : newValue;
+
+        formattedDetails += `<div>${label}: <span class="red-text">${displaynewValue}${suffix}</span>`;
+        if (displayoldValue !== "—") {
+          formattedDetails += ` (было: ${displayoldValue}${suffix})</div>`;
         } else {
-          // Если изменений нет, выводим строку без подсветки
           formattedDetails += `</div>`;
         }
       } else {
-        formattedDetails += `<div>${label}: ${displayNewValue}${suffix}</div>`;
+        // Преобразуем даты для неизменных значений
+        const displayValue =
+          key.includes("Date") && newValue !== "—"
+            ? reverseformatDate(newValue)
+            : newValue;
+        formattedDetails += `<div>${label}: ${displayValue}</div>`;
       }
     });
 
