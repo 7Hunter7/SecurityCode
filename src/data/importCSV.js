@@ -108,12 +108,9 @@ export async function importCSV() {
               voltageClass: row["Класс напряжения СЗ"],
               szType: row["Тип СЗ"] || "—",
               number: row["№ СЗ"],
-
-              // Убираем время из дат
-              testDate: testDate.split("T")[0],
-              nextTestDate: nextTestDate.split("T")[0],
-              lastInspectDate: lastInspectDate.split("T")[0],
-
+              testDate: testDate,
+              nextTestDate: nextTestDate,
+              lastInspectDate: lastInspectDate,
               quantity: parseInt(row["Количество"], 10),
               inspectionResult: inspectionResult,
             });
