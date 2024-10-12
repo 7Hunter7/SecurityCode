@@ -54,10 +54,11 @@ const loadHistory = async () => {
 // Функция для форматирования строковых данных details с подсветкой изменений
 const formatDetails = (details) => {
   if (!details || !details.newData) return "—";
+
   try {
     const { oldData = {}, newData = {} } = details;
 
-    // Создание массива полей для отображения
+    // Поля для отображения
     const fields = [
       { label: "Место", key: "location" },
       { label: "Вид", key: "type" },
@@ -70,39 +71,39 @@ const formatDetails = (details) => {
       { label: "Дата осмотра", key: "lastInspectDate" },
       { label: "Результат", key: "inspectionResult" },
     ];
-    // Итоговый формат
+
     let formattedDetails = "";
 
-    //Обход массива полей и сравнение значений
     fields.forEach(({ label, key, suffix = "" }) => {
       const oldValue = oldData[key] || "—";
       const newValue = newData[key] || "—";
 
-      // Сравниваем данные до преобразования дат
+      // Сравниваем исходные значения дат
       if (oldValue !== newValue) {
-        // Преобразуем даты только для отображения
-        const displayoldValue =
+        // Преобразуем даты для отображения
+        const displayOldValue =
           key.includes("Date") && oldValue !== "—"
-            ? reverseformatDate(oldValue)
+            ? reverseformatDate(oldValue) // Преобразование только для отображения
             : oldValue;
-        const displaynewValue =
+        const displayNewValue =
           key.includes("Date") && newValue !== "—"
-            ? reverseformatDate(newValue)
+            ? reverseformatDate(newValue) // Преобразование только для отображения
             : newValue;
 
-        formattedDetails += `<div>${label}: <span class="red-text">${displaynewValue}${suffix}</span>`;
-        if (displayoldValue !== "—") {
-          formattedDetails += ` (было: ${displayoldValue}${suffix})</div>`;
+        // Добавляем строку с подсветкой изменений
+        formattedDetails += `<div>${label}: <span class="red-text">${displayNewValue}${suffix}</span>`;
+        if (displayOldValue !== "—") {
+          formattedDetails += ` (было: ${displayOldValue}${suffix})</div>`;
         } else {
           formattedDetails += `</div>`;
         }
       } else {
-        // Преобразуем даты для неизменных значений
+        // Если изменений нет, просто выводим значение
         const displayValue =
           key.includes("Date") && newValue !== "—"
             ? reverseformatDate(newValue)
             : newValue;
-        formattedDetails += `<div>${label}: ${displayValue}</div>`;
+        formattedDetails += `<div>${label}: ${displayValue}${suffix}</div>`;
       }
     });
 
