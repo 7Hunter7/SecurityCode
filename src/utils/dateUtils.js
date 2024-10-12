@@ -134,13 +134,11 @@ export function formatDate(dateStr) {
 export function reverseformatDate(dateStr) {
   // Проверяем, если строка пуста или невалидна, возвращаем дефолтное значение
   if (!dateStr) return "—";
-
   const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
 
   // Проверяем, является ли дата валидной
   if (!isValid(parsedDate)) {
     return "—"; // Возвращаем дефолтное значение для некорректной даты
   }
-
   return format(parsedDate, "dd.MM.yyyy");
 }
