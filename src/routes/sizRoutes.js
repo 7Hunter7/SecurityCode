@@ -101,10 +101,8 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       return next(err);
     }
     // Сохраняем данные до обновления
-    const oldData = req.body; // Предыдущие данные до обновления
-    console.log(`1) данные до обновления - oldData: ${oldData}`);
-    // Обновляем запись
-    console.log("2) Данные для обновления - req.body:", req.body); // Логируем данные
+    const oldData = req.sizItem;
+
     await req.sizItem.update(req.body);
 
     // Логируем редактирование СИЗ
