@@ -183,9 +183,12 @@ export default {
         voltageClass: this.siz.voltageClass,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
-        testDate: this.siz.testDate,
-        nextTestDate: this.siz.nextTestDate,
-        lastInspectDate: this.siz.lastInspectDate,
+
+        // Преобразуем дату
+        testDate: parseAndFormatDate(this.siz.testDate),
+        nextTestDate: parseAndFormatDate(this.siz.nextTestDate),
+        lastInspectDate: parseAndFormatDate(this.siz.lastInspectDate),
+
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
