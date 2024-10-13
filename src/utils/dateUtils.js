@@ -154,3 +154,18 @@ export function reverseformatDate(dateStr) {
   }
   return format(parsedDate, "dd.MM.yyyy");
 }
+
+// Функция для преобразования строки в дату и форматирования в YYYY-MM-DD
+export function parseAndFormatDate(dateStr) {
+  // Преобразуем строку в объект даты
+  const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
+
+  // Проверяем, валидна ли дата
+  if (!isValid(parsedDate) || isNaN(parsedDate.getTime())) {
+    console.error("Неверный формат даты:", dateStr);
+    return null;
+  }
+
+  // Форматируем дату как YYYY-MM-DD
+  return format(parsedDate, "yyyy-MM-dd");
+}
