@@ -143,7 +143,7 @@ import {
   getLastInspectDate,
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
-import { useToast } from "vue-toastification";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 export default {
   name: "AddDevicePage",
@@ -182,12 +182,13 @@ export default {
   },
   methods: {
     ...mapActions(["addSIZ"]),
-    toast: useToast(), // Инициализируем уведомления
 
     calculateNextTestDate() {
       if (this.siz.testDate) {
         const parsedTestDate = new Date(this.siz.testDate);
         if (isNaN(parsedTestDate.getTime())) {
+          const toast = useToast(); // Вызов уведомления
+          toast.error("Недействительная дата испытания");
           console.error("Недействительная дата:", this.siz.testDate);
           return;
         }
@@ -198,6 +199,8 @@ export default {
         this.updateLastInspectDate();
         this.updateInspectionResult();
       } else {
+        const toast = useToast(); // Вызов уведомления
+        toast.error("Пожалуйста, укажите дату испытания");
         console.error("Дата испытания не указана");
       }
     },
@@ -212,6 +215,8 @@ export default {
       this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
     },
     async submitForm() {
+      const toast = useToast();
+
       // Применяем новые значения, если они добавлены
       [
         "location",
@@ -233,14 +238,14 @@ export default {
 
       try {
         const response = await createSIZItem(this.siz);
-        this.toast.success("СИЗ успешно добавлено!"); // Успешное уведомление
+        toast.success("СИЗ успешно добавлено!"); // Успешное уведомление
         this.$router.push("/security-device"); // Переход на страницу /security-device после успешного добавления
       } catch (error) {
         if (error.response && error.response.status === 400) {
           // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
-          this.toast.error("СИЗ с таким номером уже существует!");
+          toast.error("СИЗ с таким номером уже существует!");
         } else {
-          this.toast.error("Ошибка при добавлении СИЗ");
+          toast.error("Ошибка при добавлении СИЗ");
         }
         console.error("Ошибка при добавлении СИЗ:", error);
       }
