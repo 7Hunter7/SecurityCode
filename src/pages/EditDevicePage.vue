@@ -74,6 +74,7 @@ import {
   calculateNextTestDate,
   getLastInspectDate,
   getAutomaticInspectionResult,
+  parseAndFormatDate,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { format, parseISO } from "date-fns"; // Форматирование дат
@@ -143,12 +144,10 @@ export default {
           this.siz.number = String(existingSIZ.number);
           this.siz.quantity = String(existingSIZ.quantity);
 
-          // Преобразуем даты в формат yyyy-MM-dd для input
-          this.siz.testDate = this.formatDateForInput(this.siz.testDate);
-          this.siz.nextTestDate = this.formatDateForInput(
-            this.siz.nextTestDate
-          );
-          this.siz.lastInspectDate = this.formatDateForInput(
+          // Преобразуем строки в формат yyyy-MM-dd для input
+          this.siz.testDate = parseAndFormatDate(this.siz.testDate);
+          this.siz.nextTestDate = parseAndFormatDate(this.siz.nextTestDate);
+          this.siz.lastInspectDate = parseAndFormatDate(
             this.siz.lastInspectDate
           );
         } else {
