@@ -2,6 +2,11 @@ import { parse, isValid, format } from "date-fns"; // Подключение б�
 
 // Функция для расчета следующей даты испытания
 export function calculateNextTestDate(sizType, testDate) {
+  if (isNaN(testDate.getTime())) {
+    console.error("Неверный формат даты:", testDate);
+    return null;
+  }
+
   let monthsToAdd = 0;
 
   // СИЗ со сроками испытания - 1 раз в 6 мес.
@@ -65,12 +70,19 @@ export function calculateNextTestDate(sizType, testDate) {
   const nextTestDate = new Date(
     testDate.setMonth(testDate.getMonth() + monthsToAdd)
   );
-  return nextTestDate.toISOString().substr(0, 10);
+
+  // Проверяем на валидность итоговой даты
+  if (isNaN(nextTestDate.getTime())) {
+    console.error("Неверная итоговая дата:", nextTestDate);
+    return null;
+  }
+
+  return format(nextTestDate, "yyyy-MM-dd"); // Форматируем дату как строку
 }
 
 // Функция для получения текущей даты последнего осмотра
 export function getLastInspectDate() {
-  return new Date().toISOString().split("T")[0];
+  return format(new Date(), "yyyy-MM-dd"); // Возвращаем текущую дату в нужном формате
 }
 
 // Функция для автоматического выставления примечания в зависимости от разницы дат
@@ -121,11 +133,39 @@ export function getAutomaticInspectionResult(
 // Функция для проверки валидности даты
 export function isValidDate(date) {
   const parsedDate = parse(date, "yyyy-MM-dd", new Date());
-  return isValid(parsedDate);
+  return isValid(parsedDate) && !isNaN(parsedDate.getTime());
 }
 
 // Функция для преобразования даты из ДД.ММ.ГГГГ в YYYY-MM-DD
 export function formatDate(dateStr) {
   const parsedDate = parse(dateStr, "dd.MM.yyyy", new Date());
+  return format(parsedDate, "yyyy-MM-dd");
+}
+
+// Функция для преобразования даты из YYYY-MM-DD в ДД.ММ.ГГГГ
+export function reverseformatDate(dateStr) {
+  // Проверяем, если строка пуста или невалидна, возвращаем дефолтное значение
+  if (!dateStr) return "—";
+  const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
+
+  // Проверяем, является ли дата валидной
+  if (!isValid(parsedDate)) {
+    return "—"; // Возвращаем дефолтное значение для некорректной даты
+  }
+  return format(parsedDate, "dd.MM.yyyy");
+}
+
+// Функция для преобразования строки в дату и форматирования в YYYY-MM-DD
+export function parseAndFormatDate(dateStr) {
+  // Преобразуем строку в объект даты
+  const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
+
+  // Проверяем, валидна ли дата
+  if (!isValid(parsedDate) || isNaN(parsedDate.getTime())) {
+    console.error("Неверный формат даты:", dateStr);
+    return null;
+  }
+
+  // Форматируем дату как YYYY-MM-DD
   return format(parsedDate, "yyyy-MM-dd");
 }

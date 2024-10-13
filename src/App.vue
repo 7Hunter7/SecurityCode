@@ -9,9 +9,7 @@ import { RouterLink, RouterView } from "vue-router";
       <RouterLink to="/">Главная</RouterLink>
       <RouterLink to="/add-device">Добавить СИЗ</RouterLink>
       <RouterLink to="/security-device">Учет СИЗ</RouterLink>
-      <RouterLink to="/inventory">Инвентарь</RouterLink>
       <RouterLink to="/history">История</RouterLink>
-      <RouterLink to="/reports">Отчеты</RouterLink>
       <RouterLink to="/settings">Настройки</RouterLink>
     </nav>
   </header>

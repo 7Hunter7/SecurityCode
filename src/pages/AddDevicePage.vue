@@ -181,12 +181,21 @@ export default {
   methods: {
     ...mapActions(["addSIZ"]),
     calculateNextTestDate() {
-      this.siz.nextTestDate = calculateNextTestDate(
-        this.siz.type,
-        new Date(this.siz.testDate)
-      );
-      this.updateLastInspectDate();
-      this.updateInspectionResult();
+      if (this.siz.testDate) {
+        const parsedTestDate = new Date(this.siz.testDate);
+        if (isNaN(parsedTestDate.getTime())) {
+          console.error("Недействительная дата:", this.siz.testDate);
+          return;
+        }
+        this.siz.nextTestDate = calculateNextTestDate(
+          this.siz.type,
+          parsedTestDate
+        );
+        this.updateLastInspectDate();
+        this.updateInspectionResult();
+      } else {
+        console.error("Дата испытания не указана");
+      }
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
@@ -213,6 +222,11 @@ export default {
           this.siz[field] = newValue;
         }
       });
+
+      // Преобразование числовых значений
+      this.siz.number = Number(this.siz.number); // Преобразуем номер в число
+      this.siz.quantity = Number(this.siz.quantity); // Преобразуем количество в число
+
       try {
         await this.addSIZ(this.siz); // Добавляем новый элемент
         console.log("СИЗ успешно добавлено");

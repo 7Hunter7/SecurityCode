@@ -1,5 +1,6 @@
 import express from "express";
 import SIZItem from "../models/SIZItem.js";
+import History from "../models/History.js";
 import { sizItemValidationSchema } from "../validation/sizValidation.js";
 import logger from "../logger.js"; // Подключаем Winston
 
@@ -57,8 +58,18 @@ router.post("/siz-items", async (req, res, next) => {
       logger.warn("Попытка добавить дублирующее СИЗ");
       return next(err);
     }
-
     const newItem = await SIZItem.create(req.body);
+
+    // Логируем добавление СИЗ
+    await History.create({
+      id: newItem.id,
+      action: "Добавление",
+      sizType: newItem.type,
+      sizNumber: newItem.number,
+      userId: req.user?.id || null, // Если у вас есть учет пользователей
+      details: { newData: req.body },
+    });
+
     logger.info(`СИЗ успешно добавлено с ID: ${newItem.id}`);
     res.status(201).json(newItem);
   } catch (err) {
@@ -89,8 +100,23 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       );
       return next(err);
     }
+    // Сохраняем данные до обновления
+    const oldData = { ...req.sizItem.dataValues }; // Предыдущие данные до обновления
 
-    await req.sizItem.update(req.body); // Обновляем запись
+    // Обновляем запись
+    console.log("Данные для обновления:", req.body); // Логируем данные
+    await req.sizItem.update(req.body);
+
+    // Логируем редактирование СИЗ
+    await History.create({
+      id: req.sizItem.id,
+      action: "Редактирование",
+      sizType: req.sizItem.type,
+      sizNumber: req.sizItem.number,
+      userId: req.user?.id || null,
+      details: { oldData, newData: req.body },
+    });
+
     logger.info(`СИЗ с ID: ${req.sizItem.id} успешно обновлено`);
     res
       .status(200)
@@ -103,8 +129,20 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
+  const oldData = req.sizItem; // Данные до удаления
   try {
     await req.sizItem.destroy();
+
+    // Логируем удаление СИЗ
+    await History.create({
+      id: oldData.id,
+      action: "Удаление",
+      sizType: oldData.type,
+      sizNumber: oldData.number,
+      userId: req.user?.id || null,
+      details: { oldData, newData: req.body },
+    });
+
     logger.info(`СИЗ с ID: ${req.sizItem.id} успешно удалено`);
     res.status(204).send(); // Успешное удаление, без тела
   } catch (err) {

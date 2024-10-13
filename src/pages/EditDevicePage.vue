@@ -27,7 +27,7 @@
       <InputField
         label="Дата испытания"
         type="date"
-        v-model="formattedTestDate"
+        v-model="siz.testDate"
         @input="updateTestDate"
         @change="calculateNextTestDate"
         required
@@ -35,14 +35,14 @@
       <InputField
         label="Дата следующего испытания"
         type="date"
-        v-model="formattedNextTestDate"
+        v-model="siz.nextTestDate"
         @input="updateNextTestDate"
         required
       />
       <InputField
         label="Дата последнего осмотра"
         type="date"
-        v-model="formattedLastInspectDate"
+        v-model="siz.lastInspectDate"
         @input="updateLastInspectDate"
         required
       />
@@ -74,9 +74,11 @@ import {
   calculateNextTestDate,
   getLastInspectDate,
   getAutomaticInspectionResult,
+  parseAndFormatDate,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { format } from "date-fns"; // Форматирование дат
+import { format, parseISO } from "date-fns"; // Форматирование дат
+import { updateSIZItem } from "../services/apiService.js";
 
 export default {
   name: "EditDevicePage",
@@ -112,17 +114,24 @@ export default {
     ]),
     ...mapGetters(["getSizItems"]),
   },
-  mounted() {
-    this.loadData(); // Загрузка данных при монтировании компонента
+  async mounted() {
+    await this.loadData(); // Асинхронная загрузка данных
   },
   methods: {
     ...mapActions(["loadSIZItems"]),
-    loadData() {
-      // Проверка наличия данных в store
-      if (!this.getSizItems.length) {
-        this.loadSIZItems().then(() => this.fillFormData());
-      } else {
-        this.fillFormData();
+    async loadData() {
+      try {
+        // Загружаем данные независимо от их текущего состояния
+        await this.loadSIZItems();
+        console.log("Данные успешно обновлены");
+        // Проверка наличия данных в store
+        if (!this.getSizItems.length) {
+          this.loadSIZItems().then(() => this.fillFormData());
+        } else {
+          this.fillFormData();
+        }
+      } catch (error) {
+        console.error("Ошибка при обновлении данных", error);
       }
     },
     fillFormData() {
@@ -135,10 +144,10 @@ export default {
           this.siz.number = String(existingSIZ.number);
           this.siz.quantity = String(existingSIZ.quantity);
 
-          // Преобразуем даты в нужный формат
-          this.formattedTestDate = this.formatDate(this.siz.testDate);
-          this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
-          this.formattedLastInspectDate = this.formatDate(
+          // Преобразуем строки в формат yyyy-MM-dd для input
+          this.siz.testDate = parseAndFormatDate(this.siz.testDate);
+          this.siz.nextTestDate = parseAndFormatDate(this.siz.nextTestDate);
+          this.siz.lastInspectDate = parseAndFormatDate(
             this.siz.lastInspectDate
           );
         } else {
@@ -146,21 +155,14 @@ export default {
         }
       }
     },
-    formatDate(date) {
-      if (!date) return "";
-      return format(new Date(date), "dd.MM.yyyy"); // Используем формат дд.мм.гггг
-    },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
-      this.formattedTestDate = this.formatDate(this.siz.testDate);
     },
     updateNextTestDate(event) {
       this.siz.nextTestDate = event.target.value;
-      this.formattedNextTestDate = this.formatDate(this.siz.nextTestDate);
     },
     updateLastInspectDate(event) {
       this.siz.lastInspectDate = event.target.value;
-      this.formattedLastInspectDate = this.formatDate(this.siz.lastInspectDate);
     },
     calculateNextTestDate() {
       if (this.siz.testDate && this.siz.type) {
@@ -174,9 +176,32 @@ export default {
           getAutomaticInspectionResult(differenceInMs);
       }
     },
-    submitForm() {
-      this.$emit("updateSIZ", this.siz);
-      this.$router.push("/security-device");
+    async submitForm() {
+      const updatedSIZ = {
+        location: this.siz.location,
+        type: this.siz.type,
+        voltageClass: this.siz.voltageClass,
+        szType: this.siz.szType,
+        number: Number(this.siz.number), // Преобразование в число
+
+        // Преобразуем дату
+        testDate: parseAndFormatDate(this.siz.testDate),
+        nextTestDate: parseAndFormatDate(this.siz.nextTestDate),
+        lastInspectDate: parseAndFormatDate(this.siz.lastInspectDate),
+
+        quantity: Number(this.siz.quantity), // Преобразование в число
+        inspectionResult: this.siz.inspectionResult,
+      };
+
+      console.log("Данные для обновления:", updatedSIZ); // Отладка данных
+
+      try {
+        const response = await updateSIZItem(this.siz.id, updatedSIZ);
+        console.log("СИЗ успешно обновлено:", response.data);
+        this.$router.push("/security-device");
+      } catch (error) {
+        console.error("Ошибка при обновлении СИЗ:", error);
+      }
     },
   },
 };

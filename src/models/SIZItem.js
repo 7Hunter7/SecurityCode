@@ -29,19 +29,19 @@ const SIZItem = sequelize.define("SIZItem", {
     allowNull: false,
   },
   testDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY, // Изменено на DATEONLY
     allowNull: true,
-    defaultValue: "—",
+    defaultValue: null,
   },
   nextTestDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY, // Изменено на DATEONLY
     allowNull: true,
-    defaultValue: "—",
+    defaultValue: null,
   },
   lastInspectDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY, // Изменено на DATEONLY
     allowNull: true,
-    defaultValue: "—",
+    defaultValue: null,
   },
   quantity: {
     type: DataTypes.INTEGER,

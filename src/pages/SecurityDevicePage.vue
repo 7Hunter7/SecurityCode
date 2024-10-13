@@ -98,6 +98,9 @@ export default {
       this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
     });
   },
+  async onUpdated() {
+    await this.loadData(true);
+  },
   computed: {
     ...mapGetters(["getSizItems", "getFilteredSizItems"]),
     filteredSIZItems() {
@@ -128,8 +131,8 @@ export default {
     ...mapActions(["loadSIZItems", "deleteSIZ", "applyFilters"]),
 
     // Обновление данных
-    async loadData() {
-      if (!this.getSizItems.length) {
+    async loadData(forceUpdate = false) {
+      if (!this.getSizItems.length || forceUpdate) {
         try {
           await this.loadSIZItems(); // Загружаем данные через Vuex
           console.log("Данные успешно обновлены");
@@ -209,7 +212,9 @@ export default {
     },
     // Редактирование элемента
     editSIZ(item) {
-      this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
+      this.loadData(true).then(() => {
+        this.$router.push({ name: "Edit Device", query: { id: item.id } }); // Переход на страницу редактирования
+      });
     },
     // Удаление элемента
     async deleteSIZ(item) {
@@ -221,7 +226,9 @@ export default {
           console.log("СИЗ успешно удалено");
         } catch (error) {
           console.error("Ошибка при удалении СИЗ", error);
+          н;
         }
+        this.$nextTick(() => this.loadData(true)); // Принудительное обновление при удалении СИЗ
       }
     },
     // Применение стилей на основе результата осмотра
