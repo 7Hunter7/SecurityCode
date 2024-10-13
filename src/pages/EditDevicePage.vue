@@ -155,13 +155,6 @@ export default {
         }
       }
     },
-    formatDateForInput(date) {
-      // Проверяем, является ли дата валидной
-      if (!date || isNaN(new Date(date).getTime())) {
-        return ""; // Возвращаем пустую строку для пустой или некорректной даты
-      }
-      return format(new Date(date), "yyyy-MM-dd"); // Формат для input [yyyy-MM-dd]
-    },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
     },
