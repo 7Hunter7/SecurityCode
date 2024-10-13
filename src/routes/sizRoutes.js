@@ -51,7 +51,6 @@ router.post("/", async (req, res, next) => {
   try {
     const existingItem = await SIZItem.findOne({
       where: {
-        location: req.body.location,
         type: req.body.type,
         number: req.body.number,
       },
