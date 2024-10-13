@@ -65,9 +65,9 @@ const loadHistory = async () => {
 
 // Функция для форматирования строковых данных details с подсветкой изменений
 const formatDetails = (details) => {
-  if (!details || !details.newData)
+  if (!details || (!details.newData && !details.oldData)) {
     return [{ label: "—", value: "—", changed: false }];
-
+  }
   try {
     const { oldData = {}, newData = {} } = details;
 
