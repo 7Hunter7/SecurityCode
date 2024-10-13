@@ -143,6 +143,7 @@ import {
   getLastInspectDate,
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "AddDevicePage",
@@ -181,6 +182,8 @@ export default {
   },
   methods: {
     ...mapActions(["addSIZ"]),
+    toast: useToast(), // Инициализируем уведомления
+
     calculateNextTestDate() {
       if (this.siz.testDate) {
         const parsedTestDate = new Date(this.siz.testDate);
@@ -230,9 +233,15 @@ export default {
 
       try {
         const response = await createSIZItem(this.siz);
-        console.log("СИЗ успешно добавлено:", response.data);
-        this.$router.push("/security-device"); // Переход  на страницу /security-device после успешного добавления
+        this.toast.success("СИЗ успешно добавлено!"); // Успешное уведомление
+        this.$router.push("/security-device"); // Переход на страницу /security-device после успешного добавления
       } catch (error) {
+        if (error.response && error.response.status === 400) {
+          // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
+          this.toast.error("СИЗ с таким номером уже существует!");
+        } else {
+          this.toast.error("Ошибка при добавлении СИЗ");
+        }
         console.error("Ошибка при добавлении СИЗ:", error);
       }
     },
