@@ -104,7 +104,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       return next(err);
     }
     // Сохранение данных до обновления
-    const oldData = { ...req.sizItem.dataValues };
+    const oldData = { ...req.sizItem };
 
     await req.sizItem.update(req.body);
 
@@ -131,7 +131,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
   // Сохранение данных до удаления
-  const oldData = { ...req.sizItem.dataValues };
+  const oldData = { ...req.sizItem };
 
   try {
     await req.sizItem.destroy();
