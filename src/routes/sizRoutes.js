@@ -50,7 +50,11 @@ router.post("/", async (req, res, next) => {
 
   try {
     const existingItem = await SIZItem.findOne({
-      where: { number: req.body.number },
+      where: {
+        location: req.body.location,
+        type: req.body.type,
+        number: req.body.number,
+      },
     });
     if (existingItem) {
       const err = new Error("СИЗ с таким номером уже существует!");
