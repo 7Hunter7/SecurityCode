@@ -50,6 +50,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { reverseformatDate } from "../utils/dateUtils.js";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 const history = ref([]); // Реактивная переменная для хранения массива записей истории
 
@@ -118,12 +119,15 @@ const formatDetails = (details) => {
 
 // Функция для очистки всей истории
 const clearHistory = async () => {
+  const toast = useToast();
   if (confirm("Вы уверены, что хотите очистить всю историю?")) {
     try {
       await axios.delete("/api/history");
       history.value = []; // Очищаем историю на клиенте
+      toast.success("История успешно очищена");
       console.log("История успешно очищена");
     } catch (error) {
+      toast.error("Ошибка при очистке истории");
       console.error("Ошибка при очистке истории:", error);
     }
   }
@@ -131,12 +135,15 @@ const clearHistory = async () => {
 
 // Функция для удаления отдельного события
 const deleteEvent = async (id) => {
+  const toast = useToast();
   if (confirm("Вы уверены, что хотите удалить это событие?")) {
     try {
       await axios.delete(`/api/history/${id}`);
       history.value = history.value.filter((item) => item.id !== id); // Удаляем событие из истории на клиенте
+      toast.success("Событие успешно удалено");
       console.log(`Событие с ID ${id} удалено`);
     } catch (error) {
+      toast.error("Ошибка при удалении события");
       console.error(`Ошибка при удалении события с ID ${id}:`, error);
     }
   }
