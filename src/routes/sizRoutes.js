@@ -143,12 +143,22 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
       userId: req.user?.id || null,
       details: { oldData },
     });
-    console.log(History);
+    console.log("Данные для сохранения в History:", {
+      id,
+      action: "Удаление",
+      sizType: oldData.type,
+      sizNumber: oldData.number,
+      userId: req.user?.id || null,
+      details: { oldData },
+    });
 
     logger.info(`СИЗ с ID: ${oldData.id} успешно удалено`);
     res.status(200).json({ message: `СИЗ с ID ${oldData.id} успешно удалено` });
   } catch (err) {
-    logger.error(`Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`);
+    logger.error(
+      `Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`,
+      { stack: err.stack }
+    );
     next(err);
   }
 });
