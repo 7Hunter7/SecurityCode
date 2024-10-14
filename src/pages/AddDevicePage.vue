@@ -240,12 +240,8 @@ export default {
         const response = await createSIZItem(this.siz);
         // Успешное уведомление
         toast.success("СИЗ успешно добавлено!");
-
-        // Создаем событие, чтобы уведомить родительский компонент о необходимости обновления данных
-        this.$emit("dataUpdated");
-
         // Переход на страницу /security-device после успешного добавления
-        this.$router.push("/security-device");
+        this.$router.push({ name: "SecurityDevicePage", force: true });
       } catch (error) {
         if (error.response && error.response.status === 400) {
           // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
