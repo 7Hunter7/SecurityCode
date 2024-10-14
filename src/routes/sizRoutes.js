@@ -97,7 +97,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       where: {
         type: req.body.type,
         number: req.body.number,
-        zType: req.body.szType,
+        szType: req.body.szType,
       },
     });
     if (existingItem && existingItem.id !== req.sizItem.id) {
