@@ -65,7 +65,6 @@ router.post("/", async (req, res, next) => {
 
     // Логирование добавления СИЗ
     await History.create({
-      id: newItem.id,
       action: "Добавление",
       sizType: newItem.type,
       sizNumber: newItem.number,
@@ -110,7 +109,6 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
     // Логирование редактирования СИЗ
     await History.create({
-      id: req.sizItem.id,
       action: "Редактирование",
       sizType: req.sizItem.type,
       sizNumber: req.sizItem.number,
@@ -137,24 +135,28 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
     // Удаление записи
     await req.sizItem.destroy();
 
-    // Логирование удаления СИЗ
-    await History.create({
-      id: oldData.id,
-      action: "Удаление",
-      sizType: oldData.type,
-      sizNumber: oldData.number,
-      userId: req.user?.id || null,
-      details: { oldData },
-    });
-    console.log("Данные для сохранения в History:", {
-      id: oldData.id,
-      action: "Удаление",
-      sizType: oldData.type,
-      sizNumber: oldData.number,
-      userId: req.user?.id || null,
-      details: { oldData },
-    });
-
+    try {
+      // Логирование удаления СИЗ
+      await History.create({
+        action: "Удаление",
+        sizType: oldData.type,
+        sizNumber: oldData.number,
+        userId: req.user?.id || null,
+        details: { oldData },
+      });
+      console.log("Данные для сохранения в History:", {
+        action: "Удаление",
+        sizType: oldData.type,
+        sizNumber: oldData.number,
+        userId: req.user?.id || null,
+        details: { oldData },
+      });
+    } catch (err) {
+      logger.error(`Ошибка при создании записи в History: ${err.message}`, {
+        stack: err.stack,
+      });
+      next(err);
+    }
     logger.info(`СИЗ с ID: ${oldData.id} успешно удалено`);
     res.status(200).json({ message: `СИЗ с ID ${oldData.id} успешно удалено` });
   } catch (err) {
