@@ -242,7 +242,7 @@ export default {
         toast.success("СИЗ успешно добавлено!");
         // Переход на страницу /security-device после успешного добавления
         this.$router.push("/security-device").then(() => {
-          this.$nextTick(() => this.loadData(true)); // Принудительная перезагрузка
+          this.$router.go(0); // Принудительная перезагрузка
         });
       } catch (error) {
         if (error.response && error.response.status === 400) {
