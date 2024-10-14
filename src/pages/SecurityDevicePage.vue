@@ -218,13 +218,16 @@ export default {
     },
     // Удаление элемента
     async deleteSIZ(item) {
+      const toast = useToast(); // Инициализация уведомлений
       if (
         confirm(`Вы уверены, что хотите удалить ${item.type} ${item.number}?`)
       ) {
         try {
           await this.$store.dispatch("deleteSIZ", item.id);
+          toast.success("СИЗ успешно удалено");
           console.log("СИЗ успешно удалено");
         } catch (error) {
+          toast.error("Ошибка при удалении СИЗ");
           console.error("Ошибка при удалении СИЗ", error);
           н;
         }
