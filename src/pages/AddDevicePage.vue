@@ -137,7 +137,6 @@
 <script>
 import InputField from "../components/InputField.vue";
 import { mapState, mapActions } from "vuex";
-import { createSIZItem } from "../services/apiService.js";
 import {
   calculateNextTestDate,
   getLastInspectDate,
@@ -245,6 +244,7 @@ export default {
         await this.$store.dispatch("loadSIZItems"); // Обновление данных через Vuex
 
         this.$router.push("/security-device"); // Переход на страницу /security-device после успешного добавления
+
       } catch (error) {
         if (error.response && error.response.status === 400) {
           // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)

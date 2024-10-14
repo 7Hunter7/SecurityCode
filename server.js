@@ -25,6 +25,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"], // Разрешённые методы запросов
   allowedHeaders: ["Content-Type", "Authorization"], // Разрешённые заголовки
 };
+
 app.use(cors(corsOptions));
 
 // Middleware для парсинга JSON
