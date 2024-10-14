@@ -92,7 +92,10 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
   try {
     const existingItem = await SIZItem.findOne({
-      where: { number: req.body.number },
+      where: {
+        type: req.body.type,
+        number: req.body.number,
+      },
     });
     if (existingItem && existingItem.id !== req.sizItem.id) {
       const err = new Error("СИЗ с таким номером уже существует!");
