@@ -77,8 +77,8 @@ import {
   parseAndFormatDate,
 } from "../utils/dateUtils.js";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { format, parseISO } from "date-fns"; // Форматирование дат
 import { updateSIZItem } from "../services/apiService.js";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 export default {
   name: "EditDevicePage",
@@ -177,6 +177,8 @@ export default {
       }
     },
     async submitForm() {
+      const toast = useToast();
+
       const updatedSIZ = {
         location: this.siz.location,
         type: this.siz.type,
@@ -192,14 +194,19 @@ export default {
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
-
       console.log("Данные для обновления:", updatedSIZ); // Отладка данных
 
       try {
         const response = await updateSIZItem(this.siz.id, updatedSIZ);
+        // Успешное уведомление
+        toast.success("СИЗ успешно обновлено!");
         console.log("СИЗ успешно обновлено:", response.data);
+        // Принудительное обновление данных через Vuex
+        await this.$store.dispatch("loadSIZItems");
+        // Переход на страницу /security-device
         this.$router.push("/security-device");
       } catch (error) {
+        toast.error("Ошибка при обновлении СИЗ!");
         console.error("Ошибка при обновлении СИЗ:", error);
       }
     },

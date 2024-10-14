@@ -5,6 +5,7 @@ const History = sequelize.define("History", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   timestamp: {
     type: DataTypes.DATE,

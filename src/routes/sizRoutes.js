@@ -9,7 +9,7 @@ const router = express.Router();
 // Проверка наличия СИЗ
 async function findSIZById(req, res, next) {
   try {
-    const sizItem = await SIZItem.findByPk(req.params.id); // Используем findByPk
+    const sizItem = await SIZItem.findByPk(req.params.id);
     if (!sizItem) {
       const error = new Error("СИЗ не найдено");
       error.statusCode = 404;
@@ -50,7 +50,10 @@ router.post("/siz-items", async (req, res, next) => {
 
   try {
     const existingItem = await SIZItem.findOne({
-      where: { number: req.body.number },
+      where: {
+        type: req.body.type,
+        number: req.body.number,
+      },
     });
     if (existingItem) {
       const err = new Error("СИЗ с таким номером уже существует!");
@@ -60,13 +63,12 @@ router.post("/siz-items", async (req, res, next) => {
     }
     const newItem = await SIZItem.create(req.body);
 
-    // Логируем добавление СИЗ
+    // Логирование добавления СИЗ
     await History.create({
-      id: newItem.id,
       action: "Добавление",
       sizType: newItem.type,
       sizNumber: newItem.number,
-      userId: req.user?.id || null, // Если у вас есть учет пользователей
+      userId: req.user?.id || null, // Если есть учет пользователей
       details: { newData: req.body },
     });
 
@@ -90,7 +92,10 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
   try {
     const existingItem = await SIZItem.findOne({
-      where: { number: req.body.number },
+      where: {
+        type: req.body.type,
+        number: req.body.number,
+      },
     });
     if (existingItem && existingItem.id !== req.sizItem.id) {
       const err = new Error("СИЗ с таким номером уже существует!");
@@ -100,16 +105,13 @@ router.put("/:id", findSIZById, async (req, res, next) => {
       );
       return next(err);
     }
-    // Сохраняем данные до обновления
-    const oldData = { ...req.sizItem.dataValues }; // Предыдущие данные до обновления
+    // Сохранение данных до обновления
+    const oldData = { ...req.sizItem.dataValues };
 
-    // Обновляем запись
-    console.log("Данные для обновления:", req.body); // Логируем данные
     await req.sizItem.update(req.body);
 
-    // Логируем редактирование СИЗ
+    // Логирование редактирования СИЗ
     await History.create({
-      id: req.sizItem.id,
       action: "Редактирование",
       sizType: req.sizItem.type,
       sizNumber: req.sizItem.number,
@@ -129,24 +131,42 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
-  const oldData = req.sizItem; // Данные до удаления
+  const oldData = { ...req.sizItem.dataValues }; // Сохранение данных до удаления
+  console.log(oldData);
+
   try {
+    // Удаление записи
     await req.sizItem.destroy();
 
-    // Логируем удаление СИЗ
-    await History.create({
-      id: oldData.id,
-      action: "Удаление",
-      sizType: oldData.type,
-      sizNumber: oldData.number,
-      userId: req.user?.id || null,
-      details: { oldData, newData: req.body },
-    });
-
-    logger.info(`СИЗ с ID: ${req.sizItem.id} успешно удалено`);
-    res.status(204).send(); // Успешное удаление, без тела
+    try {
+      // Логирование удаления СИЗ
+      await History.create({
+        action: "Удаление",
+        sizType: oldData.type,
+        sizNumber: oldData.number,
+        userId: req.user?.id || null,
+        details: { oldData },
+      });
+      console.log("Данные для сохранения в History:", {
+        action: "Удаление",
+        sizType: oldData.type,
+        sizNumber: oldData.number,
+        userId: req.user?.id || null,
+        details: { oldData },
+      });
+    } catch (err) {
+      logger.error(`Ошибка при создании записи в History: ${err.message}`, {
+        stack: err.stack,
+      });
+      next(err);
+    }
+    logger.info(`СИЗ с ID: ${oldData.id} успешно удалено`);
+    res.status(200).json({ message: `СИЗ с ID ${oldData.id} успешно удалено` });
   } catch (err) {
-    logger.error(`Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`);
+    logger.error(
+      `Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`,
+      { stack: err.stack }
+    );
     next(err);
   }
 });
