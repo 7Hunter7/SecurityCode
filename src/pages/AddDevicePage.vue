@@ -241,7 +241,9 @@ export default {
         // Успешное уведомление
         toast.success("СИЗ успешно добавлено!");
         // Переход на страницу /security-device после успешного добавления
-        this.$router.push({ name: "SecurityDevicePage", force: true });
+        this.$router.push({ name: "SecurityDevicePage" }).then(() => {
+          this.$router.go(0); // Принудительная перезагрузка текущего маршрута
+        });
       } catch (error) {
         if (error.response && error.response.status === 400) {
           // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
