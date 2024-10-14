@@ -131,6 +131,7 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
   const oldData = { ...req.sizItem.dataValues }; // Сохранение данных до удаления
+  console.log(oldData);
 
   try {
     // Удаление записи
@@ -145,6 +146,7 @@ router.delete("/:id", findSIZById, async (req, res, next) => {
       userId: req.user?.id || null,
       details: { oldData },
     });
+    console.log(History);
 
     logger.info(`СИЗ с ID: ${oldData.id} успешно удалено`);
     res.status(200).json({ message: `СИЗ с ID ${oldData.id} успешно удалено` });
