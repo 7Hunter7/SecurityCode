@@ -48,6 +48,7 @@ router.post("/", async (req, res, next) => {
     return next(err);
   }
 
+  // Проверка уникальности СИЗ
   try {
     const existingItem = await SIZItem.findOne({
       where: {
