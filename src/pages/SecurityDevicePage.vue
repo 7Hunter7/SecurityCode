@@ -226,12 +226,13 @@ export default {
           await this.$store.dispatch("deleteSIZ", item.id);
           toast.success("СИЗ успешно удалено");
           console.log("СИЗ успешно удалено");
+          // Принудительное обновление данных через Vuex
+          await this.loadData(true);
         } catch (error) {
           toast.error("Ошибка при удалении СИЗ");
           console.error("Ошибка при удалении СИЗ", error);
           н;
         }
-        this.$nextTick(() => this.loadData(true)); // Принудительное обновление при удалении СИЗ
       }
     },
     // Применение стилей на основе результата осмотра
