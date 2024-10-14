@@ -100,15 +100,14 @@ const formatDetails = (details) => {
           ? reverseformatDate(newValue)
           : newValue;
 
+      const hasChanged =
+        displayOldValue !== displayNewValue && displayOldValue !== "—";
+
       return {
         label,
         value: `${displayNewValue}${suffix}`,
-        changed:
-          displayOldValue !== displayNewValue &&
-          displayOldValue !== "—" &&
-          displayNewValue !== "—",
-        oldValue:
-          displayOldValue !== "—" ? `${displayOldValue}${suffix}` : null,
+        changed: hasChanged, // Флаг для подсветки изменений
+        oldValue: hasChanged ? `${displayOldValue}${suffix}` : null, // Показываем старое значение, только если изменилось
       };
     });
   } catch (error) {
