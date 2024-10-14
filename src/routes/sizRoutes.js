@@ -130,28 +130,24 @@ router.put("/:id", findSIZById, async (req, res, next) => {
 
 // Удалить СИЗ
 router.delete("/:id", findSIZById, async (req, res, next) => {
-  // Данные до обновления
-  const oldData = { ...req.sizItem.dataValues };
-  console.log(oldData);
+  const oldData = { ...req.sizItem.dataValues }; // Сохранение данных до удаления
 
   try {
-    // Обновляем запись
-    await req.sizItem.update(req.body);
+    // Удаление записи
+    await req.sizItem.destroy();
 
     // Логирование удаления СИЗ
     await History.create({
-      id: req.sizItem.id,
+      id: oldData.id,
       action: "Удаление",
-      sizType: req.sizItem.type,
-      sizNumber: req.sizItem.number,
+      sizType: oldData.type,
+      sizNumber: oldData.number,
       userId: req.user?.id || null,
       details: { oldData },
     });
 
-    logger.info(`СИЗ с ID: ${req.sizItem.id} успешно удалено`);
-    res
-      .status(200)
-      .json({ message: `СИЗ с ID ${req.sizItem.id} успешно удалено` });
+    logger.info(`СИЗ с ID: ${oldData.id} успешно удалено`);
+    res.status(200).json({ message: `СИЗ с ID ${oldData.id} успешно удалено` });
   } catch (err) {
     logger.error(`Ошибка удаления СИЗ с ID: ${req.sizItem.id}: ${err.message}`);
     next(err);
