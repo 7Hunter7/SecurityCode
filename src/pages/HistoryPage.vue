@@ -85,28 +85,33 @@ const formatDetails = (details) => {
       { label: "Результат", key: "inspectionResult" },
     ];
 
-    return fields.map(({ label, key, suffix = "" }) => {
-      const oldValue = oldData[key] || "—";
-      const newValue = newData[key] || "—";
+    return fields
+      .map(({ label, key, suffix = "" }) => {
+        const oldValue = oldData[key] || "—";
+        const newValue = newData[key] || "—";
 
-      // Преобразование дат для отображения
-      const displayOldValue =
-        key.includes("Date") && oldValue !== "—"
-          ? reverseformatDate(oldValue)
-          : oldValue;
-      const displayNewValue =
-        key.includes("Date") && newValue !== "—"
-          ? reverseformatDate(newValue)
-          : newValue;
+        // Преобразование дат для отображения
+        const displayOldValue =
+          key.includes("Date") && oldValue !== "—"
+            ? reverseformatDate(oldValue)
+            : oldValue;
+        const displayNewValue =
+          key.includes("Date") && newValue !== "—"
+            ? reverseformatDate(newValue)
+            : newValue;
 
-      return {
-        label,
-        value: `${displayNewValue}${suffix}`,
-        changed: displayOldValue !== displayNewValue && displayOldValue !== "—",
-        oldValue:
-          displayOldValue !== "—" ? `${displayOldValue}${suffix}` : null,
-      };
-    });
+        return {
+          label,
+          value: `${displayNewValue}${suffix}`,
+          changed:
+            displayOldValue !== displayNewValue &&
+            displayOldValue !== "—" &&
+            displayNewValue !== "—",
+          oldValue:
+            displayOldValue !== "—" ? `${displayOldValue}${suffix}` : null,
+        };
+      })
+      .filter((field) => field.changed); // Убираем неизмененные поля
   } catch (error) {
     console.error("Ошибка при обработке данных:", error);
     return [{ label: "Некорректные данные", value: "—", changed: false }];
