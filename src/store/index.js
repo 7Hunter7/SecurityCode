@@ -39,6 +39,7 @@ export default createStore({
       "ПЗ для ИВЛ",
       "Наброс для ВЛ",
     ],
+    pzTypes: ["ПЗ", "ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "КШЗ"],
     voltageClasses: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
     szTypes: [
       "new",
@@ -229,9 +230,9 @@ export default createStore({
     // методы для чтения состояния
     getSizItems: (state) => state.sizItems,
     getFilteredSizItems: (state) => state.filteredSIZItems,
-
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
+    getPzTypes: (state) => state.pzTypes,
     getVoltageClasses: (state) => state.voltageClasses,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
