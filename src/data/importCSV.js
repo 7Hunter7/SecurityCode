@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import csv from "csv-parser";
 import SIZItem from "../models/SIZItem.js";
+import { PZ_TYPES } from "../constants/constants.js"; // Импортируем массив ПЗ
 import {
   isValidDate,
   formatDate,
@@ -23,9 +24,6 @@ export async function importCSV() {
     console.error(`Файл не найден: ${filePath}`);
     return;
   }
-
-  // Определяем типы СИЗ, для которых не нужно генерировать примечание об испытании
-  const PZ_TYPES = ["ПЗ", "ПЗ для РУ", "ПЗ для ВЛ", "ПЗ для ИВЛ", "КШЗ"];
 
   // Получаем максимальный updatedAt из базы данных
   const latestRecord = await SIZItem.findOne({
