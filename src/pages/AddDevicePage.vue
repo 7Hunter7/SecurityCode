@@ -67,7 +67,7 @@
       </div>
 
       <!-- Дата испытания -->
-      <div class="form-group">
+      <div class="form-group" v-if="!isPzType">
         <label for="testDate">Дата испытания:</label>
         <input
           type="date"
@@ -79,7 +79,7 @@
       </div>
 
       <!-- Дата следующего испытания -->
-      <div class="form-group">
+      <div class="form-group" v-if="!isPzType">
         <label for="nextTestDate">Дата следующего испытания:</label>
         <input
           type="date"
@@ -175,10 +175,14 @@ export default {
     ...mapState([
       "locations",
       "types",
+      "pzTypes",
       "voltageClasses",
       "szTypes",
       "inspectionResults",
     ]),
+    isPzType() {
+      return this.pzTypes.includes(this.siz.type);
+    },
   },
   methods: {
     ...mapActions(["addSIZ"]),
