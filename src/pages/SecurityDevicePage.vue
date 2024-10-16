@@ -37,12 +37,12 @@
           <td class="voltageClass">{{ item.voltageClass }}</td>
           <td class="szType">{{ item.szType }}</td>
           <td class="number">{{ item.number }}</td>
-          <td class="testDate">{{ formatDate(item.testDate, item.type) }}</td>
+          <td class="testDate">{{ formatDate(item.testDate) }}</td>
           <td class="nextTestDate">
-            {{ formatDate(item.nextTestDate, item.type) }}
+            {{ formatDate(item.nextTestDate) }}
           </td>
           <td class="lastInspectDate">
-            {{ formatDate(item.lastInspectDate, item.type) }}
+            {{ formatDate(item.lastInspectDate) }}
           </td>
           <td class="quantity">{{ item.quantity }}</td>
           <td class="inspection-result">{{ item.inspectionResult }}</td>
@@ -150,7 +150,7 @@ export default {
 
     // Форматирование дат
     formatDate(date, type) {
-      if (!date || PZ_TYPES.includes(type)) return "—"; // Если дата не указана или тип СЗ относится к PZ_TYPES, возвращаем "—"
+      if (!date || date === "") return "—";
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Date(date).toLocaleDateString("ru-RU", options);
     },
