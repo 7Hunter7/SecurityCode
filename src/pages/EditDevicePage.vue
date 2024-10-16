@@ -27,6 +27,7 @@
       <InputField
         label="Дата испытания"
         type="date"
+        v-if="!isPZType"
         v-model="siz.testDate"
         @input="updateTestDate"
         @change="calculateNextTestDate"
@@ -35,6 +36,7 @@
       <InputField
         label="Дата следующего испытания"
         type="date"
+        v-if="!isPZType"
         v-model="siz.nextTestDate"
         @input="updateNextTestDate"
         required
@@ -79,6 +81,7 @@ import {
 import { mapState, mapActions, mapGetters } from "vuex";
 import { updateSIZItem } from "../services/apiService.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
+import { PZ_TYPES } from "../constants/constants.js";
 
 export default {
   name: "EditDevicePage",
@@ -113,6 +116,9 @@ export default {
       "inspectionResults",
     ]),
     ...mapGetters(["getSizItems"]),
+    isPZType() {
+      return PZ_TYPES.includes(this.siz.type);
+    },
   },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
