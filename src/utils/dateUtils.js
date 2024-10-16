@@ -123,11 +123,13 @@ export function getAutomaticInspectionResult(
   }
 
   // Объединение результатов
-  const combinedNote = [existingInspectionResult, inspectionNote, testNote]
-    .filter(Boolean) // Убираем пустые строки
-    .join(" "); // Объединяем с одним пробелом
+  const combinedNote = [
+    existingInspectionResult,
+    inspectionNote,
+    testNote,
+  ].join(" "); // Объединяем с одним пробелом
 
-  return combinedNote.trim(); // Убираем возможные пробелы по краям
+  return combinedNote;
 }
 
 // Функция для проверки валидности даты
