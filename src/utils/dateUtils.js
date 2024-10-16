@@ -129,7 +129,7 @@ export function getAutomaticInspectionResult(
     testNote,
   ].join(" "); // Объединяем с одним пробелом
 
-  return combinedNote;
+  return combinedNote.trim(); // Убираем возможные пробелы по краям
 }
 
 // Функция для проверки валидности даты
