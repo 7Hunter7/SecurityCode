@@ -123,9 +123,14 @@ export function getAutomaticInspectionResult(
   }
 
   // Объединение результатов
-  const combinedNote = [existingInspectionResult, inspectionNote, testNote]
+  const combinedNote = [inspectionNote, testNote]
     .filter(Boolean) // Убираем пустые строки
     .join(" "); // Объединяем с одним пробелом
+
+  // Если уже есть существующий результат
+  if (existingInspectionResult) {
+    return `${existingInspectionResult} ${combinedNote}`.trim(); // Убираем пробелы по краям
+  }
 
   return combinedNote.trim(); // Убираем возможные пробелы по краям
 }
