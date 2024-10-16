@@ -79,6 +79,7 @@ export default {
   },
   data() {
     return {
+      notificationsShown: false, // Уведомления еще не показаны
       shownInspectionNotifications: new Set(), // Отслеживание уведомлений по осмотру
       shownTestNotifications: new Set(), // Отслеживание уведомлений по испытаниям
     };
@@ -264,6 +265,7 @@ export default {
     },
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
+      if (this.notificationsShown) return; // Если уведомления уже показаны, ничего не делаем
       const toast = useToast(); // Инициализация уведомлений
       const rows = document.querySelectorAll(".table-row");
 
@@ -301,6 +303,7 @@ export default {
           this.shownTestNotifications.add(itemId); // Добавляем в трекер уведомлений
         }
       });
+      this.notificationsShown = true; // Устанавливаем флаг, что уведомления были показаны
     },
     // Сбрасываем трекеры при обновлении фильтров
     resetNotificationsTracker() {
