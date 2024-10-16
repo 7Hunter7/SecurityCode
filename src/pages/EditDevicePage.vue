@@ -151,11 +151,19 @@ export default {
           this.siz.quantity = String(existingSIZ.quantity);
 
           // Преобразуем строки в формат yyyy-MM-dd для input
-          this.siz.testDate = parseAndFormatDate(this.siz.testDate);
-          this.siz.nextTestDate = parseAndFormatDate(this.siz.nextTestDate);
-          this.siz.lastInspectDate = parseAndFormatDate(
-            this.siz.lastInspectDate
-          );
+          if (PZ_TYPES.includes(this.siz.type)) {
+            this.siz.testDate = null;
+            this.siz.nextTestDate = null;
+            this.siz.lastInspectDate = parseAndFormatDate(
+              this.siz.lastInspectDate
+            );
+          } else {
+            this.siz.testDate = parseAndFormatDate(this.siz.testDate);
+            this.siz.nextTestDate = parseAndFormatDate(this.siz.nextTestDate);
+            this.siz.lastInspectDate = parseAndFormatDate(
+              this.siz.lastInspectDate
+            );
+          }
         } else {
           console.warn("Не удалось найти СИЗ с таким ID");
         }
@@ -184,19 +192,33 @@ export default {
     },
     async submitForm() {
       const toast = useToast();
+      let testDateForSubmitForm;
+      let nextTestDateForSubmitForm;
+      let lastInspectDateForSubmitForm;
 
+      // Преобразуем дату
+      if (PZ_TYPES.includes(this.siz.type)) {
+        testDateForSubmitForm = null;
+        nextTestDateForSubmitForm = null;
+        lastInspectDateForSubmitForm = parseAndFormatDate(
+          this.siz.lastInspectDate
+        );
+      } else {
+        testDateForSubmitForm = parseAndFormatDate(this.siz.testDate);
+        nextTestDateForSubmitForm = parseAndFormatDate(this.siz.nextTestDate);
+        lastInspectDateForSubmitForm = parseAndFormatDate(
+          this.siz.lastInspectDate
+        );
+      }
       const updatedSIZ = {
         location: this.siz.location,
         type: this.siz.type,
         voltageClass: this.siz.voltageClass,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
-
-        // Преобразуем дату
-        testDate: parseAndFormatDate(this.siz.testDate),
-        nextTestDate: parseAndFormatDate(this.siz.nextTestDate),
-        lastInspectDate: parseAndFormatDate(this.siz.lastInspectDate),
-
+        testDate: testDateForSubmitForm,
+        nextTestDate: nextTestDateForSubmitForm,
+        lastInspectDate: lastInspectDateForSubmitForm,
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
       };
