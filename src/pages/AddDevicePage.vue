@@ -144,6 +144,7 @@ import {
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
+import { PZ_TYPES } from "../constants/constants.js";
 
 export default {
   name: "AddDevicePage",
@@ -175,13 +176,12 @@ export default {
     ...mapState([
       "locations",
       "types",
-      "pzTypes",
       "voltageClasses",
       "szTypes",
       "inspectionResults",
     ]),
     isPzType() {
-      return this.pzTypes.includes(this.siz.type);
+      return PZ_TYPES.includes(this.siz.type);
     },
   },
   methods: {
