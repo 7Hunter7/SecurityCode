@@ -42,7 +42,7 @@
             {{ formatDate(item.nextTestDate, item.type) }}
           </td>
           <td class="lastInspectDate">
-            {{ formatDate(item.lastInspectDate, !PZ_TYPES) }}
+            {{ formatDate(item.lastInspectDate) }}
           </td>
           <td class="quantity">{{ item.quantity }}</td>
           <td class="inspection-result">{{ item.inspectionResult }}</td>
