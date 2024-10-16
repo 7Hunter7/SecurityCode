@@ -62,6 +62,10 @@
           type="text"
           id="number"
           placeholder="Введите номер СЗ"
+          @change="
+            updateLastInspectDate(),
+              updateInspectionResultForLastInspectDate(siz.lastInspectDate)
+          "
           required
         />
       </div>
@@ -210,6 +214,9 @@ export default {
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
+    },
+    updateInspectionResultForLastInspectDate(lastInspectDate) {
+      if (lastInspectDate) this.siz.inspectionResult = "Осмотрено.";
     },
     updateInspectionResult() {
       const currentDate = new Date();
