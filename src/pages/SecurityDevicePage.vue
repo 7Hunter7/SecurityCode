@@ -37,10 +37,12 @@
           <td class="voltageClass">{{ item.voltageClass }}</td>
           <td class="szType">{{ item.szType }}</td>
           <td class="number">{{ item.number }}</td>
-          <td class="testDate">{{ formatDate(item.testDate) }}</td>
-          <td class="nextTestDate">{{ formatDate(item.nextTestDate) }}</td>
+          <td class="testDate">{{ formatDate(item.testDate, item.type) }}</td>
+          <td class="nextTestDate">
+            {{ formatDate(item.nextTestDate, item.type) }}
+          </td>
           <td class="lastInspectDate">
-            {{ formatDate(item.lastInspectDate) }}
+            {{ formatDate(item.lastInspectDate, item.type) }}
           </td>
           <td class="quantity">{{ item.quantity }}</td>
           <td class="inspection-result">{{ item.inspectionResult }}</td>
@@ -68,6 +70,7 @@
 import FiltersComponent from "../components/FiltersComponent.vue";
 import { mapGetters, mapActions } from "vuex";
 import { useToast } from "vue-toastification";
+import { PZ_TYPES } from "../constants/constants.js";
 
 export default {
   name: "SecurityDevicePage",
@@ -145,8 +148,8 @@ export default {
     },
 
     // Форматирование дат
-    formatDate(date) {
-      if (!date) return "—";
+    formatDate(date, type) {
+      if (!date || PZ_TYPES.includes(type)) return "—"; // Если дата не указана или тип СЗ относится к PZ_TYPES, возвращаем "—"
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Date(date).toLocaleDateString("ru-RU", options);
     },
