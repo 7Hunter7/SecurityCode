@@ -393,14 +393,17 @@ button:hover {
 .blink-green {
   position: relative;
   border: 3px solid green;
+  border-radius: 0px 20px 0px 20px;
   animation: blink-green 1.5s infinite;
 }
 .blink-orange {
   border: 3px solid orange;
+  border-radius: 0px 20px 0px 20px;
   animation: blink-orange 1.5s infinite;
 }
 .blink-red {
   border: 3px solid red;
+  border-radius: 0px 20px 0px 20px;
   animation: blink-red 1s infinite;
 }
 /* Стиль для надписи "NEW" */
