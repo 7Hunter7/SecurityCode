@@ -82,6 +82,7 @@ export default {
       notificationsShown: false, // Уведомления еще не показаны
       shownInspectionNotifications: new Set(), // Отслеживание уведомлений по осмотру
       shownTestNotifications: new Set(), // Отслеживание уведомлений по испытаниям
+      newAddedId: null, // Отслеживание нового элемента
     };
   },
   // Отслеживание изменений
@@ -243,6 +244,15 @@ export default {
     applyStyles() {
       const rows = document.querySelectorAll(".table-row");
       rows.forEach((row) => {
+        const itemId = row.dataset.id;
+        // Если это новый элемент, добавляем класс для мигающей рамки
+        if (this.newAddedId && this.newAddedId === itemId) {
+          row.classList.add("blink-green");
+          const newLabel = document.createElement("span");
+          newLabel.classList.add("new-label");
+          newLabel.textContent = "NEW";
+          row.querySelector("td").appendChild(newLabel);
+        }
         // Получаем результат осмотра
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
@@ -262,6 +272,10 @@ export default {
           row.classList.add("blink-red");
         }
       });
+      // Сбрасываем состояние нового элемента
+      setTimeout(() => {
+        this.newlyAddedId = null;
+      }, 6000);
     },
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
