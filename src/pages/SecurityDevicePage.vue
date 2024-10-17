@@ -360,19 +360,28 @@ button:hover {
   background-color: #007bff;
   color: white;
 }
-/* Зеленый текст для "Осмотрено." и "Испытано." */
+/* Цвет для текста */
 .green-text {
   color: green;
 }
-/* Желтый текст для "Необходимо выполнить осмотр!" */
 .orange-text {
   color: orange;
 }
-/* Красный текст для "Испытание просрочено!" */
 .red-text {
   color: red;
 }
-/* Анимация мигания желтой рамки */
+/* Анимация для рамки */
+@keyframes blink-green {
+  0% {
+    border-color: green;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: green;
+  }
+}
 @keyframes blink-orange {
   0% {
     border-color: orange;
@@ -384,7 +393,6 @@ button:hover {
     border-color: orange;
   }
 }
-/* Анимация мигания красной рамки */
 @keyframes blink-red {
   0% {
     border-color: red;
@@ -396,14 +404,30 @@ button:hover {
     border-color: red;
   }
 }
-/* Класс для желтой мигающей рамки */
+/* Класс для мигающей рамки */
+.blink-green {
+  border: 3px solid green;
+  animation: blink-green 1.5s infinite;
+}
 .blink-orange {
   border: 3px solid orange;
   animation: blink-orange 1.5s infinite;
 }
-/* Класс для красной мигающей рамки */
 .blink-red {
   border: 3px solid red;
   animation: blink-red 1s infinite;
+}
+/* Стиль для надписи "NEW" */
+.new-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 10; /* Выводим надпись поверх строки */
 }
 </style>
