@@ -102,6 +102,11 @@ export default {
       this.applyStyles(); // Применение стилей
       this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
     });
+    // Получаем переданный ID нового элемента из query
+    const newItemId = this.$route.query.newItemId;
+    if (newItemId) {
+      this.newAddedId = newItemId;
+    }
   },
   async onUpdated() {
     await this.loadData(true);
