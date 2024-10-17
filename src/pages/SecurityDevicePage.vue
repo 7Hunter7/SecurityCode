@@ -34,8 +34,8 @@
           :class="{ 'blink-green': item.id == newAddedId }"
         >
           <td class="location">
-            <span v-if="item.id == newAddedId" class="new-label">NEW</span
-            >{{ item.location }}
+            {{ item.location }}
+            <span v-if="item.id == newAddedId" class="new-label">Новое СЗ</span>
           </td>
           <td class="type">{{ item.type }}</td>
           <td class="voltageClass">{{ item.voltageClass }}</td>
@@ -238,12 +238,12 @@ export default {
       ) {
         try {
           await this.$store.dispatch("deleteSIZ", item.id);
-          toast.success("СИЗ успешно удалено");
+          toast.success("СИЗ успешно удалено!");
           console.log("СИЗ успешно удалено");
           // Принудительное обновление данных через Vuex
           await this.loadData(true);
         } catch (error) {
-          toast.error("Ошибка при удалении СИЗ");
+          toast.error("Ошибка при удалении СИЗ!");
           console.error("Ошибка при удалении СИЗ", error);
           н;
         }
@@ -391,6 +391,7 @@ button:hover {
 }
 /* Класс для мигающей рамки */
 .blink-green {
+  position: relative;
   border: 3px solid green;
   animation: blink-green 1.5s infinite;
 }
@@ -405,7 +406,7 @@ button:hover {
 /* Стиль для надписи "NEW" */
 .new-label {
   position: absolute;
-  top: 50%;
+  top: 18%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: yellow;
@@ -413,7 +414,8 @@ button:hover {
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 5px;
-  z-index: 10; /* Надпись поверх строки */
+  z-index: 2; /* Надпись поверх строки */
+  opacity: 0.9;
   animation: fade-in 1s ease-in-out; /* Добавление анимации */
 }
 /* Анимация для рамки */
