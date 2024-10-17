@@ -258,7 +258,7 @@ export default {
         await this.$store.dispatch("loadSIZItems");
 
         this.$router.push({
-          name: "SecurityDevicePage",
+          name: "Security Device",
           query: { newItemId }, // Передаем новый элемент через query
         });
       } catch (error) {
