@@ -31,8 +31,12 @@
           v-for="item in filteredSIZItems"
           :key="item.id"
           :data-id="item.id"
+          :class="{ 'blink-green': item.id == newAddedId }"
         >
-          <td class="location">{{ item.location }}</td>
+          <td class="location">
+            <span v-if="item.id == newAddedId" class="new-label">NEW</span
+            >{{ item.location }}
+          </td>
           <td class="type">{{ item.type }}</td>
           <td class="voltageClass">{{ item.voltageClass }}</td>
           <td class="szType">{{ item.szType }}</td>
@@ -253,12 +257,8 @@ export default {
         // Если это новый элемент, добавляем класс для мигающей рамки
         if (this.newAddedId && this.newAddedId === itemId) {
           row.classList.add("blink-green");
-          const newLabel = document.createElement("span");
-          newLabel.classList.add("new-label");
-          newLabel.textContent = "NEW";
-          row.querySelector("td").appendChild(newLabel);
         }
-        // Получаем результат осмотра
+        // Добавляем класс по результатам осмотра
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
 
@@ -280,7 +280,7 @@ export default {
       // Сбрасываем состояние нового элемента
       setTimeout(() => {
         this.newlyAddedId = null;
-      }, 6000);
+      }, 5000);
     },
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
@@ -389,6 +389,33 @@ button:hover {
 .red-text {
   color: red;
 }
+/* Класс для мигающей рамки */
+.blink-green {
+  border: 3px solid green;
+  animation: blink-green 1.5s infinite;
+}
+.blink-orange {
+  border: 3px solid orange;
+  animation: blink-orange 1.5s infinite;
+}
+.blink-red {
+  border: 3px solid red;
+  animation: blink-red 1s infinite;
+}
+/* Стиль для надписи "NEW" */
+.new-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: yellow;
+  color: green;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 10; /* Надпись поверх строки */
+  animation: fade-in 1s ease-in-out; /* Добавление анимации */
+}
 /* Анимация для рамки */
 @keyframes blink-green {
   0% {
@@ -423,30 +450,13 @@ button:hover {
     border-color: red;
   }
 }
-/* Класс для мигающей рамки */
-.blink-green {
-  border: 3px solid green;
-  animation: blink-green 1.5s infinite;
-}
-.blink-orange {
-  border: 3px solid orange;
-  animation: blink-orange 1.5s infinite;
-}
-.blink-red {
-  border: 3px solid red;
-  animation: blink-red 1s infinite;
-}
-/* Стиль для надписи "NEW" */
-.new-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: yellow;
-  color: black;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 5px;
-  z-index: 10; /* Выводим надпись поверх строки */
+/* Анимация для плавного появления */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>
