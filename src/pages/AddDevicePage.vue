@@ -196,7 +196,7 @@ export default {
         const parsedTestDate = new Date(this.siz.testDate);
         if (isNaN(parsedTestDate.getTime())) {
           const toast = useToast(); // Вызов уведомления
-          toast.error("Недействительная дата испытания");
+          toast.error("Недействительная дата испытания!");
           console.error("Недействительная дата:", this.siz.testDate);
           return;
         }
@@ -208,7 +208,7 @@ export default {
         this.updateInspectionResult();
       } else {
         const toast = useToast(); // Вызов уведомления
-        toast.error("Пожалуйста, укажите дату испытания");
+        toast.error("Пожалуйста, укажите дату испытания!");
         console.error("Дата испытания не указана");
       }
     },
@@ -244,24 +244,28 @@ export default {
       });
 
       // Преобразование числовых значений
-      this.siz.number = Number(this.siz.number); // Преобразуем номер в число
-      this.siz.quantity = Number(this.siz.quantity); // Преобразуем количество в число
+      this.siz.number = Number(this.siz.number);
+      this.siz.quantity = Number(this.siz.quantity);
 
       try {
         const response = await createSIZItem(this.siz);
+        const newItemId = response.data.id; // ID нового элемента
+
         // Успешное уведомление
-        toast.success("СИЗ успешно добавлено");
+        toast.success("СИЗ успешно добавлено!");
 
-        // Принудительное обновление данных
-        await this.$store.dispatch("loadSIZItems"); // Обновление данных через Vuex
+        // Принудительное обновление данных через Vuex
+        await this.$store.dispatch("loadSIZItems");
 
-        this.$router.push("/security-device"); // Переход на страницу /security-device после успешного добавления
+        this.$router.push({
+          name: "SecurityDevicePage",
+          query: { newItemId }, // Передаем новый элемент через query
+        });
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
-          toast.error("СИЗ с таким номером уже существует");
+          toast.error("СИЗ с таким номером уже существует!");
         } else {
-          toast.error("Ошибка при добавлении СИЗ");
+          toast.error("Ошибка при добавлении СИЗ!");
         }
         console.error("Ошибка при добавлении СИЗ:", error);
       }
