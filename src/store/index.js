@@ -87,8 +87,8 @@ export default createStore({
     ],
     inspectionResults: [
       "new",
-      "Испытано",
-      "Осмотрено",
+      "Испытано.",
+      "Осмотрено.",
       "Осмотрено. Испытано.",
       "Осмотрено. Необходимо отправить на испытания!",
       "Осмотрено. Испытание просрочено!",
@@ -229,9 +229,9 @@ export default createStore({
     // методы для чтения состояния
     getSizItems: (state) => state.sizItems,
     getFilteredSizItems: (state) => state.filteredSIZItems,
-
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
+    getPzTypes: (state) => state.pzTypes,
     getVoltageClasses: (state) => state.voltageClasses,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,

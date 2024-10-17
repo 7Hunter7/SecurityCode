@@ -62,12 +62,16 @@
           type="text"
           id="number"
           placeholder="Введите номер СЗ"
+          @change="
+            updateLastInspectDate(),
+              updateInspectionResultForLastInspectDate(siz.lastInspectDate)
+          "
           required
         />
       </div>
 
       <!-- Дата испытания -->
-      <div class="form-group">
+      <div class="form-group" v-if="!isPzType">
         <label for="testDate">Дата испытания:</label>
         <input
           type="date"
@@ -79,7 +83,7 @@
       </div>
 
       <!-- Дата следующего испытания -->
-      <div class="form-group">
+      <div class="form-group" v-if="!isPzType">
         <label for="nextTestDate">Дата следующего испытания:</label>
         <input
           type="date"
@@ -144,6 +148,7 @@ import {
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
+import { PZ_TYPES } from "../constants/constants.js";
 
 export default {
   name: "AddDevicePage",
@@ -179,6 +184,9 @@ export default {
       "szTypes",
       "inspectionResults",
     ]),
+    isPzType() {
+      return PZ_TYPES.includes(this.siz.type);
+    },
   },
   methods: {
     ...mapActions(["addSIZ"]),
@@ -206,6 +214,9 @@ export default {
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
+    },
+    updateInspectionResultForLastInspectDate(lastInspectDate) {
+      if (lastInspectDate) this.siz.inspectionResult = "Осмотрено.";
     },
     updateInspectionResult() {
       const currentDate = new Date();

@@ -1,10 +1,10 @@
 <template>
   <div class="filters">
-    <h2>Поиск СИЗ по типу/виду/номеру</h2>
+    <h2>Поиск СИЗ</h2>
     <!-- Поле для поиска -->
     <input
       v-model="search"
-      placeholder="Поиск по СИЗ..."
+      placeholder="Вид СЗ / Тип СЗ / № СЗ"
       @input="updateFilters"
     />
     <br />
@@ -100,6 +100,6 @@ export default {
 }
 .filters input,
 .filters select {
-  padding: 8px;
+  padding: 6px;
 }
 </style>
