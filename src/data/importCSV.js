@@ -92,9 +92,9 @@ export async function importCSV() {
         try {
           const existingSIZ = await SIZItem.findOne({
             where: {
-              number: row["№ СЗ"],
-              type: row["Вид СЗ"],
               location: row["Местонахождение"],
+              type: row["Вид СЗ"],
+              number: row["№ СЗ"],
             },
           });
 
