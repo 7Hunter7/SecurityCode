@@ -1,6 +1,6 @@
 <template>
   <div class="edit-siz-page">
-    <h1>Редактировать СИЗ</h1>
+    <h1>Редактировать СЗ</h1>
 
     <form @submit.prevent="submitForm">
       <!-- Используем компонент InputField для каждого поля -->
@@ -167,7 +167,7 @@ export default {
             );
           }
         } else {
-          console.warn("Не удалось найти СИЗ с таким ID");
+          console.warn("Не удалось найти СЗ с таким ID");
         }
       }
     },
@@ -244,15 +244,15 @@ export default {
       try {
         const response = await updateSIZItem(this.siz.id, updatedSIZ);
         // Успешное уведомление
-        toast.success("СИЗ успешно обновлено!");
-        console.log("СИЗ успешно обновлено:", response.data);
+        toast.success("СЗ успешно обновлено!");
+        console.log("СЗ успешно обновлено:", response.data);
         // Принудительное обновление данных через Vuex
         await this.$store.dispatch("loadSIZItems");
         // Переход на страницу /security-device
         this.$router.push("/security-device");
       } catch (error) {
-        toast.error("Ошибка при обновлении СИЗ!");
-        console.error("Ошибка при обновлении СИЗ:", error);
+        toast.error("Ошибка при обновлении СЗ!");
+        console.error("Ошибка при обновлении СЗ:", error);
       }
     },
   },
