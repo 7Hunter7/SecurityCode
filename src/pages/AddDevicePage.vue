@@ -1,6 +1,6 @@
 <template>
   <div class="add-siz-page">
-    <h1>Добавить новое СИЗ</h1>
+    <h1>Добавить новое СЗ</h1>
     <form @submit.prevent="submitForm">
       <!-- Местонахождение -->
       <InputField
@@ -130,7 +130,7 @@
 
       <!-- Кнопка добавления -->
       <div class="form-actions">
-        <button type="submit">Добавить СИЗ</button>
+        <button type="submit">Добавить СЗ</button>
         <button @click="noSubmit">Отмена</button>
       </div>
     </form>
@@ -246,7 +246,7 @@ export default {
       // Проверяем и добавляем новые значения, если они введены
       if (this.newLocation) {
         this.$store.commit("ADD_LOCATION", this.newLocation); // Добавляем новое местоположение
-        this.siz.location = this.newLocation; // Устанавливаем новое значение в объект СИЗ
+        this.siz.location = this.newLocation; // Устанавливаем новое значение в объект СЗ
       }
       if (this.newType) {
         this.$store.commit("ADD_TYPE", this.newType); // Добавляем новый тип
@@ -274,7 +274,7 @@ export default {
         const newItemId = response.data.id; // ID нового элемента
 
         // Успешное уведомление
-        toast.success("СИЗ успешно добавлено!");
+        toast.success("СЗ успешно добавлено!");
 
         // Принудительное обновление данных через Vuex
         await this.$store.dispatch("loadSIZItems");
@@ -285,11 +285,11 @@ export default {
         });
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error("СИЗ с таким номером уже существует!");
+          toast.error("СЗ с таким номером уже существует!");
         } else {
-          toast.error("Ошибка при добавлении СИЗ!");
+          toast.error("Ошибка при добавлении СЗ!");
         }
-        console.error("Ошибка при добавлении СИЗ:", error);
+        console.error("Ошибка при добавлении СЗ:", error);
       }
     },
   },
