@@ -279,6 +279,8 @@ export default {
 }
 .form-actions {
   margin-top: 20px;
+  display: flex;
+  place-content: center space-between;
 }
 .form-actions button {
   padding: 10px 20px;
