@@ -187,7 +187,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["addSIZ"]),
+    ...mapActions([
+      "addSIZ",
+      "addLocation",
+      "addType",
+      "addVoltageClass",
+      "addSzType",
+      "addInspectionResult",
+    ]),
 
     // Обновляем дату следующего испытания и результат осмотра
     updateTestDate() {
@@ -231,20 +238,27 @@ export default {
     async submitForm() {
       const toast = useToast();
 
-      // Применяем новые значения, если они добавлены
-      [
-        "location",
-        "type",
-        "voltageClass",
-        "szType",
-        "inspectionResult",
-      ].forEach((field) => {
-        const newValue =
-          this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
-        if (newValue) {
-          this.siz[field] = newValue;
-        }
-      });
+      // Проверяем и добавляем новые значения, если они введены
+      if (this.newLocation) {
+        this.$store.commit("ADD_LOCATION", this.newLocation); // Добавляем новое местоположение
+        this.siz.location = this.newLocation; // Устанавливаем новое значение в объект СИЗ
+      }
+      if (this.newType) {
+        this.$store.commit("ADD_TYPE", this.newType); // Добавляем новый тип
+        this.siz.type = this.newType;
+      }
+      if (this.newVoltageClass) {
+        this.$store.commit("ADD_VOLTAGE_CLASS", this.newVoltageClass); // Добавляем новый класс напряжения
+        this.siz.voltageClass = this.newVoltageClass;
+      }
+      if (this.newSzType) {
+        this.$store.commit("ADD_SZ_TYPE", this.newSzType); // Добавляем новый тип СЗ
+        this.siz.szType = this.newSzType;
+      }
+      if (this.newInspectionResult) {
+        this.$store.commit("ADD_INSPECTION_RESULT", this.newInspectionResult); // Добавляем новый результат осмотра
+        this.siz.inspectionResult = this.newInspectionResult;
+      }
 
       // Преобразование числовых значений
       this.siz.number = Number(this.siz.number);
