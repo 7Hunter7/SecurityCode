@@ -13,7 +13,7 @@
       <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
       <InputField
         label="Напряжение ЭУ (кВ)"
-        :options="voltagees"
+        :options="voltages"
         v-model="siz.voltage"
         required
       />
@@ -112,7 +112,7 @@ export default {
     ...mapState([
       "locations",
       "types",
-      "voltagees",
+      "voltages",
       "szTypes",
       "inspectionResults",
     ]),
