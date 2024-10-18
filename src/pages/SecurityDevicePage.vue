@@ -8,7 +8,7 @@
       :voltages="uniqueVoltages"
       @filterChanged="handleFilterChange"
     />
-    <!-- Таблица СИЗ -->
+    <!-- Таблица СЗ -->
     <table>
       <thead>
         <tr>
@@ -57,7 +57,7 @@
         </tr>
       </tbody>
       <tfoot>
-        <!-- Строка для подсчета общего количества СИЗ -->
+        <!-- Строка для подсчета общего количества СЗ -->
         <tr>
           <td colspan="8" style="text-align: right"><strong>Всего:</strong></td>
           <td>
@@ -132,7 +132,7 @@ export default {
     uniqueVoltages() {
       return [...new Set(this.filteredSIZItems.map((item) => item.voltage))];
     },
-    // Подсчет общего количества СИЗ по колонке "Кол-во"
+    // Подсчет общего количества СЗ по колонке "Кол-во"
     totalQuantity() {
       return this.filteredSIZItems.reduce((total, item) => {
         return total + parseInt(item.quantity, 10);
@@ -236,13 +236,13 @@ export default {
       ) {
         try {
           await this.$store.dispatch("deleteSIZ", item.id);
-          toast.success("СИЗ успешно удалено!");
-          console.log("СИЗ успешно удалено");
+          toast.success("СЗ успешно удалено!");
+          console.log("СЗ успешно удалено");
           // Принудительное обновление данных через Vuex
           await this.loadData(true);
         } catch (error) {
-          toast.error("Ошибка при удалении СИЗ!");
-          console.error("Ошибка при удалении СИЗ", error);
+          toast.error("Ошибка при удалении СЗ!");
+          console.error("Ошибка при удалении СЗ", error);
           н;
         }
       }
@@ -299,7 +299,7 @@ export default {
           !this.shownInspectionNotifications.has(itemId)
         ) {
           toast.warning(
-            `Необходимо выполнить осмотр СИЗ: ${type} №${number} ${location}!`,
+            `Необходимо выполнить осмотр СЗ: ${type} №${number} ${location}!`,
             {
               timeout: 7000,
             }
@@ -312,7 +312,7 @@ export default {
           !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Необходимо выполнить испытания СИЗ: ${type} №${number} ${location}`,
+            `Необходимо выполнить испытания СЗ: ${type} №${number} ${location}`,
             {
               timeout: 10000,
             }
