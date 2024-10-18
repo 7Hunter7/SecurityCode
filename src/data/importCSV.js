@@ -103,7 +103,7 @@ export async function importCSV() {
             await SIZItem.create({
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
-              voltageClass: row["Класс напряжения СЗ"],
+              voltage: row["Класс напряжения СЗ"],
               szType: row["Тип СЗ"] || "—",
               number: row["№ СЗ"],
               testDate: testDate,

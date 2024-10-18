@@ -76,7 +76,7 @@ const formatDetails = (details) => {
     const fields = [
       { label: "Место", key: "location" },
       { label: "Вид", key: "type" },
-      { label: "Напряжение", key: "voltageClass", suffix: " кВ" },
+      { label: "Напряжение", key: "voltage", suffix: " кВ" },
       { label: "Тип", key: "szType" },
       { label: "№", key: "number" },
       { label: "Кол-во", key: "quantity" },

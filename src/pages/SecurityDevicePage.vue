@@ -5,7 +5,7 @@
     <FiltersComponent
       :locations="uniqueLocations"
       :types="uniqueTypes"
-      :voltageClasses="uniqueVoltageClasses"
+      :voltagees="uniquevoltagees"
       @filterChanged="handleFilterChange"
     />
     <!-- Таблица СИЗ -->
@@ -38,7 +38,7 @@
             <span v-if="item.id == newAddedId" class="new-label">Новое СЗ</span>
           </td>
           <td class="type">{{ item.type }}</td>
-          <td class="voltageClass">{{ item.voltageClass }}</td>
+          <td class="voltage">{{ item.voltage }}</td>
           <td class="szType">{{ item.szType }}</td>
           <td class="number">{{ item.number }}</td>
           <td class="testDate">{{ formatDate(item.testDate, item.type) }}</td>
@@ -129,10 +129,8 @@ export default {
     uniqueTypes() {
       return [...new Set(this.filteredSIZItems.map((item) => item.type))];
     },
-    uniqueVoltageClasses() {
-      return [
-        ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
-      ];
+    uniquevoltagees() {
+      return [...new Set(this.filteredSIZItems.map((item) => item.voltage))];
     },
     // Подсчет общего количества СИЗ по колонке "Кол-во"
     totalQuantity() {
@@ -191,9 +189,9 @@ export default {
         );
       }
       // Фильтр по классу напряжения
-      if (filters.selectedVoltageClass) {
+      if (filters.selectedvoltage) {
         filteredItems = filteredItems.filter(
-          (item) => item.voltageClass === filters.selectedVoltageClass
+          (item) => item.voltage === filters.selectedvoltage
         );
       }
       // Фильтр по дате испытания "от"

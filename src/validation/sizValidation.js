@@ -16,7 +16,7 @@ export const sizItemValidationSchema = Joi.object({
       }
       return value;
     }),
-  voltageClass: Joi.string()
+  voltage: Joi.string()
     .valid(...VOLTAGE_CLASSES)
     .required(),
   szType: Joi.string().allow(""),

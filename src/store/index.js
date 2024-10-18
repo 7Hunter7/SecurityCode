@@ -39,7 +39,7 @@ export default createStore({
       "ПЗ для ИВЛ",
       "Наброс для ВЛ",
     ],
-    voltageClasses: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
+    voltagees: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
     szTypes: [
       "new",
       "—",
@@ -112,9 +112,9 @@ export default createStore({
       }
     },
     // Мутация для добавления нового класса напряжения
-    ADD_VOLTAGE_CLASS(state, newVoltageClass) {
-      if (!state.voltageClasses.includes(newVoltageClass)) {
-        state.voltageClasses.push(newVoltageClass);
+    ADD_VOLTAGE_CLASS(state, newvoltage) {
+      if (!state.voltagees.includes(newvoltage)) {
+        state.voltagees.push(newvoltage);
       }
     },
     // Мутация для добавления нового типа СЗ
@@ -184,8 +184,8 @@ export default createStore({
         const matchesType = filters.selectedType
           ? item.type === filters.selectedType
           : true;
-        const matchesVoltageClass = filters.selectedVoltageClass
-          ? item.voltageClass === filters.selectedVoltageClass
+        const matchesvoltage = filters.selectedvoltage
+          ? item.voltage === filters.selectedvoltage
           : true;
 
         // Преобразование дат в ISO формат перед сравнением
@@ -210,7 +210,7 @@ export default createStore({
           matchesSearch &&
           matchesLocation &&
           matchesType &&
-          matchesVoltageClass &&
+          matchesvoltage &&
           matchesDateFrom &&
           matchesDateTo
         );
@@ -262,7 +262,7 @@ export default createStore({
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
     getPzTypes: (state) => state.pzTypes,
-    getVoltageClasses: (state) => state.voltageClasses,
+    getvoltagees: (state) => state.voltagees,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
   },

@@ -13,8 +13,8 @@
       <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
       <InputField
         label="Напряжение ЭУ (кВ)"
-        :options="voltageClasses"
-        v-model="siz.voltageClass"
+        :options="voltagees"
+        v-model="siz.voltage"
         required
       />
       <InputField
@@ -94,7 +94,7 @@ export default {
       siz: {
         location: "",
         type: "",
-        voltageClass: "",
+        voltage: "",
         szType: "",
         number: "",
         testDate: "",
@@ -112,7 +112,7 @@ export default {
     ...mapState([
       "locations",
       "types",
-      "voltageClasses",
+      "voltagees",
       "szTypes",
       "inspectionResults",
     ]),
@@ -225,7 +225,7 @@ export default {
       const updatedSIZ = {
         location: this.siz.location,
         type: this.siz.type,
-        voltageClass: this.siz.voltageClass,
+        voltage: this.siz.voltage,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
         testDate: testDateForSubmitForm,

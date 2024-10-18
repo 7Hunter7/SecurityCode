@@ -24,9 +24,9 @@
       </option>
     </select>
     <!-- Фильтр по классу напряжения СЗ -->
-    <select v-model="selectedVoltageClass" @change="updateFilters">
-      <option value="">Класс напряжения</option>
-      <option v-for="voltage in voltageClasses" :key="voltage" :value="voltage">
+    <select v-model="selectedVoltage" @change="updateFilters">
+      <option value="">Напряжение ЭУ</option>
+      <option v-for="voltage in voltagees" :key="voltage" :value="voltage">
         {{ voltage }} кВ
       </option>
     </select>
@@ -61,7 +61,7 @@ export default {
       type: Array,
       required: true,
     },
-    voltageClasses: {
+    voltagees: {
       type: Array,
       required: true,
     },
@@ -71,7 +71,7 @@ export default {
       search: "",
       selectedLocation: "",
       selectedType: "",
-      selectedVoltageClass: "",
+      selectedVoltage: "",
       nextTestDateFrom: "",
       nextTestDateTo: "",
     };
@@ -82,7 +82,7 @@ export default {
         search: this.search,
         selectedLocation: this.selectedLocation,
         selectedType: this.selectedType,
-        selectedVoltageClass: this.selectedVoltageClass,
+        selectedVoltage: this.selectedVoltage,
         nextTestDateFrom: this.nextTestDateFrom || null,
         nextTestDateTo: this.nextTestDateTo || null,
       });

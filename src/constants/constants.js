@@ -8,7 +8,7 @@ export const PZ_TYPES = [
   "КШЗ-10",
 ];
 
-export const VOLTAGE_CLASSES = [
+export const VOLTAGE = [
   "0,23",
   "0,4",
   "0,6",

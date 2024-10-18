@@ -30,15 +30,15 @@
 
       <!-- Напряжение ЭУ (кВ) -->
       <InputField
-        fieldId="voltageClass"
+        fieldId="voltage"
         label="Напряжение ЭУ (кВ):"
-        v-bind:modelValue="siz.voltageClass"
-        v-on:update:modelValue="(value) => (siz.voltageClass = value)"
-        :options="voltageClasses"
+        v-bind:modelValue="siz.voltage"
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        :options="voltagees"
         placeholder="Выберите 'Напряжение ЭУ'"
         newPlaceholder="Добавить новое 'Напряжение ЭУ'"
-        v-bind:newValue="newVoltageClass"
-        v-on:update:newValue="(value) => (newVoltageClass = value)"
+        v-bind:newValue="newvoltage"
+        v-on:update:newValue="(value) => (newvoltage = value)"
       />
 
       <!-- Тип СЗ -->
@@ -158,7 +158,7 @@ export default {
       siz: {
         location: "",
         type: "",
-        voltageClass: "",
+        voltage: "",
         szType: "",
         number: "",
         testDate: "",
@@ -169,7 +169,7 @@ export default {
       },
       newLocation: "",
       newType: "",
-      newVoltageClass: "",
+      newvoltage: "",
       newSzType: "",
       newInspectionResult: "",
     };
@@ -178,7 +178,7 @@ export default {
     ...mapState([
       "locations",
       "types",
-      "voltageClasses",
+      "voltagees",
       "szTypes",
       "inspectionResults",
     ]),
@@ -191,7 +191,7 @@ export default {
       "addSIZ",
       "addLocation",
       "addType",
-      "addVoltageClass",
+      "addvoltage",
       "addSzType",
       "addInspectionResult",
     ]),
@@ -247,9 +247,9 @@ export default {
         this.$store.commit("ADD_TYPE", this.newType); // Добавляем новый тип
         this.siz.type = this.newType;
       }
-      if (this.newVoltageClass) {
-        this.$store.commit("ADD_VOLTAGE_CLASS", this.newVoltageClass); // Добавляем новый Напряжение ЭУ
-        this.siz.voltageClass = this.newVoltageClass;
+      if (this.newvoltage) {
+        this.$store.commit("ADD_VOLTAGE_CLASS", this.newvoltage); // Добавляем новый Напряжение ЭУ
+        this.siz.voltage = this.newvoltage;
       }
       if (this.newSzType) {
         this.$store.commit("ADD_SZ_TYPE", this.newSzType); // Добавляем новый тип СЗ
