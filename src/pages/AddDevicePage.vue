@@ -28,15 +28,15 @@
         v-on:update:newValue="(value) => (newType = value)"
       />
 
-      <!-- Класс напряжения (кВ) -->
+      <!-- Напряжение ЭУ (кВ) -->
       <InputField
         fieldId="voltageClass"
-        label="Класс напряжения (кВ):"
+        label="Напряжение ЭУ (кВ):"
         v-bind:modelValue="siz.voltageClass"
         v-on:update:modelValue="(value) => (siz.voltageClass = value)"
         :options="voltageClasses"
-        placeholder="Выберите класс напряжения"
-        newPlaceholder="Добавить новый класс напряжения"
+        placeholder="Выберите 'Напряжение ЭУ'"
+        newPlaceholder="Добавить новое 'Напряжение ЭУ'"
         v-bind:newValue="newVoltageClass"
         v-on:update:newValue="(value) => (newVoltageClass = value)"
       />
@@ -248,7 +248,7 @@ export default {
         this.siz.type = this.newType;
       }
       if (this.newVoltageClass) {
-        this.$store.commit("ADD_VOLTAGE_CLASS", this.newVoltageClass); // Добавляем новый класс напряжения
+        this.$store.commit("ADD_VOLTAGE_CLASS", this.newVoltageClass); // Добавляем новый Напряжение ЭУ
         this.siz.voltageClass = this.newVoltageClass;
       }
       if (this.newSzType) {

@@ -12,7 +12,7 @@
       />
       <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
       <InputField
-        label="Класс напряжения (кВ)"
+        label="Напряжение ЭУ (кВ)"
         :options="voltageClasses"
         v-model="siz.voltageClass"
         required
