@@ -1,6 +1,6 @@
 <template>
   <div class="filters">
-    <h2>Поиск СИЗ</h2>
+    <h2>Поиск СЗ</h2>
     <!-- Поле для поиска -->
     <input
       v-model="search"
@@ -8,7 +8,7 @@
       @input="updateFilters"
     />
     <br />
-    <h2>Фильтрация СИЗ</h2>
+    <h2>Фильтрация СЗ</h2>
     <!-- Фильтр по местонахождению -->
     <select v-model="selectedLocation" @change="updateFilters">
       <option value="">Местонахождение</option>
