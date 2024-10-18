@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { PZ_TYPES, VOLTAGE_CLASSES } from "../constants/constants.js";
+import { PZ_TYPES, VOLTAGE } from "../constants/constants.js";
 
 // Joi схема валидации
 export const sizItemValidationSchema = Joi.object({
@@ -17,7 +17,7 @@ export const sizItemValidationSchema = Joi.object({
       return value;
     }),
   voltage: Joi.string()
-    .valid(...VOLTAGE_CLASSES)
+    .valid(...VOLTAGE)
     .required(),
   szType: Joi.string().allow(""),
   number: Joi.number().integer().required(),
