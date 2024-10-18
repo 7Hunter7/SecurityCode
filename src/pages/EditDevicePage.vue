@@ -66,6 +66,7 @@
       <!-- Кнопка для сохранения изменений -->
       <div class="form-actions">
         <button type="submit">Сохранить изменения</button>
+        <button @click="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -202,6 +203,10 @@ export default {
       }
       this.updateInspectionResult();
     },
+    noSubmit() {
+      this.$router.push("/security-device");
+    },
+
     async submitForm() {
       const toast = useToast();
       let testDateForSubmitForm;
