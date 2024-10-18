@@ -131,6 +131,7 @@
       <!-- Кнопка добавления -->
       <div class="form-actions">
         <button type="submit">Добавить СИЗ</button>
+        <button @click="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -235,6 +236,10 @@ export default {
         this.siz.lastInspectDate
       );
     },
+    noSubmit() {
+      this.$router.push("/security-device");
+    },
+
     async submitForm() {
       const toast = useToast();
 
