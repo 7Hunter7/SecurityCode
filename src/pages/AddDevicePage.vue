@@ -96,6 +96,7 @@
         <input
           type="date"
           v-model="siz.lastInspectDate"
+          @change="updateInspectionResult"
           id="lastInspectDate"
           required
         />
@@ -207,7 +208,6 @@ export default {
           parsedTestDate
         );
         this.updateLastInspectDate();
-        this.updateInspectionResult();
       } else {
         const toast = useToast(); // Вызов уведомления
         toast.error("Пожалуйста, укажите дату испытания!");
@@ -216,6 +216,7 @@ export default {
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
+      this.updateInspectionResult();
     },
     updateInspectionResult() {
       const currentDate = new Date();
