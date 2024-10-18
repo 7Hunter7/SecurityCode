@@ -26,7 +26,7 @@
     <!-- Фильтр по классу напряжения СЗ -->
     <select v-model="selectedVoltage" @change="updateFilters">
       <option value="">Напряжение ЭУ</option>
-      <option v-for="voltage in voltagees" :key="voltage" :value="voltage">
+      <option v-for="voltage in voltages" :key="voltage" :value="voltage">
         {{ voltage }} кВ
       </option>
     </select>
@@ -61,7 +61,7 @@ export default {
       type: Array,
       required: true,
     },
-    voltagees: {
+    voltages: {
       type: Array,
       required: true,
     },
