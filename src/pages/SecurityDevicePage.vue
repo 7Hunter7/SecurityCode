@@ -14,7 +14,7 @@
         <tr>
           <th>Местонахождение</th>
           <th>Вид СЗ</th>
-          <th>Напряжение ЭУ (кВ)</th>
+          <th>Напряжение ЭУ(кВ)</th>
           <th>Тип СЗ</th>
           <th>№ СЗ</th>
           <th>Дата испытания</th>
@@ -189,9 +189,9 @@ export default {
         );
       }
       // Фильтр по классу напряжения
-      if (filters.selectedvoltage) {
+      if (filters.selectedVoltage) {
         filteredItems = filteredItems.filter(
-          (item) => item.voltage === filters.selectedvoltage
+          (item) => item.voltage === filters.selectedVoltage
         );
       }
       // Фильтр по дате испытания "от"
