@@ -99,6 +99,36 @@ export default createStore({
     ],
   },
   mutations: {
+    // Мутация для добавления нового местоположения
+    ADD_LOCATION(state, newLocation) {
+      if (!state.locations.includes(newLocation)) {
+        state.locations.push(newLocation);
+      }
+    },
+    // Мутация для добавления нового типа
+    ADD_TYPE(state, newType) {
+      if (!state.types.includes(newType)) {
+        state.types.push(newType);
+      }
+    },
+    // Мутация для добавления нового класса напряжения
+    ADD_VOLTAGE_CLASS(state, newVoltageClass) {
+      if (!state.voltageClasses.includes(newVoltageClass)) {
+        state.voltageClasses.push(newVoltageClass);
+      }
+    },
+    // Мутация для добавления нового типа СЗ
+    ADD_SZ_TYPE(state, newSzType) {
+      if (!state.szTypes.includes(newSzType)) {
+        state.szTypes.push(newSzType);
+      }
+    },
+    // Мутация для добавления нового результата осмотра
+    ADD_INSPECTION_RESULT(state, newInspectionResult) {
+      if (!state.inspectionResults.includes(newInspectionResult)) {
+        state.inspectionResults.push(newInspectionResult);
+      }
+    },
     // методы для изменения состояния
     SET_SIZ_ITEMS(state, items) {
       if (Array.isArray(items)) {
