@@ -46,6 +46,7 @@
         type="date"
         v-model="siz.lastInspectDate"
         @input="updateLastInspectDate"
+        @change="updateInspectionResult"
         required
       />
       <InputField
@@ -171,12 +172,26 @@ export default {
     },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
+      this.calculateNextTestDate();
     },
     updateNextTestDate(event) {
       this.siz.nextTestDate = event.target.value;
+      this.updateInspectionResult();
     },
     updateLastInspectDate(event) {
-      this.siz.lastInspectDate = event.target.value;
+      if (event) {
+        this.siz.lastInspectDate = event.target.value;
+      } else {
+        this.siz.lastInspectDate = getLastInspectDate();
+      }
+      this.updateInspectionResult();
+    },
+    updateInspectionResult() {
+      const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
+      this.siz.inspectionResult = getAutomaticInspectionResult(
+        differenceInMs,
+        this.siz.lastInspectDate
+      );
     },
     calculateNextTestDate() {
       if (this.siz.testDate && this.siz.type) {
@@ -184,11 +199,8 @@ export default {
           this.siz.type,
           new Date(this.siz.testDate)
         );
-        this.siz.lastInspectDate = getLastInspectDate();
-        const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
-        this.siz.inspectionResult =
-          getAutomaticInspectionResult(differenceInMs);
       }
+      this.updateInspectionResult();
     },
     async submitForm() {
       const toast = useToast();
