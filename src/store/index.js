@@ -5,7 +5,6 @@ export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
-    // newSIZ: [], // Хранилище для новых СИЗ
     locations: [
       "new",
       "ПС 35 кВ Жуково",
@@ -39,7 +38,7 @@ export default createStore({
       "ПЗ для ИВЛ",
       "Наброс для ВЛ",
     ],
-    voltagees: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
+    voltages: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
     szTypes: [
       "new",
       "—",
@@ -112,9 +111,9 @@ export default createStore({
       }
     },
     // Мутация для добавления нового класса напряжения
-    ADD_VOLTAGE_CLASS(state, newvoltage) {
-      if (!state.voltagees.includes(newvoltage)) {
-        state.voltagees.push(newvoltage);
+    ADD_VOLTAGE_CLASS(state, newVoltage) {
+      if (!state.voltages.includes(newVoltage)) {
+        state.voltages.push(newVoltage);
       }
     },
     // Мутация для добавления нового типа СЗ
@@ -184,8 +183,8 @@ export default createStore({
         const matchesType = filters.selectedType
           ? item.type === filters.selectedType
           : true;
-        const matchesvoltage = filters.selectedvoltage
-          ? item.voltage === filters.selectedvoltage
+        const matchesVoltage = filters.selectedVoltage
+          ? item.voltage === filters.selectedVoltage
           : true;
 
         // Преобразование дат в ISO формат перед сравнением
@@ -210,7 +209,7 @@ export default createStore({
           matchesSearch &&
           matchesLocation &&
           matchesType &&
-          matchesvoltage &&
+          matchesVoltage &&
           matchesDateFrom &&
           matchesDateTo
         );
@@ -261,8 +260,7 @@ export default createStore({
     getFilteredSizItems: (state) => state.filteredSIZItems,
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
-    getPzTypes: (state) => state.pzTypes,
-    getvoltagees: (state) => state.voltagees,
+    getVoltages: (state) => state.voltages,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
   },
