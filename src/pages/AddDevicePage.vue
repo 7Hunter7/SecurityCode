@@ -62,10 +62,7 @@
           type="text"
           id="number"
           placeholder="Введите номер СЗ"
-          @change="
-            updateLastInspectDate(),
-              updateInspectionResultForLastInspectDate(siz.lastInspectDate)
-          "
+          @change="updateLastInspectDate"
           required
         />
       </div>
@@ -77,7 +74,7 @@
           type="date"
           v-model="siz.testDate"
           id="testDate"
-          @change="calculateNextTestDate"
+          @change="updateTestDate"
           required
         />
       </div>
@@ -191,6 +188,11 @@ export default {
   methods: {
     ...mapActions(["addSIZ"]),
 
+    // Обновляем дату следующего испытания и результат осмотра
+    updateTestDate() {
+      this.calculateNextTestDate();
+      this.updateInspectionResult();
+    },
     calculateNextTestDate() {
       if (this.siz.testDate) {
         const parsedTestDate = new Date(this.siz.testDate);
@@ -215,15 +217,15 @@ export default {
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
     },
-    updateInspectionResultForLastInspectDate(lastInspectDate) {
-      if (lastInspectDate) this.siz.inspectionResult = "Осмотрено.";
-    },
     updateInspectionResult() {
       const currentDate = new Date();
       const nextTestDate = new Date(this.siz.nextTestDate);
       const differenceInMs = nextTestDate - currentDate;
 
-      this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
+      this.siz.inspectionResult = getAutomaticInspectionResult(
+        differenceInMs,
+        this.siz.lastInspectDate
+      );
     },
     async submitForm() {
       const toast = useToast();
