@@ -122,17 +122,13 @@ export function getAutomaticInspectionResult(
     }
   }
 
-  // Объединение результатов
-  const combinedNote = [inspectionNote, testNote]
-    .filter(Boolean) // Убираем пустые строки
-    .join(" "); // Объединяем с одним пробелом
+  // Если есть существующий результат, он добавляется первым
+  let combinedNote = existingInspectionResult
+    ? `${existingInspectionResult} ${inspectionNote} ${testNote}`
+    : `${inspectionNote} ${testNote}`;
 
-  // Если уже есть существующий результат
-  if (existingInspectionResult) {
-    return `${existingInspectionResult} ${combinedNote}`.trim(); // Убираем пробелы по краям
-  }
-
-  return combinedNote.trim(); // Убираем возможные пробелы по краям
+  // Убираем лишние пробелы
+  return combinedNote.trim().replace(/\s{2,}/g, " ");
 }
 
 // Функция для проверки валидности даты
