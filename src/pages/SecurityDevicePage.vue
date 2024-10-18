@@ -5,7 +5,7 @@
     <FiltersComponent
       :locations="uniqueLocations"
       :types="uniqueTypes"
-      :voltagees="uniquevoltagees"
+      :voltages="uniqueVoltages"
       @filterChanged="handleFilterChange"
     />
     <!-- Таблица СИЗ -->
@@ -129,7 +129,7 @@ export default {
     uniqueTypes() {
       return [...new Set(this.filteredSIZItems.map((item) => item.type))];
     },
-    uniquevoltagees() {
+    uniqueVoltages() {
       return [...new Set(this.filteredSIZItems.map((item) => item.voltage))];
     },
     // Подсчет общего количества СИЗ по колонке "Кол-во"
