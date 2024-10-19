@@ -122,10 +122,26 @@ export function getAutomaticInspectionResult(
     }
   }
 
-  // Если есть существующий результат, он добавляется первым
-  let combinedNote = existingInspectionResult
-    ? `${existingInspectionResult} ${inspectionNote} ${testNote}`
-    : `${inspectionNote} ${testNote}`;
+  // Логика комбинирования существующего результата и новых заметок
+  let combinedNote = "";
+  // Если есть только осмотр (lastInspectDate указана)
+  if (inspectionNote && !testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${inspectionNote}`
+      : `${inspectionNote}`;
+  }
+  // Если есть только испытание (nextTestDate указана)
+  if (!inspectionNote && testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${testNote}`
+      : `${testNote}`;
+  }
+  // Если есть и осмотр, и испытание
+  if (inspectionNote && testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${inspectionNote} ${testNote}`
+      : `${inspectionNote} ${testNote}`;
+  }
 
   // Убираем лишние пробелы
   return combinedNote.trim().replace(/\s{2,}/g, " ");
