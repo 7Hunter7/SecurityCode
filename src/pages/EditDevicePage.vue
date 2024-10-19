@@ -3,27 +3,77 @@
     <h1>Редактировать СЗ</h1>
 
     <form @submit.prevent="submitForm">
-      <!-- Используем компонент InputField для каждого поля -->
+      <!-- Местонахождение -->
       <InputField
-        label="Местонахождение"
-        :options="locations"
+        fieldId="location"
+        label="Местонахождение:"
         v-model="siz.location"
+        v-bind:modelValue="siz.location"
+        v-on:update:modelValue="(value) => (siz.location = value)"
+        :options="locations"
+        placeholder="Выберите местонахождение"
+        newPlaceholder="Добавить новое местонахождение"
+        v-bind:newValue="newLocation"
+        v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
-      <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
+
+      <!-- Вид СЗ -->
       <InputField
-        label="Напряжение ЭУ (кВ)"
-        :options="voltages"
+        fieldId="type"
+        label="Вид СЗ:"
+        v-model="siz.type"
+        v-bind:modelValue="siz.type"
+        v-on:update:modelValue="(value) => (siz.type = value)"
+        :options="types"
+        placeholder="Выберите вид СЗ"
+        newPlaceholder="Добавить новый вид СЗ"
+        v-bind:newValue="newType"
+        v-on:update:newValue="(value) => (newType = value)"
+        required
+      />
+
+      <!-- Напряжение ЭУ (кВ) -->
+      <InputField
+        fieldId="voltage"
+        label="Напряжение ЭУ (кВ):"
         v-model="siz.voltage"
+        v-bind:modelValue="siz.voltage"
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        :options="voltages"
+        placeholder="Выберите напряжение ЭУ"
+        newPlaceholder="Добавить новое напряжение ЭУ"
+        v-bind:newValue="newVoltage"
+        v-on:update:newValue="(value) => (newVoltage = value)"
         required
       />
+
+      <!-- Тип СЗ -->
       <InputField
-        label="Тип СЗ"
-        :options="szTypes"
+        fieldId="szType"
+        label="Тип СЗ:"
         v-model="siz.szType"
+        v-bind:modelValue="siz.szType"
+        v-on:update:modelValue="(value) => (siz.szType = value)"
+        :options="szTypes"
+        placeholder="Выберите тип СЗ"
+        newPlaceholder="Добавить новый тип СЗ"
+        v-bind:newValue="newSzType"
+        v-on:update:newValue="(value) => (newSzType = value)"
         required
       />
-      <InputField label="№ СЗ" type="text" v-model="siz.number" required />
+
+      <!-- № СЗ -->
+      <InputField
+        label="№ СЗ"
+        v-model="siz.number"
+        type="text"
+        placeholder="Введите номер СЗ"
+        @change="updateLastInspectDate"
+        required
+      />
+
+      <!-- Дата испытания -->
       <InputField
         label="Дата испытания"
         type="date"
@@ -33,6 +83,8 @@
         @change="calculateNextTestDate"
         required
       />
+
+      <!-- Дата следующего испытания -->
       <InputField
         label="Дата следующего испытания"
         type="date"
@@ -41,6 +93,8 @@
         @input="updateNextTestDate"
         required
       />
+
+      <!-- Дата последнего осмотра -->
       <InputField
         label="Дата последнего осмотра"
         type="date"
@@ -49,6 +103,8 @@
         @change="updateInspectionResult"
         required
       />
+
+      <!-- Количество -->
       <InputField
         label="Количество"
         type="number"
@@ -57,10 +113,20 @@
         min="1"
         required
       />
+
+      <!-- Результаты осмотра -->
       <InputField
-        label="Результат осмотра"
-        :options="inspectionResults"
+        fieldId="inspectionResult"
+        label="Результат осмотра:"
         v-model="siz.inspectionResult"
+        v-bind:modelValue="siz.inspectionResult"
+        v-on:update:modelValue="(value) => (siz.inspectionResult = value)"
+        :options="inspectionResults"
+        placeholder="Выберите результат осмотра"
+        newPlaceholder="Добавить новый результат осмотра"
+        v-bind:newValue="newInspectionResult"
+        v-on:update:newValue="(value) => (newInspectionResult = value)"
+        required
       />
 
       <!-- Кнопка для сохранения изменений -->
@@ -104,7 +170,13 @@ export default {
         quantity: "1",
         inspectionResult: "",
       },
-      formattedTestDate: "", // Форматированная дата для отображения
+      newLocation: "",
+      newType: "",
+      newVoltage: "",
+      newSzType: "",
+      newInspectionResult: "",
+      // Форматированная дата для отображения
+      formattedTestDate: "",
       formattedNextTestDate: "",
       formattedLastInspectDate: "",
     };
@@ -126,7 +198,15 @@ export default {
     await this.loadData(); // Асинхронная загрузка данных
   },
   methods: {
-    ...mapActions(["loadSIZItems"]),
+    ...mapActions([
+      "loadSIZItems",
+      "updateSIZ",
+      "addLocation",
+      "addType",
+      "addVoltage",
+      "addSzType",
+      "addInspectionResult",
+    ]),
     async loadData() {
       try {
         // Загружаем данные независимо от их текущего состояния
@@ -212,6 +292,22 @@ export default {
       let testDateForSubmitForm;
       let nextTestDateForSubmitForm;
       let lastInspectDateForSubmitForm;
+
+      // Применяем новые значения, если они добавлены
+      ["location", "type", "voltage", "szType", "inspectionResult"].forEach(
+        (field) => {
+          const newValue =
+            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+          if (newValue) {
+            this.siz[field] = newValue;
+
+            // Добавляем новые значения в store
+            this[`add${field.charAt(0).toUpperCase() + field.slice(1)}`](
+              newValue
+            );
+          }
+        }
+      );
 
       // Преобразуем дату
       if (PZ_TYPES.includes(this.siz.type)) {
