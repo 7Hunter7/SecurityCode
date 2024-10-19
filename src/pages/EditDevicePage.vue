@@ -24,7 +24,12 @@
         label="Вид СЗ:"
         v-model="siz.type"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="(value) => (siz.type = value)"
+        v-on:update:modelValue="
+          (value) => {
+            siz.type = value;
+            handleTypeChange();
+          }
+        "
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
@@ -39,7 +44,12 @@
         label="Напряжение ЭУ (кВ):"
         v-model="siz.voltage"
         v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        v-on:update:modelValue="
+          (value) => {
+            siz.voltage = value;
+            handleVoltageChange();
+          }
+        "
         :options="voltages"
         placeholder="Выберите напряжение ЭУ"
         newPlaceholder="Добавить новое напряжение ЭУ"
@@ -145,6 +155,10 @@ import {
   getAutomaticInspectionResult,
   parseAndFormatDate,
 } from "../utils/dateUtils.js";
+import {
+  handleTypeChange,
+  handleVoltageChange,
+} from "../utils/handleChange.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { updateSIZItem } from "../services/apiService.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
@@ -206,6 +220,13 @@ export default {
       "addSzType",
       "addInspectionResult",
     ]),
+    handleTypeChange() {
+      handleTypeChange(this.siz, this.$store.state);
+    },
+
+    handleVoltageChange() {
+      handleVoltageChange(this.siz, this.$store.state);
+    },
     async loadData() {
       try {
         // Загружаем данные независимо от их текущего состояния
