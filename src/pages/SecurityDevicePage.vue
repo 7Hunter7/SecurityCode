@@ -102,6 +102,12 @@ export default {
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
 
+    // Проверяем наличие сохраненных фильтров
+    const savedFilters = this.$store.state.savedFilters;
+    if (savedFilters) {
+      this.handleFilterChange(savedFilters); // Применяем сохраненные фильтры
+    }
+
     this.$nextTick(() => {
       this.applyStyles(); // Применение стилей
       this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
@@ -166,6 +172,10 @@ export default {
     // Фильтрация данных
     handleFilterChange(filters) {
       let filteredItems = [...this.getSizItems]; //Полный набор данных
+
+      // Сохраняем фильтры в store
+      this.$store.commit("SET_SAVED_FILTERS", filters);
+
       // Фильтр по строке поиска
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
