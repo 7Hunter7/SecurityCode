@@ -20,7 +20,12 @@
         fieldId="type"
         label="Вид СЗ:"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="(value) => (siz.type = value)"
+        v-on:update:modelValue="
+          (value) => {
+            siz.type = value;
+            handleTypeChange();
+          }
+        "
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
@@ -33,7 +38,12 @@
         fieldId="voltage"
         label="Напряжение ЭУ (кВ):"
         v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        v-on:update:modelValue="
+          (value) => {
+            siz.voltage = value;
+            handleVoltageChange();
+          }
+        "
         :options="voltages"
         placeholder="Выберите напряжение ЭУ"
         newPlaceholder="Добавить новое напряжение ЭУ"
@@ -146,6 +156,10 @@ import {
   getLastInspectDate,
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
+import {
+  handleTypeChange,
+  handleVoltageChange,
+} from "../utils/handleChange.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
 import { PZ_TYPES } from "../constants/constants.js";
 
@@ -196,7 +210,12 @@ export default {
       "addSzType",
       "addInspectionResult",
     ]),
-
+    handleTypeChange() {
+      handleTypeChange(this.siz, this.$store.state);
+    },
+    handleVoltageChange() {
+      handleVoltageChange(this.siz, this.$store.state);
+    },
     // Обновляем дату следующего испытания и результат осмотра
     updateTestDate() {
       this.calculateNextTestDate();
