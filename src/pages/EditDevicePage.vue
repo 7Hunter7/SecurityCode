@@ -69,7 +69,6 @@
         v-model="siz.number"
         type="text"
         placeholder="Введите номер СЗ"
-        @change="updateLastInspectDate"
         required
       />
 
