@@ -32,7 +32,7 @@ export function handleTypeChange(siz, state) {
   }
   // 4. Штанга оперативная (универсальная)
   else if (type === "Штанга оперативная (универсальная)") {
-    state.filteredSzTypes = szTypes.filter((szType) => szType.includes("Ш"));
+    state.filteredSzTypes = szTypes.filter((szType) => szType.includes("ШО"));
     if (voltage) {
       handleVoltageChange(siz, state);
     }
