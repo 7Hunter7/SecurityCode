@@ -112,7 +112,7 @@ export default createStore({
       }
     },
     // Мутация для добавления нового класса напряжения
-    ADD_VOLTAGE_CLASS(state, newVoltage) {
+    ADD_VOLTAGE(state, newVoltage) {
       if (!state.voltages.includes(newVoltage)) {
         state.voltages.push(newVoltage);
       }
