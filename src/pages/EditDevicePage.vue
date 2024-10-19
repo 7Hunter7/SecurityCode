@@ -24,12 +24,8 @@
         label="Вид СЗ:"
         v-model="siz.type"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="
-          (value) => {
-            siz.type = value;
-            handleTypeChange();
-          }
-        "
+        v-on:update:modelValue="(value) => (siz.type = value)"
+        @change="handleTypeChange"
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
@@ -44,12 +40,8 @@
         label="Напряжение ЭУ (кВ):"
         v-model="siz.voltage"
         v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="
-          (value) => {
-            siz.voltage = value;
-            handleVoltageChange();
-          }
-        "
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        @change="handleVoltageChange"
         :options="voltages"
         placeholder="Выберите напряжение ЭУ"
         newPlaceholder="Добавить новое напряжение ЭУ"
@@ -65,7 +57,7 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="szTypes"
+        :options="filteredSzTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -192,6 +184,7 @@ export default {
       formattedTestDate: "",
       formattedNextTestDate: "",
       formattedLastInspectDate: "",
+      filteredSzTypes: [], // Массив для фильтрации типов СЗ
     };
   },
   computed: {
@@ -221,11 +214,12 @@ export default {
       "addInspectionResult",
     ]),
     handleTypeChange() {
-      handleTypeChange(this.siz, this.$store.state);
+      handleTypeChange(this.siz, this.$store.state); // Вызов функции изменения типа
+      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
     },
-
     handleVoltageChange() {
-      handleVoltageChange(this.siz, this.$store.state);
+      handleVoltageChange(this.siz, this.$store.state); // Вызов функции изменения напряжения
+      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
     },
     async loadData() {
       try {
