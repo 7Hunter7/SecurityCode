@@ -5,6 +5,7 @@ export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
+    savedFilters: null, // Хранилище для отфильтров
     locations: [
       "new",
       "ПС 35 кВ Жуково",
@@ -138,6 +139,9 @@ export default createStore({
     },
     SET_FILTERED_SIZ_ITEMS(state, filteredItems) {
       state.filteredSIZItems = filteredItems;
+    },
+    SET_SAVED_FILTERS(state, filters) {
+      state.savedFilters = filters; // Сохраняем фильтры
     },
     ADD_SIZ(state, newSIZ) {
       console.log(`Новое СИЗ передано в store: ${newSIZ}`);
