@@ -158,6 +158,21 @@ export default createStore({
     },
   },
   actions: {
+    addLocation({ commit }, newLocation) {
+      commit("ADD_LOCATION", newLocation);
+    },
+    addType({ commit }, newType) {
+      commit("ADD_TYPE", newType);
+    },
+    addVoltage({ commit }, newVoltage) {
+      commit("ADD_VOLTAGE", newVoltage);
+    },
+    addSzType({ commit }, newSzType) {
+      commit("ADD_SZ_TYPE", newSzType);
+    },
+    addInspectionResult({ commit }, newInspectionResult) {
+      commit("ADD_INSPECTION_RESULT", newInspectionResult);
+    },
     async loadSIZItems({ commit }) {
       try {
         const response = await axios.get("http://localhost:3000/api/siz-items");
