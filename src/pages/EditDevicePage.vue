@@ -329,8 +329,8 @@ export default {
         voltage: this.siz.voltage,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
-        testDate: testDateForSubmitForm,
-        nextTestDate: nextTestDateForSubmitForm,
+        testDate: testDateForSubmitForm || null,
+        nextTestDate: nextTestDateForSubmitForm || null,
         lastInspectDate: lastInspectDateForSubmitForm,
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
