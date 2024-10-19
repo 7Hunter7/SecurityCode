@@ -201,6 +201,11 @@ export default {
       return PZ_TYPES.includes(this.siz.type);
     },
   },
+  mounted() {
+    // Устанавливаем дату последнего осмотра как текущую дату и результат осмотра как "Осмотрено"
+    this.siz.lastInspectDate = getLastInspectDate();
+    this.siz.inspectionResult = "Осмотрено.";
+  },
   methods: {
     ...mapActions([
       "addSIZ",
