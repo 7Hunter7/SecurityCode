@@ -343,7 +343,7 @@ export default {
         toast.success("СЗ успешно обновлено!");
         console.log("СЗ успешно обновлено:", response.data);
         // Принудительное обновление данных через Vuex
-        await this.$store.dispatch("loadSIZItems");
+        await this.$store.dispatch("loadSIZItems", { force: true });
         // Переход на страницу /security-device
         this.$router.push("/security-device");
       } catch (error) {

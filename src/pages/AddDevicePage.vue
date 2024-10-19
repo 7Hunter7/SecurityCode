@@ -277,7 +277,7 @@ export default {
         toast.success("СЗ успешно добавлено!");
 
         // Принудительное обновление данных через Vuex
-        await this.$store.dispatch("loadSIZItems");
+        await this.$store.dispatch("loadSIZItems", { force: true });
 
         this.$router.push({
           name: "Security Device",
