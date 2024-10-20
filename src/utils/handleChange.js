@@ -9,7 +9,7 @@ export function handleTypeChange(siz, state) {
   // Проверка, есть ли szTypes в состоянии, чтобы избежать ошибок
   if (!szTypes || szTypes.length === 0) return;
 
-  // 0. Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
+  // Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
   if (
     type === "Перчатки диэлектрические" ||
     type === "Боты диэлектрические" ||
@@ -21,10 +21,10 @@ export function handleTypeChange(siz, state) {
     return;
   }
 
-  //1. Всегда есть пункт "new" для следующих СЗ
+  // Всегда есть пункт "new" для следующих СЗ:
   state.filteredSzTypes = szTypes.filter((szType) => szType === "new");
 
-  // 2. Указатель напряжения
+  // 1. Указатель напряжения
   if (type === "Указатель напряжения") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) =>
@@ -32,52 +32,58 @@ export function handleTypeChange(siz, state) {
       )
     );
   }
-  // 3. Указатель напряжения для фазировки
+  // 2. Указатель напряжения для фазировки
   else if (type === "Указатель напряжения для фазировки") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("Ф"))
     );
   }
-  // 4. Штанга оперативная (универсальная)
+  // 3. Штанга оперативная (универсальная)
   else if (type === "Штанга оперативная (универсальная)") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ШО"))
     );
   }
-  // 5. Комплект штанг для установки ПЗ
+  // 4. Комплект штанг для установки ПЗ
   else if (type === "Комплект штанг для установки ПЗ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
   }
-  // 6. КШЗ
+  // 5. КШЗ
   else if (type === "КШЗ" || type === "КШЗ (с изолирующей штангой)") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("КШЗ"))
     );
   }
-  // 7. ПЗ для РУ
+  // 6. ПЗ для РУ
   else if (type === "ПЗ для РУ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
   }
-  // 8. ПЗ для ВЛ
+  // 7. ПЗ для ВЛ
   else if (type === "ПЗ для ВЛ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПЛ"))
     );
   }
-  // 9. ПЗ для ИВЛ
+  // 8. ПЗ для ИВЛ
   else if (type === "ПЗ для ИВЛ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ПЗ СИП"))
     );
   }
-  // 10. Наброс для ВЛ
+  // 9. Наброс для ВЛ
   else if (type === "Наброс для ВЛ" || type === "Наброс") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗНЛ"))
+    );
+  }
+  // 10. Для остальных СЗ
+  else {
+    state.filteredSzTypes = state.filteredSzTypes.concat(
+      szTypes.filter((szType) => szType !== "new")
     );
   }
   // Если напряжение уже выбрано
@@ -88,7 +94,7 @@ export function handleTypeChange(siz, state) {
 
 // Функция фильтрации szTypes на основе напряжения ЭУ
 export function handleVoltageChange(siz, state) {
-  const { voltage, type } = siz;
+  const { voltage } = siz;
 
   // Проверка на наличие данных для фильтрации
   if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) return;
