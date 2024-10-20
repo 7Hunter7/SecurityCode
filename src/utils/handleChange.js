@@ -21,8 +21,10 @@ export function handleTypeChange(siz, state) {
     return;
   }
 
-  // Всегда есть пункт "new" для следующих СЗ:
-  state.filteredSzTypes = szTypes.filter((szType) => szType === "new");
+  // Всегда есть пункт "new" и "—" для следующих СЗ:
+  state.filteredSzTypes = szTypes.filter(
+    (szType) => szType === "new" || szType === "—"
+  );
 
   // 1. Указатель напряжения
   if (type === "Указатель напряжения") {
@@ -86,6 +88,9 @@ export function handleTypeChange(siz, state) {
       szTypes.filter((szType) => szType !== "new")
     );
   }
+  // Удаление дубликатов
+  state.filteredSzTypes = Array.from(new Set(filteredSzTypes));
+
   // Если напряжение уже выбрано
   if (voltage) {
     handleVoltageChange(siz, state);
