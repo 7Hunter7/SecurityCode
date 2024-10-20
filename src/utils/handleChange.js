@@ -118,4 +118,6 @@ export function handleVoltageChange(siz, state) {
   state.filteredSzTypes = state.filteredSzTypes.filter((szType) =>
     voltagePattern.test(szType)
   );
+  // После изменения напряжения - для обновления фильтрации типов
+  handleTypeChange(siz, state);
 }
