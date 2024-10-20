@@ -17,6 +17,25 @@
         v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
+      <!-- Напряжение ЭУ (кВ) -->
+      <InputField
+        fieldId="voltage"
+        label="Напряжение ЭУ (кВ):"
+        v-model="siz.voltage"
+        v-bind:modelValue="siz.voltage"
+        v-on:update:modelValue="
+          (value) => {
+            siz.voltage = value;
+            handleVoltageChange();
+          }
+        "
+        :options="voltages"
+        placeholder="Выберите напряжение ЭУ"
+        newPlaceholder="Добавить новое напряжение ЭУ"
+        v-bind:newValue="newVoltage"
+        v-on:update:newValue="(value) => (newVoltage = value)"
+        required
+      />
 
       <!-- Вид СЗ -->
       <InputField
@@ -24,29 +43,17 @@
         label="Вид СЗ:"
         v-model="siz.type"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="(value) => (siz.type = value)"
-        @change="handleTypeChange"
+        v-on:update:modelValue="
+          (value) => {
+            iz.type = value;
+            handleTypeChange();
+          }
+        "
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
         v-bind:newValue="newType"
         v-on:update:newValue="(value) => (newType = value)"
-        required
-      />
-
-      <!-- Напряжение ЭУ (кВ) -->
-      <InputField
-        fieldId="voltage"
-        label="Напряжение ЭУ (кВ):"
-        v-model="siz.voltage"
-        v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="(value) => (siz.voltage = value)"
-        @change="handleVoltageChange"
-        :options="voltages"
-        placeholder="Выберите напряжение ЭУ"
-        newPlaceholder="Добавить новое напряжение ЭУ"
-        v-bind:newValue="newVoltage"
-        v-on:update:newValue="(value) => (newVoltage = value)"
         required
       />
 

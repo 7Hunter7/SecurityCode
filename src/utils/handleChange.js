@@ -107,6 +107,11 @@ export function handleTypeChange(siz, state) {
 export function handleVoltageChange(siz, state, fromTypeChange = false) {
   const { voltage } = siz;
 
+  // Логика при неверных данных
+  if (!voltage || isNaN(voltage)) {
+    return;
+  }
+
   // Сброс значения szType при изменении напряжения
   siz.szType = "";
 
