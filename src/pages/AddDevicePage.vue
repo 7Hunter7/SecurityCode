@@ -64,7 +64,7 @@
           type="text"
           id="number"
           placeholder="Введите номер СЗ"
-          @change="updateLastInspectDate"
+          @change="updateLastInspectDateAndInspectionResult"
           required
         />
       </div>
@@ -209,14 +209,23 @@ export default {
       "addInspectionResult",
     ]),
     handleTypeChange() {
-      handleTypeChange(this.siz, this.$store.state); // Вызов функции изменения типа
-      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
+      // Вызов функции изменения типа
+      handleTypeChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов СЗ
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     handleVoltageChange() {
-      handleVoltageChange(this.siz, this.$store.state); // Вызов функции изменения напряжения
-      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов СЗ
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
-    // Обновляем дату следующего испытания и результат осмотра
+    // Обновление даты последнего осмотра и результат осмотра
+    updateLastInspectDateAndInspectionResult() {
+      this.updateLastInspectDate();
+      this.updateInspectionResult();
+    },
+    // Обновление даты следующего испытания и результат осмотра
     updateTestDate() {
       this.calculateNextTestDate();
       this.updateInspectionResult();
