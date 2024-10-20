@@ -41,7 +41,11 @@ export function handleTypeChange(siz, state) {
     );
   }
   // 3. Штанга оперативная (универсальная)
-  else if (type === "Штанга оперативная (универсальная)") {
+  else if (
+    type === "Штанга оперативная (универсальная)" ||
+    type === "Штанга оперативная" ||
+    type === "Штанга изолирующая"
+  ) {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ШО"))
     );
@@ -89,7 +93,7 @@ export function handleTypeChange(siz, state) {
     );
   }
   // Удаление дубликатов
-  state.filteredSzTypes = Array.from(new Set(filteredSzTypes));
+  state.filteredSzTypes = Array.from(new Set(state.filteredSzTypes));
 
   // Если напряжение уже выбрано
   if (voltage) {
@@ -100,6 +104,9 @@ export function handleTypeChange(siz, state) {
 // Функция фильтрации szTypes на основе напряжения ЭУ
 export function handleVoltageChange(siz, state) {
   const { voltage } = siz;
+
+  // Сброс значения szType при изменении type
+  siz.szType = "";
 
   // Проверка на наличие данных для фильтрации
   if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) return;
