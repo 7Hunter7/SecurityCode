@@ -13,7 +13,12 @@ export function handleTypeChange(siz, state) {
   state.filteredSzTypes = szTypes.filter((szType) => szType === "new");
 
   // 1. Перчатки диэлектрические и Боты диэлектрические
-  if (type === "Перчатки диэлектрические" || type === "Боты диэлектрические") {
+  if (
+    type === "Перчатки диэлектрические" ||
+    type === "Боты диэлектрические" ||
+    type === "Клещи изолирующие" ||
+    type === "Изолирующий инструмент, комплект"
+  ) {
     siz.voltage = "1";
     siz.szType = "—";
   }
@@ -21,7 +26,7 @@ export function handleTypeChange(siz, state) {
   else if (type === "Указатель напряжения") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) =>
-        ["УН", "УВН"].some((prefix) => szType.startsWith(prefix))
+        ["УН", "УНН", "УВН"].some((prefix) => szType.startsWith(prefix))
       )
     );
     if (voltage) {
@@ -49,9 +54,7 @@ export function handleTypeChange(siz, state) {
   // 5. Комплект штанг для установки ПЗ
   else if (type === "Комплект штанг для установки ПЗ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
-      szTypes.filter((szType) =>
-        ["ЗПП", "ЗПЛ"].some((prefix) => szType.startsWith(prefix))
-      )
+      szTypes.filter((szType) => szType.includes("ЗПП"))
     );
     if (voltage) {
       handleVoltageChange(siz, state);
@@ -91,7 +94,7 @@ export function handleTypeChange(siz, state) {
     );
   }
   // 10. Наброс для ВЛ
-  else if (type === "Наброс для ВЛ") {
+  else if (type === "Наброс для ВЛ" || type === "Наброс") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗНЛ"))
     );
