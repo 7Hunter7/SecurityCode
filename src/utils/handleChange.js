@@ -99,8 +99,11 @@ export function handleVoltageChange(siz, state) {
   // Проверка на наличие данных для фильтрации
   if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) return;
 
-  // Фильтрация szTypes на основе напряжения для указанных типов
+  // Регулярное выражение для точного соответствия
+  const voltagePattern = new RegExp(`\\b${voltage}\\b`);
+
+  // Фильтрация szTypes на основе точного совпадения напряжения
   state.filteredSzTypes = state.filteredSzTypes.filter((szType) =>
-    szType.includes(voltage)
+    voltagePattern.test(szType)
   );
 }
