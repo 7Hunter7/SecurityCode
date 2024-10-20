@@ -116,7 +116,7 @@ export function handleVoltageChange(siz, state, fromTypeChange = false) {
   // Проверка на наличие данных для фильтрации
   if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) return;
 
-  // Регулярное выражение для точного соответствия
+  // Регулярное выражение для точного соответствия напряжению
   const voltagePattern = new RegExp(`\\b${voltage}\\b`);
 
   // Фильтрация szTypes на основе точного совпадения напряжения
