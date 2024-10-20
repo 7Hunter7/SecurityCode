@@ -71,6 +71,7 @@
         v-model="siz.number"
         type="text"
         placeholder="Введите номер СЗ"
+        @change="updateLastInspectDateAndInspectionResult"
         required
       />
 
@@ -180,10 +181,6 @@ export default {
       newVoltage: "",
       newSzType: "",
       newInspectionResult: "",
-      // Форматированная дата для отображения
-      formattedTestDate: "",
-      formattedNextTestDate: "",
-      formattedLastInspectDate: "",
       filteredSzTypes: [], // Массив для фильтрации типов СЗ
     };
   },
@@ -214,12 +211,16 @@ export default {
       "addInspectionResult",
     ]),
     handleTypeChange() {
-      handleTypeChange(this.siz, this.$store.state); // Вызов функции изменения типа
-      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
+      // Вызов функции изменения типа СЗ
+      handleTypeChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     handleVoltageChange() {
-      handleVoltageChange(this.siz, this.$store.state); // Вызов функции изменения напряжения
-      this.filteredSzTypes = this.$store.state.filteredSzTypes; // Обновляем отфильтрованные типы
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     async loadData() {
       try {
@@ -264,6 +265,11 @@ export default {
           console.warn("Не удалось найти СЗ с таким ID");
         }
       }
+    },
+    // Обновление дат
+    updateLastInspectDateAndInspectionResult() {
+      this.updateLastInspectDate();
+      this.updateInspectionResult();
     },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
