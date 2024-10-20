@@ -9,10 +9,7 @@ export function handleTypeChange(siz, state) {
   // Проверка, есть ли szTypes в состоянии, чтобы избежать ошибок
   if (!szTypes || szTypes.length === 0) return;
 
-  //0. Всегда есть пункт "new"
-  state.filteredSzTypes = szTypes.filter((szType) => szType === "new");
-
-  // 1. Перчатки диэлектрические и Боты диэлектрические
+  // 0. Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
   if (
     type === "Перчатки диэлектрические" ||
     type === "Боты диэлектрические" ||
@@ -23,8 +20,12 @@ export function handleTypeChange(siz, state) {
     siz.voltage = "1";
     return;
   }
+
+  //1. Всегда есть пункт "new" для следующих СЗ
+  state.filteredSzTypes = szTypes.filter((szType) => szType === "new");
+
   // 2. Указатель напряжения
-  else if (type === "Указатель напряжения") {
+  if (type === "Указатель напряжения") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) =>
         ["УН", "УНН", "УВН"].some((prefix) => szType.startsWith(prefix))
