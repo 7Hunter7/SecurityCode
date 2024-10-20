@@ -19,8 +19,9 @@ export function handleTypeChange(siz, state) {
     type === "Клещи изолирующие" ||
     type === "Изолирующий инструмент, комплект"
   ) {
-    siz.voltage = "1";
     siz.szType = "—";
+    siz.voltage = "1";
+    return;
   }
   // 2. Указатель напряжения
   else if (type === "Указатель напряжения") {
@@ -29,63 +30,42 @@ export function handleTypeChange(siz, state) {
         ["УН", "УНН", "УВН"].some((prefix) => szType.startsWith(prefix))
       )
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 3. Указатель напряжения для фазировки
   else if (type === "Указатель напряжения для фазировки") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("Ф"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 4. Штанга оперативная (универсальная)
   else if (type === "Штанга оперативная (универсальная)") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ШО"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 5. Комплект штанг для установки ПЗ
   else if (type === "Комплект штанг для установки ПЗ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 6. КШЗ
   else if (type === "КШЗ" || type === "КШЗ (с изолирующей штангой)") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("КШЗ"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 7. ПЗ для РУ
   else if (type === "ПЗ для РУ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 8. ПЗ для ВЛ
   else if (type === "ПЗ для ВЛ") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПЛ"))
     );
-    if (voltage) {
-      handleVoltageChange(siz, state);
-    }
   }
   // 9. ПЗ для ИВЛ
   else if (type === "ПЗ для ИВЛ") {
@@ -98,6 +78,10 @@ export function handleTypeChange(siz, state) {
     state.filteredSzTypes = state.filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗНЛ"))
     );
+  }
+  // Если напряжение уже выбрано
+  if (voltage) {
+    handleVoltageChange(siz, state);
   }
 }
 
