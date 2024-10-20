@@ -34,14 +34,11 @@
         fieldId="voltage"
         label="Напряжение ЭУ (кВ):"
         v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="
-          (value) => {
-            siz.voltage = value;
-            handleVoltageChange(); // Вызов фильтрации при смене напряжения
-          }
-        "
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        @change="handleVoltageChange"
         :options="voltages"
-        placeholder="Выберите напряжение ЭУ"
+        placeholder="Выберите напряжение
+      ЭУ"
         newPlaceholder="Добавить новое напряжение ЭУ"
         v-bind:newValue="newVoltage"
         v-on:update:newValue="(value) => (newVoltage = value)"

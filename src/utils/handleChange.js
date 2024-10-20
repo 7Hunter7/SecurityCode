@@ -1,3 +1,6 @@
+// Флаг для предотвращения циклического вызова функций
+let isVoltageChangeHandled = false;
+
 // Функция обработки изменений типа СЗ
 export function handleTypeChange(siz, state) {
   const { type, voltage } = siz;
@@ -21,11 +24,12 @@ export function handleTypeChange(siz, state) {
     return;
   }
 
-  // Всегда есть пункт "new" и "—" для следующих СЗ:
+  // Всегда есть пункт "new" и "—" для всех СЗ
   state.filteredSzTypes = szTypes.filter(
     (szType) => szType === "new" || szType === "—"
   );
 
+  // Фильтрация на основе типа:
   // 1. Указатель напряжения
   if (type === "Указатель напряжения") {
     state.filteredSzTypes = state.filteredSzTypes.concat(
@@ -94,18 +98,19 @@ export function handleTypeChange(siz, state) {
   }
   // Удаление дубликатов
   state.filteredSzTypes = Array.from(new Set(state.filteredSzTypes));
+  console.log("Filtered SzTypes:", state.filteredSzTypes);
 
-  // Если напряжение уже выбрано
-  if (voltage) {
-    handleVoltageChange(siz, state);
+  // Если напряжение уже выбрано и не было циклического вызова
+  if (voltage && !isVoltageChangeHandled) {
+    handleVoltageChange(siz, state, true); // Фильтрация напряжения с дополнительным флагом
   }
 }
 
 // Функция фильтрации szTypes на основе напряжения ЭУ
-export function handleVoltageChange(siz, state) {
+export function handleVoltageChange(siz, state, fromTypeChange = false) {
   const { voltage } = siz;
 
-  // Сброс значения szType при изменении type
+  // Сброс значения szType при изменении напряжения
   siz.szType = "";
 
   // Проверка на наличие данных для фильтрации
@@ -118,6 +123,17 @@ export function handleVoltageChange(siz, state) {
   state.filteredSzTypes = state.filteredSzTypes.filter((szType) =>
     voltagePattern.test(szType)
   );
-  // После изменения напряжения - для обновления фильтрации типов
-  handleTypeChange(siz, state);
+  console.log("Current voltage:", voltage);
+
+  // Установка флага, чтобы предотвратить циклические вызовы
+  if (!fromTypeChange) {
+    isVoltageChangeHandled = true;
+    // Повторный вызов handleTypeChange
+    handleTypeChange(siz, state);
+
+    // Сброс флага через небольшой таймаут для дальнейших изменений
+    setTimeout(() => {
+      isVoltageChangeHandled = false;
+    }, 0);
+  }
 }
