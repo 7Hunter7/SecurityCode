@@ -1,6 +1,3 @@
-// Флаг для предотвращения циклического вызова функций
-let isVoltageChangeHandled = false;
-
 // Функция обработки изменений типа СЗ
 export function handleTypeChange(siz, state) {
   const { type, voltage } = siz;
@@ -101,7 +98,7 @@ export function handleTypeChange(siz, state) {
   console.log("Filtered SzTypes:", state.filteredSzTypes);
 
   // Если напряжение уже выбрано и не было циклического вызова
-  if (voltage && !isVoltageChangeHandled) {
+  if (voltage) {
     handleVoltageChange(siz, state, true); // Фильтрация напряжения с дополнительным флагом
   }
 }
@@ -127,13 +124,7 @@ export function handleVoltageChange(siz, state, fromTypeChange = false) {
 
   // Установка флага, чтобы предотвратить циклические вызовы
   if (!fromTypeChange) {
-    isVoltageChangeHandled = true;
     // Повторный вызов handleTypeChange
     handleTypeChange(siz, state);
-
-    // Сброс флага через небольшой таймаут для дальнейших изменений
-    setTimeout(() => {
-      isVoltageChangeHandled = false;
-    }, 0);
   }
 }
