@@ -55,7 +55,7 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="filteredSzTypes"
+        :options="szTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
