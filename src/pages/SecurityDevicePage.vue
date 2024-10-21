@@ -248,8 +248,10 @@ export default {
           await this.$store.dispatch("deleteSIZ", item.id);
           toast.success("СЗ успешно удалено!");
           console.log("СЗ успешно удалено");
+
           // Принудительное обновление данных через Vuex
-          await this.loadData(true);
+          await this.$store.dispatch("loadSIZItems", { force: true });
+          this.loadData;
         } catch (error) {
           toast.error("Ошибка при удалении СЗ!");
           console.error("Ошибка при удалении СЗ", error);
