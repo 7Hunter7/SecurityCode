@@ -251,7 +251,7 @@ export default {
 
           // Принудительное обновление данных через Vuex
           await this.$store.dispatch("loadSIZItems", { force: true });
-          this.loadData;
+          this.loadData(true);
         } catch (error) {
           toast.error("Ошибка при удалении СЗ!");
           console.error("Ошибка при удалении СЗ", error);
