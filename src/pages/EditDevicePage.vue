@@ -175,7 +175,6 @@ export default {
       newVoltage: "",
       newSzType: "",
       newInspectionResult: "",
-      filteredSzTypes: [], // Массив для фильтрации типов СЗ
     };
   },
   computed: {
@@ -249,6 +248,7 @@ export default {
         }
       }
     },
+
     // Обновление дат
     updateLastInspectDateAndInspectionResult() {
       this.updateLastInspectDate();
