@@ -23,12 +23,7 @@
         label="Напряжение ЭУ (кВ):"
         v-model="siz.voltage"
         v-bind:modelValue="siz.voltage"
-        v-on:update:modelValue="
-          (value) => {
-            siz.voltage = value;
-            handleVoltageChange();
-          }
-        "
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
         :options="voltages"
         placeholder="Выберите напряжение ЭУ"
         newPlaceholder="Добавить новое напряжение ЭУ"
@@ -43,12 +38,7 @@
         label="Вид СЗ:"
         v-model="siz.type"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="
-          (value) => {
-            iz.type = value;
-            handleTypeChange();
-          }
-        "
+        v-on:update:modelValue="(value) => (iz.type = value)"
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
@@ -218,20 +208,6 @@ export default {
       "addSzType",
       "addInspectionResult",
     ]),
-    handleTypeChange() {
-      // Пропускаем выполнение при загрузке данных
-      if (!this.isInitialized) return;
-      // Вызов функции изменения типа СЗ
-      handleTypeChange(this.siz, this.$store.state);
-      // Обновление отфильтрованных типов
-      this.filteredSzTypes = this.$store.state.filteredSzTypes;
-    },
-    handleVoltageChange() {
-      if (!this.isInitialized) return;
-      // Вызов функции изменения напряжения
-      handleVoltageChange(this.siz, this.$store.state);
-      this.filteredSzTypes = this.$store.state.filteredSzTypes;
-    },
     async loadData() {
       try {
         // Загружаем данные независимо от их текущего состояния
@@ -243,8 +219,6 @@ export default {
         } else {
           // Заполняем форму данными
           this.fillFormData();
-          // Устанавливаем флаг после загрузки данных
-          this.isInitialized = true;
         }
       } catch (error) {
         console.error("Ошибка при обновлении данных", error);
@@ -274,10 +248,28 @@ export default {
               this.siz.lastInspectDate
             );
           }
+          // Устанавливаем флаг после загрузки данных
+          this.isInitialized = true;
+          // Обновляем фильтрацию типов СЗ на основе загруженных данных
+          this.handleTypeChange(); // Вызовем функцию после загрузки данных
         } else {
           console.warn("Не удалось найти СЗ с таким ID");
         }
       }
+    },
+    handleTypeChange() {
+      // Пропускаем выполнение при загрузке данных
+      if (!this.isInitialized) return;
+      // Вызов функции изменения типа СЗ
+      handleTypeChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+    },
+    handleVoltageChange() {
+      if (!this.isInitialized) return;
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     // Обновление дат
     updateLastInspectDateAndInspectionResult() {
