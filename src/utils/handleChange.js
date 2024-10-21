@@ -9,6 +9,9 @@ export function handleTypeChange(siz, state) {
   // Проверка, есть ли szTypes в состоянии, чтобы избежать ошибок
   if (!szTypes || szTypes.length === 0) return;
 
+  // Массив для хранения всех фильтраций
+  let filteredSzTypes = [];
+
   // Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
   if (
     type === "Перчатки диэлектрические" ||
@@ -22,14 +25,14 @@ export function handleTypeChange(siz, state) {
   }
 
   // Всегда есть пункт "new" и "—" для всех СЗ
-  state.filteredSzTypes = szTypes.filter(
+  filteredSzTypes = szTypes.filter(
     (szType) => szType === "new" || szType === "—"
   );
 
   // Фильтрация на основе типа:
   // 1. Указатель напряжения
   if (type === "Указатель напряжения") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) =>
         ["УН", "УНН", "УВН"].some((prefix) => szType.startsWith(prefix))
       )
@@ -37,7 +40,7 @@ export function handleTypeChange(siz, state) {
   }
   // 2. Указатель напряжения для фазировки
   else if (type === "Указатель напряжения для фазировки") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("Ф"))
     );
   }
@@ -47,54 +50,54 @@ export function handleTypeChange(siz, state) {
     type === "Штанга оперативная" ||
     type === "Штанга изолирующая"
   ) {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ШО"))
     );
   }
   // 4. Комплект штанг для установки ПЗ
   else if (type === "Комплект штанг для установки ПЗ") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
   }
   // 5. КШЗ
   else if (type === "КШЗ" || type === "КШЗ (с изолирующей штангой)") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("КШЗ"))
     );
   }
   // 6. ПЗ для РУ
   else if (type === "ПЗ для РУ") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПП"))
     );
   }
   // 7. ПЗ для ВЛ
   else if (type === "ПЗ для ВЛ") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗПЛ"))
     );
   }
   // 8. ПЗ для ИВЛ
   else if (type === "ПЗ для ИВЛ") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ПЗ СИП"))
     );
   }
   // 9. Наброс для ВЛ
   else if (type === "Наброс для ВЛ" || type === "Наброс") {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType.includes("ЗНЛ"))
     );
   }
   // 10. Для остальных СЗ
   else {
-    state.filteredSzTypes = state.filteredSzTypes.concat(
+    filteredSzTypes = filteredSzTypes.concat(
       szTypes.filter((szType) => szType !== "new")
     );
   }
   // Удаление дубликатов
-  state.filteredSzTypes = Array.from(new Set(state.filteredSzTypes));
+  state.filteredSzTypes = Array.from(new Set(filteredSzTypes));
   console.log("Filtered SzTypes:", state.filteredSzTypes);
 
   // Если напряжение уже выбрано и не было циклического вызова
@@ -107,7 +110,7 @@ export function handleTypeChange(siz, state) {
 export function handleVoltageChange(siz, state, fromTypeChange = false) {
   const { voltage } = siz;
 
-  // Логика при неверных данных
+  // При неверных данных
   if (!voltage || isNaN(voltage)) {
     return;
   }
@@ -126,6 +129,7 @@ export function handleVoltageChange(siz, state, fromTypeChange = false) {
     voltagePattern.test(szType)
   );
   console.log("Current voltage:", voltage);
+  console.log("Filtered SzTypes by Voltage:", state.filteredSzTypes);
 
   // Установка флага, чтобы предотвратить циклические вызовы
   if (!fromTypeChange) {
