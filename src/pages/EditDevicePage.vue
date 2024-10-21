@@ -61,7 +61,11 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="filteredSzTypes.length > 0 ? filteredSzTypes : szTypes"
+        :options="
+          filteredSzTypes && filteredSzTypes.length > 0
+            ? filteredSzTypes
+            : szTypes || []
+        "
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -263,8 +267,7 @@ export default {
     // Включение фильтрации szTypes
     iisChange() {
       this.applyFilters = !this.applyFilters;
-
-      // Проверяем, загружены ли данные перед вызовом handleTypeChange и handleVoltageChange
+      // Проверка, загружены ли данные перед вызовом handleTypeChange и handleVoltageChange
       if (
         this.applyFilters &&
         this.siz.type !== "" &&
