@@ -17,6 +17,12 @@
         v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
+      <div class="form-group">
+        <label
+          >Включить фильтрацию СЗ
+          <input type="checkbox" @change="isChange" />
+        </label>
+      </div>
 
       <!-- Напряжение ЭУ (кВ) -->
       <InputField
@@ -39,7 +45,7 @@
         label="Вид СЗ:"
         v-model="siz.type"
         v-bind:modelValue="siz.type"
-        v-on:update:modelValue="(value) => (iz.type = value)"
+        v-on:update:modelValue="(value) => (siz.type = value)"
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
@@ -55,7 +61,7 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="szTypes"
+        :options="filteredSzTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -146,6 +152,10 @@ import {
   getAutomaticInspectionResult,
   parseAndFormatDate,
 } from "../utils/dateUtils.js";
+import {
+  handleTypeChange,
+  handleVoltageChange,
+} from "../utils/handleChange.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { updateSIZItem } from "../services/apiService.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
@@ -175,6 +185,8 @@ export default {
       newVoltage: "",
       newSzType: "",
       newInspectionResult: "",
+      filteredSzTypes: [], // Массив для фильтрации типов СЗ
+      applyFilters: false, // Флаг
     };
   },
   computed: {
@@ -247,6 +259,22 @@ export default {
           console.warn("Не удалось найти СЗ с таким ID");
         }
       }
+    },
+    isChange() {
+      this.applyFilters = !this.applyFilters;
+    },
+    // Фильтрация szTypes по типу напряжению
+    handleTypeChange() {
+      if (!this.applyFilters) return;
+      // Вызов функции изменения типа
+      handleTypeChange(this.siz, this.$store.state);
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+    },
+    handleVoltageChange() {
+      if (!this.applyFilters) return;
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
 
     // Обновление дат
