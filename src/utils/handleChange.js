@@ -12,6 +12,9 @@ export function handleTypeChange(siz, state) {
   // Массив для хранения всех фильтраций
   let filteredSzTypes = [];
 
+  // Всегда есть пункт "new" и "—" для всех СЗ
+  filteredSzTypes.push("new", "—");
+
   // Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
   if (
     type === "Перчатки диэлектрические" ||
@@ -23,11 +26,6 @@ export function handleTypeChange(siz, state) {
     siz.voltage = "1";
     return;
   }
-
-  // Всегда есть пункт "new" и "—" для всех СЗ
-  filteredSzTypes = szTypes.filter(
-    (szType) => szType === "new" || szType === "—"
-  );
 
   // Фильтрация на основе типа:
   // 1. Указатель напряжения
