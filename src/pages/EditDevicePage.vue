@@ -17,6 +17,7 @@
         v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
+
       <!-- Напряжение ЭУ (кВ) -->
       <InputField
         fieldId="voltage"
@@ -145,10 +146,6 @@ import {
   getAutomaticInspectionResult,
   parseAndFormatDate,
 } from "../utils/dateUtils.js";
-import {
-  handleTypeChange,
-  handleVoltageChange,
-} from "../utils/handleChange.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { updateSIZItem } from "../services/apiService.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
@@ -179,7 +176,6 @@ export default {
       newSzType: "",
       newInspectionResult: "",
       filteredSzTypes: [], // Массив для фильтрации типов СЗ
-      isInitialized: false, // Флаг для отслеживания начальной загрузки данных
     };
   },
   computed: {
@@ -248,28 +244,10 @@ export default {
               this.siz.lastInspectDate
             );
           }
-          // Устанавливаем флаг после загрузки данных
-          this.isInitialized = true;
-          // Обновляем фильтрацию типов СЗ на основе загруженных данных
-          this.handleTypeChange(); // Вызовем функцию после загрузки данных
         } else {
           console.warn("Не удалось найти СЗ с таким ID");
         }
       }
-    },
-    handleTypeChange() {
-      // Пропускаем выполнение при загрузке данных
-      if (!this.isInitialized) return;
-      // Вызов функции изменения типа СЗ
-      handleTypeChange(this.siz, this.$store.state);
-      // Обновление отфильтрованных типов
-      this.filteredSzTypes = this.$store.state.filteredSzTypes;
-    },
-    handleVoltageChange() {
-      if (!this.isInitialized) return;
-      // Вызов функции изменения напряжения
-      handleVoltageChange(this.siz, this.$store.state);
-      this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     // Обновление дат
     updateLastInspectDateAndInspectionResult() {
