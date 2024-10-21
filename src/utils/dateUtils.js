@@ -122,17 +122,29 @@ export function getAutomaticInspectionResult(
     }
   }
 
-  // Объединение результатов
-  const combinedNote = [inspectionNote, testNote]
-    .filter(Boolean) // Убираем пустые строки
-    .join(" "); // Объединяем с одним пробелом
-
-  // Если уже есть существующий результат
-  if (existingInspectionResult) {
-    return `${existingInspectionResult} ${combinedNote}`.trim(); // Убираем пробелы по краям
+  // Логика комбинирования существующего результата и новых заметок
+  let combinedNote = "";
+  // Если есть только осмотр (lastInspectDate указана)
+  if (inspectionNote && !testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${inspectionNote}`
+      : `${inspectionNote}`;
+  }
+  // Если есть только испытание (nextTestDate указана)
+  if (!inspectionNote && testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${testNote}`
+      : `${testNote}`;
+  }
+  // Если есть и осмотр, и испытание
+  if (inspectionNote && testNote) {
+    combinedNote = existingInspectionResult
+      ? `${existingInspectionResult} ${inspectionNote} ${testNote}`
+      : `${inspectionNote} ${testNote}`;
   }
 
-  return combinedNote.trim(); // Убираем возможные пробелы по краям
+  // Убираем лишние пробелы
+  return combinedNote.trim().replace(/\s{2,}/g, " ");
 }
 
 // Функция для проверки валидности даты

@@ -1,6 +1,6 @@
 <template>
   <div class="add-siz-page">
-    <h1>Добавить новое СИЗ</h1>
+    <h1>Добавить новое СЗ</h1>
     <form @submit.prevent="submitForm">
       <!-- Местонахождение -->
       <InputField
@@ -14,6 +14,20 @@
         v-bind:newValue="newLocation"
         v-on:update:newValue="(value) => (newLocation = value)"
       />
+      <!-- Напряжение ЭУ (кВ) -->
+      <InputField
+        fieldId="voltage"
+        label="Напряжение ЭУ (кВ):"
+        v-bind:modelValue="siz.voltage"
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        @change="handleVoltageChange"
+        :options="voltages"
+        placeholder="Выберите напряжение
+      ЭУ"
+        newPlaceholder="Добавить новое напряжение ЭУ"
+        v-bind:newValue="newVoltage"
+        v-on:update:newValue="(value) => (newVoltage = value)"
+      />
 
       <!-- Вид СЗ -->
       <InputField
@@ -21,24 +35,12 @@
         label="Вид СЗ:"
         v-bind:modelValue="siz.type"
         v-on:update:modelValue="(value) => (siz.type = value)"
+        @change="handleTypeChange"
         :options="types"
         placeholder="Выберите вид СЗ"
         newPlaceholder="Добавить новый вид СЗ"
         v-bind:newValue="newType"
         v-on:update:newValue="(value) => (newType = value)"
-      />
-
-      <!-- Класс напряжения (кВ) -->
-      <InputField
-        fieldId="voltageClass"
-        label="Класс напряжения (кВ):"
-        v-bind:modelValue="siz.voltageClass"
-        v-on:update:modelValue="(value) => (siz.voltageClass = value)"
-        :options="voltageClasses"
-        placeholder="Выберите класс напряжения"
-        newPlaceholder="Добавить новый класс напряжения"
-        v-bind:newValue="newVoltageClass"
-        v-on:update:newValue="(value) => (newVoltageClass = value)"
       />
 
       <!-- Тип СЗ -->
@@ -47,7 +49,7 @@
         label="Тип СЗ:"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="szTypes"
+        :options="filteredSzTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -62,10 +64,7 @@
           type="text"
           id="number"
           placeholder="Введите номер СЗ"
-          @change="
-            updateLastInspectDate(),
-              updateInspectionResultForLastInspectDate(siz.lastInspectDate)
-          "
+          @change="updateLastInspectDateAndInspectionResult"
           required
         />
       </div>
@@ -77,7 +76,7 @@
           type="date"
           v-model="siz.testDate"
           id="testDate"
-          @change="calculateNextTestDate"
+          @change="updateTestDate"
           required
         />
       </div>
@@ -99,6 +98,7 @@
         <input
           type="date"
           v-model="siz.lastInspectDate"
+          @change="updateInspectionResult"
           id="lastInspectDate"
           required
         />
@@ -132,7 +132,8 @@
 
       <!-- Кнопка добавления -->
       <div class="form-actions">
-        <button type="submit">Добавить СИЗ</button>
+        <button type="submit">Добавить СЗ</button>
+        <button @click="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -147,6 +148,10 @@ import {
   getLastInspectDate,
   getAutomaticInspectionResult,
 } from "../utils/dateUtils.js";
+import {
+  handleTypeChange,
+  handleVoltageChange,
+} from "../utils/handleChange.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
 import { PZ_TYPES } from "../constants/constants.js";
 
@@ -160,7 +165,7 @@ export default {
       siz: {
         location: "",
         type: "",
-        voltageClass: "",
+        voltage: "",
         szType: "",
         number: "",
         testDate: "",
@@ -171,16 +176,17 @@ export default {
       },
       newLocation: "",
       newType: "",
-      newVoltageClass: "",
+      newVoltage: "",
       newSzType: "",
       newInspectionResult: "",
+      filteredSzTypes: [], // Массив для фильтрации типов СЗ
     };
   },
   computed: {
     ...mapState([
       "locations",
       "types",
-      "voltageClasses",
+      "voltages",
       "szTypes",
       "inspectionResults",
     ]),
@@ -188,15 +194,48 @@ export default {
       return PZ_TYPES.includes(this.siz.type);
     },
   },
+  mounted() {
+    // Устанавливаем дату последнего осмотра как текущую дату и результат осмотра как "Осмотрено"
+    this.siz.lastInspectDate = getLastInspectDate();
+    this.siz.inspectionResult = "Осмотрено.";
+  },
   methods: {
-    ...mapActions(["addSIZ"]),
-
+    ...mapActions([
+      "addSIZ",
+      "addLocation",
+      "addType",
+      "addVoltage",
+      "addSzType",
+      "addInspectionResult",
+    ]),
+    handleTypeChange() {
+      // Вызов функции изменения типа
+      handleTypeChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов СЗ
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+    },
+    handleVoltageChange() {
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      // Обновление отфильтрованных типов СЗ
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+    },
+    // Обновление даты последнего осмотра и результат осмотра
+    updateLastInspectDateAndInspectionResult() {
+      this.updateLastInspectDate();
+      this.updateInspectionResult();
+    },
+    // Обновление даты следующего испытания и результат осмотра
+    updateTestDate() {
+      this.calculateNextTestDate();
+      this.updateInspectionResult();
+    },
     calculateNextTestDate() {
       if (this.siz.testDate) {
         const parsedTestDate = new Date(this.siz.testDate);
         if (isNaN(parsedTestDate.getTime())) {
           const toast = useToast(); // Вызов уведомления
-          toast.error("Недействительная дата испытания");
+          toast.error("Недействительная дата испытания!");
           console.error("Недействительная дата:", this.siz.testDate);
           return;
         }
@@ -205,65 +244,80 @@ export default {
           parsedTestDate
         );
         this.updateLastInspectDate();
-        this.updateInspectionResult();
       } else {
         const toast = useToast(); // Вызов уведомления
-        toast.error("Пожалуйста, укажите дату испытания");
+        toast.error("Пожалуйста, укажите дату испытания!");
         console.error("Дата испытания не указана");
       }
     },
     updateLastInspectDate() {
       this.siz.lastInspectDate = getLastInspectDate();
-    },
-    updateInspectionResultForLastInspectDate(lastInspectDate) {
-      if (lastInspectDate) this.siz.inspectionResult = "Осмотрено.";
+      this.updateInspectionResult();
     },
     updateInspectionResult() {
       const currentDate = new Date();
       const nextTestDate = new Date(this.siz.nextTestDate);
       const differenceInMs = nextTestDate - currentDate;
 
-      this.siz.inspectionResult = getAutomaticInspectionResult(differenceInMs);
+      this.siz.inspectionResult = getAutomaticInspectionResult(
+        differenceInMs,
+        this.siz.lastInspectDate
+      );
     },
+    noSubmit() {
+      this.$router.push("/security-device");
+    },
+
     async submitForm() {
       const toast = useToast();
 
-      // Применяем новые значения, если они добавлены
-      [
-        "location",
-        "type",
-        "voltageClass",
-        "szType",
-        "inspectionResult",
-      ].forEach((field) => {
-        const newValue =
-          this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
-        if (newValue) {
-          this.siz[field] = newValue;
-        }
-      });
+      // Проверяем и добавляем новые значения, если они введены
+      if (this.newLocation) {
+        this.$store.commit("ADD_LOCATION", this.newLocation); // Добавляем новое местоположение
+        this.siz.location = this.newLocation; // Устанавливаем новое значение в объект СЗ
+      }
+      if (this.newType) {
+        this.$store.commit("ADD_TYPE", this.newType); // Добавляем новый тип
+        this.siz.type = this.newType;
+      }
+      if (this.newVoltage) {
+        this.$store.commit("ADD_VOLTAGE_CLASS", this.newVoltage); // Добавляем новый Напряжение ЭУ
+        this.siz.voltage = this.newVoltage;
+      }
+      if (this.newSzType) {
+        this.$store.commit("ADD_SZ_TYPE", this.newSzType); // Добавляем новый тип СЗ
+        this.siz.szType = this.newSzType;
+      }
+      if (this.newInspectionResult) {
+        this.$store.commit("ADD_INSPECTION_RESULT", this.newInspectionResult); // Добавляем новый результат осмотра
+        this.siz.inspectionResult = this.newInspectionResult;
+      }
 
       // Преобразование числовых значений
-      this.siz.number = Number(this.siz.number); // Преобразуем номер в число
-      this.siz.quantity = Number(this.siz.quantity); // Преобразуем количество в число
+      this.siz.number = Number(this.siz.number);
+      this.siz.quantity = Number(this.siz.quantity);
 
       try {
         const response = await createSIZItem(this.siz);
+        const newItemId = response.data.id; // ID нового элемента
+
         // Успешное уведомление
-        toast.success("СИЗ успешно добавлено");
+        toast.success("СЗ успешно добавлено!");
 
-        // Принудительное обновление данных
-        await this.$store.dispatch("loadSIZItems"); // Обновление данных через Vuex
+        // Принудительное обновление данных через Vuex
+        await this.$store.dispatch("loadSIZItems", { force: true });
 
-        this.$router.push("/security-device"); // Переход на страницу /security-device после успешного добавления
+        this.$router.push({
+          name: "Security Device",
+          query: { newItemId }, // Передаем новый элемент через query
+        });
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          // Если сервер возвращает ошибку 400 (например, дублирование СИЗ)
-          toast.error("СИЗ с таким номером уже существует");
+          toast.error("СЗ с таким номером уже существует!");
         } else {
-          toast.error("Ошибка при добавлении СИЗ");
+          toast.error("Ошибка при добавлении СЗ!");
         }
-        console.error("Ошибка при добавлении СИЗ:", error);
+        console.error("Ошибка при добавлении СЗ:", error);
       }
     },
   },
@@ -290,6 +344,8 @@ export default {
 }
 .form-actions {
   margin-top: 20px;
+  display: flex;
+  place-content: center space-between;
 }
 .form-actions button {
   padding: 10px 20px;

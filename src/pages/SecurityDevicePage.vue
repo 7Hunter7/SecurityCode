@@ -5,16 +5,16 @@
     <FiltersComponent
       :locations="uniqueLocations"
       :types="uniqueTypes"
-      :voltageClasses="uniqueVoltageClasses"
+      :voltages="uniqueVoltages"
       @filterChanged="handleFilterChange"
     />
-    <!-- Таблица СИЗ -->
+    <!-- Таблица СЗ -->
     <table>
       <thead>
         <tr>
           <th>Местонахождение</th>
           <th>Вид СЗ</th>
-          <th>Класс напряжения (кВ)</th>
+          <th>Напряжение ЭУ, кВ</th>
           <th>Тип СЗ</th>
           <th>№ СЗ</th>
           <th>Дата испытания</th>
@@ -31,10 +31,14 @@
           v-for="item in filteredSIZItems"
           :key="item.id"
           :data-id="item.id"
+          :class="{ 'blink-green': item.id == newAddedId }"
         >
-          <td class="location">{{ item.location }}</td>
+          <td class="location">
+            {{ item.location }}
+            <span v-if="item.id == newAddedId" class="new-label">Новое СЗ</span>
+          </td>
           <td class="type">{{ item.type }}</td>
-          <td class="voltageClass">{{ item.voltageClass }}</td>
+          <td class="voltage">{{ item.voltage }}</td>
           <td class="szType">{{ item.szType }}</td>
           <td class="number">{{ item.number }}</td>
           <td class="testDate">{{ formatDate(item.testDate, item.type) }}</td>
@@ -53,7 +57,7 @@
         </tr>
       </tbody>
       <tfoot>
-        <!-- Строка для подсчета общего количества СИЗ -->
+        <!-- Строка для подсчета общего количества СЗ -->
         <tr>
           <td colspan="8" style="text-align: right"><strong>Всего:</strong></td>
           <td>
@@ -82,6 +86,7 @@ export default {
       notificationsShown: false, // Уведомления еще не показаны
       shownInspectionNotifications: new Set(), // Отслеживание уведомлений по осмотру
       shownTestNotifications: new Set(), // Отслеживание уведомлений по испытаниям
+      newAddedId: null, // Отслеживание нового элемента
     };
   },
   // Отслеживание изменений
@@ -97,10 +102,21 @@ export default {
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
 
+    // Проверяем наличие сохраненных фильтров
+    const savedFilters = this.$store.state.savedFilters;
+    if (savedFilters) {
+      this.handleFilterChange(savedFilters); // Применяем сохраненные фильтры
+    }
+
     this.$nextTick(() => {
       this.applyStyles(); // Применение стилей
       this.checkForOverdueInspectionsAndTests(); // Логика уведомлений
     });
+    // Получаем переданный ID нового элемента из query
+    const newItemId = this.$route.query.newItemId;
+    if (newItemId) {
+      this.newAddedId = newItemId;
+    }
   },
   async onUpdated() {
     await this.loadData(true);
@@ -119,12 +135,10 @@ export default {
     uniqueTypes() {
       return [...new Set(this.filteredSIZItems.map((item) => item.type))];
     },
-    uniqueVoltageClasses() {
-      return [
-        ...new Set(this.filteredSIZItems.map((item) => item.voltageClass)),
-      ];
+    uniqueVoltages() {
+      return [...new Set(this.filteredSIZItems.map((item) => item.voltage))];
     },
-    // Подсчет общего количества СИЗ по колонке "Кол-во"
+    // Подсчет общего количества СЗ по колонке "Кол-во"
     totalQuantity() {
       return this.filteredSIZItems.reduce((total, item) => {
         return total + parseInt(item.quantity, 10);
@@ -158,6 +172,10 @@ export default {
     // Фильтрация данных
     handleFilterChange(filters) {
       let filteredItems = [...this.getSizItems]; //Полный набор данных
+
+      // Сохраняем фильтры в store
+      this.$store.commit("SET_SAVED_FILTERS", filters);
+
       // Фильтр по строке поиска
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
@@ -181,9 +199,9 @@ export default {
         );
       }
       // Фильтр по классу напряжения
-      if (filters.selectedVoltageClass) {
+      if (filters.selectedVoltage) {
         filteredItems = filteredItems.filter(
-          (item) => item.voltageClass === filters.selectedVoltageClass
+          (item) => item.voltage === filters.selectedVoltage
         );
       }
       // Фильтр по дате испытания "от"
@@ -228,13 +246,15 @@ export default {
       ) {
         try {
           await this.$store.dispatch("deleteSIZ", item.id);
-          toast.success("СИЗ успешно удалено");
-          console.log("СИЗ успешно удалено");
+          toast.success("СЗ успешно удалено!");
+          console.log("СЗ успешно удалено");
+
           // Принудительное обновление данных через Vuex
-          await this.loadData(true);
+          await this.$store.dispatch("loadSIZItems", { force: true });
+          this.loadData(true);
         } catch (error) {
-          toast.error("Ошибка при удалении СИЗ");
-          console.error("Ошибка при удалении СИЗ", error);
+          toast.error("Ошибка при удалении СЗ!");
+          console.error("Ошибка при удалении СЗ", error);
           н;
         }
       }
@@ -243,7 +263,12 @@ export default {
     applyStyles() {
       const rows = document.querySelectorAll(".table-row");
       rows.forEach((row) => {
-        // Получаем результат осмотра
+        const itemId = row.dataset.id;
+        // Если это новый элемент, добавляем класс для мигающей рамки
+        if (this.newAddedId && this.newAddedId === itemId) {
+          row.classList.add("blink-green");
+        }
+        // Добавляем класс по результатам осмотра
         const inspectionResult =
           row.querySelector(".inspection-result").textContent;
 
@@ -262,6 +287,10 @@ export default {
           row.classList.add("blink-red");
         }
       });
+      // Сбрасываем состояние нового элемента
+      setTimeout(() => {
+        this.newlyAddedId = null;
+      }, 5000);
     },
     // Всплывающие сообщения при наличии просроченных осмотров или испытаниях
     checkForOverdueInspectionsAndTests() {
@@ -282,7 +311,7 @@ export default {
           !this.shownInspectionNotifications.has(itemId)
         ) {
           toast.warning(
-            `Необходимо выполнить осмотр СИЗ: ${type} №${number} ${location}!`,
+            `Необходимо выполнить осмотр СЗ: ${type} №${number} ${location}!`,
             {
               timeout: 7000,
             }
@@ -295,7 +324,7 @@ export default {
           !this.shownTestNotifications.has(itemId)
         ) {
           toast.error(
-            `Необходимо выполнить испытания СИЗ: ${type} №${number} ${location}`,
+            `Необходимо выполнить испытания СЗ: ${type} №${number} ${location}`,
             {
               timeout: 10000,
             }
@@ -360,19 +389,60 @@ button:hover {
   background-color: #007bff;
   color: white;
 }
-/* Зеленый текст для "Осмотрено." и "Испытано." */
+/* Цвет для текста */
 .green-text {
   color: green;
 }
-/* Желтый текст для "Необходимо выполнить осмотр!" */
 .orange-text {
   color: orange;
 }
-/* Красный текст для "Испытание просрочено!" */
 .red-text {
   color: red;
 }
-/* Анимация мигания желтой рамки */
+/* Класс для мигающей рамки */
+.blink-green {
+  position: relative;
+  border: 3px solid green;
+  border-radius: 0px 20px 0px 20px;
+  animation: blink-green 1.5s infinite;
+}
+.blink-orange {
+  border: 3px solid orange;
+  border-radius: 0px 20px 0px 20px;
+  animation: blink-orange 1.5s infinite;
+}
+.blink-red {
+  border: 3px solid red;
+  border-radius: 0px 20px 0px 20px;
+  animation: blink-red 1s infinite;
+}
+/* Стиль для надписи "NEW" */
+.new-label {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: yellow;
+  color: green;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 2; /* Надпись поверх строки */
+  opacity: 0.9;
+  animation: fade-in 1s ease-in-out; /* Добавление анимации */
+}
+/* Анимация для рамки */
+@keyframes blink-green {
+  0% {
+    border-color: green;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: green;
+  }
+}
 @keyframes blink-orange {
   0% {
     border-color: orange;
@@ -384,7 +454,6 @@ button:hover {
     border-color: orange;
   }
 }
-/* Анимация мигания красной рамки */
 @keyframes blink-red {
   0% {
     border-color: red;
@@ -396,14 +465,13 @@ button:hover {
     border-color: red;
   }
 }
-/* Класс для желтой мигающей рамки */
-.blink-orange {
-  border: 3px solid orange;
-  animation: blink-orange 1.5s infinite;
-}
-/* Класс для красной мигающей рамки */
-.blink-red {
-  border: 3px solid red;
-  animation: blink-red 1s infinite;
+/* Анимация для плавного появления */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

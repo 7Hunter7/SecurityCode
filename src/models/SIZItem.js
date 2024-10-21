@@ -15,7 +15,7 @@ const SIZItem = sequelize.define("SIZItem", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  voltageClass: {
+  voltage: {
     type: DataTypes.STRING,
     allowNull: false,
   },

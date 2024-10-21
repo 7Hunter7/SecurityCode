@@ -1,29 +1,84 @@
 <template>
   <div class="edit-siz-page">
-    <h1>Редактировать СИЗ</h1>
+    <h1>Редактировать СЗ</h1>
 
     <form @submit.prevent="submitForm">
-      <!-- Используем компонент InputField для каждого поля -->
+      <!-- Местонахождение -->
       <InputField
-        label="Местонахождение"
-        :options="locations"
+        fieldId="location"
+        label="Местонахождение:"
         v-model="siz.location"
+        v-bind:modelValue="siz.location"
+        v-on:update:modelValue="(value) => (siz.location = value)"
+        :options="locations"
+        placeholder="Выберите местонахождение"
+        newPlaceholder="Добавить новое местонахождение"
+        v-bind:newValue="newLocation"
+        v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
-      <InputField label="Вид СЗ" :options="types" v-model="siz.type" required />
+
+      <!-- Напряжение ЭУ (кВ) -->
       <InputField
-        label="Класс напряжения (кВ)"
-        :options="voltageClasses"
-        v-model="siz.voltageClass"
+        fieldId="voltage"
+        label="Напряжение ЭУ (кВ):"
+        v-model="siz.voltage"
+        v-bind:modelValue="siz.voltage"
+        v-on:update:modelValue="(value) => (siz.voltage = value)"
+        :options="voltages"
+        placeholder="Выберите напряжение ЭУ"
+        newPlaceholder="Добавить новое напряжение ЭУ"
+        v-bind:newValue="newVoltage"
+        v-on:update:newValue="(value) => (newVoltage = value)"
         required
       />
+
+      <!-- Вид СЗ -->
       <InputField
-        label="Тип СЗ"
-        :options="szTypes"
+        fieldId="type"
+        label="Вид СЗ:"
+        v-model="siz.type"
+        v-bind:modelValue="siz.type"
+        v-on:update:modelValue="(value) => (siz.type = value)"
+        :options="types"
+        placeholder="Выберите вид СЗ"
+        newPlaceholder="Добавить новый вид СЗ"
+        v-bind:newValue="newType"
+        v-on:update:newValue="(value) => (newType = value)"
+        required
+      />
+
+      <!-- Кнопка для применения фильтрации szType -->
+      <div class="form-actions">
+        <button @click.prevent="isChange">Обновить Типы СЗ</button>
+      </div>
+
+      <!-- Тип СЗ -->
+      <InputField
+        fieldId="szType"
+        label="Тип СЗ:"
         v-model="siz.szType"
+        v-bind:modelValue="siz.szType"
+        v-on:update:modelValue="(value) => (siz.szType = value)"
+        :options="computedSzTypes"
+        placeholder="Выберите тип СЗ"
+        newPlaceholder="Добавить новый тип СЗ"
+        v-bind:newValue="newSzType"
+        v-on:update:newValue="(value) => (newSzType = value)"
         required
       />
-      <InputField label="№ СЗ" type="text" v-model="siz.number" required />
+
+      <!-- № СЗ -->
+      <InputField
+        label="№ СЗ"
+        v-model="siz.number"
+        type="text"
+        placeholder="Введите номер СЗ"
+        @change="updateLastInspectDateAndInspectionResult"
+        required
+      />
+
+      <!-- Дата испытания -->
       <InputField
         label="Дата испытания"
         type="date"
@@ -33,6 +88,8 @@
         @change="calculateNextTestDate"
         required
       />
+
+      <!-- Дата следующего испытания -->
       <InputField
         label="Дата следующего испытания"
         type="date"
@@ -41,13 +98,18 @@
         @input="updateNextTestDate"
         required
       />
+
+      <!-- Дата последнего осмотра -->
       <InputField
         label="Дата последнего осмотра"
         type="date"
         v-model="siz.lastInspectDate"
         @input="updateLastInspectDate"
+        @change="updateInspectionResult"
         required
       />
+
+      <!-- Количество -->
       <InputField
         label="Количество"
         type="number"
@@ -56,15 +118,26 @@
         min="1"
         required
       />
+
+      <!-- Результаты осмотра -->
       <InputField
-        label="Результат осмотра"
-        :options="inspectionResults"
+        fieldId="inspectionResult"
+        label="Результат осмотра:"
         v-model="siz.inspectionResult"
+        v-bind:modelValue="siz.inspectionResult"
+        v-on:update:modelValue="(value) => (siz.inspectionResult = value)"
+        :options="inspectionResults"
+        placeholder="Выберите результат осмотра"
+        newPlaceholder="Добавить новый результат осмотра"
+        v-bind:newValue="newInspectionResult"
+        v-on:update:newValue="(value) => (newInspectionResult = value)"
+        required
       />
 
       <!-- Кнопка для сохранения изменений -->
       <div class="form-actions">
         <button type="submit">Сохранить изменения</button>
+        <button @click.prevent="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -78,6 +151,10 @@ import {
   getAutomaticInspectionResult,
   parseAndFormatDate,
 } from "../utils/dateUtils.js";
+import {
+  handleTypeChange,
+  handleVoltageChange,
+} from "../utils/handleChange.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { updateSIZItem } from "../services/apiService.js";
 import { useToast } from "vue-toastification"; // Импорт уведомлений
@@ -93,7 +170,7 @@ export default {
       siz: {
         location: "",
         type: "",
-        voltageClass: "",
+        voltage: "",
         szType: "",
         number: "",
         testDate: "",
@@ -102,16 +179,20 @@ export default {
         quantity: "1",
         inspectionResult: "",
       },
-      formattedTestDate: "", // Форматированная дата для отображения
-      formattedNextTestDate: "",
-      formattedLastInspectDate: "",
+      newLocation: "",
+      newType: "",
+      newVoltage: "",
+      newSzType: "",
+      newInspectionResult: "",
+      filteredSzTypes: [], // Массив для фильтрации типов СЗ
+      applyFilters: false, // Флаг
     };
   },
   computed: {
     ...mapState([
       "locations",
       "types",
-      "voltageClasses",
+      "voltages",
       "szTypes",
       "inspectionResults",
     ]),
@@ -119,12 +200,25 @@ export default {
     isPZType() {
       return PZ_TYPES.includes(this.siz.type);
     },
+    computedSzTypes() {
+      return this.filteredSzTypes && this.filteredSzTypes.length > 0
+        ? this.filteredSzTypes
+        : this.szTypes || [];
+    },
   },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
   },
   methods: {
-    ...mapActions(["loadSIZItems"]),
+    ...mapActions([
+      "loadSIZItems",
+      "updateSIZ",
+      "addLocation",
+      "addType",
+      "addVoltage",
+      "addSzType",
+      "addInspectionResult",
+    ]),
     async loadData() {
       try {
         // Загружаем данные независимо от их текущего состояния
@@ -134,6 +228,7 @@ export default {
         if (!this.getSizItems.length) {
           this.loadSIZItems().then(() => this.fillFormData());
         } else {
+          // Заполняем форму данными
           this.fillFormData();
         }
       } catch (error) {
@@ -165,18 +260,65 @@ export default {
             );
           }
         } else {
-          console.warn("Не удалось найти СИЗ с таким ID");
+          console.warn("Не удалось найти СЗ с таким ID");
         }
       }
     },
+    // Включение фильтрации szTypes
+    isChange() {
+      this.applyFilters = true;
+
+      if (this.applyFilters) {
+        if (this.siz.type !== "" && this.siz.voltage !== "") {
+          // Если тип и напряжение заданы, а szType пусто, запускаем фильтрацию
+          this.handleTypeChange();
+          this.handleVoltageChange();
+        }
+      }
+    },
+    // Фильтрация szTypes по типу напряжению
+    handleTypeChange() {
+      if (!this.applyFilters) return;
+      // Вызов функции изменения типа
+      handleTypeChange(this.siz, this.$store.state);
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+    },
+    handleVoltageChange() {
+      if (!this.applyFilters) return;
+      // Вызов функции изменения напряжения
+      handleVoltageChange(this.siz, this.$store.state);
+      this.filteredSzTypes = this.$store.state.filteredSzTypes;
+
+      this.applyFilters = false; // Сброс флага после завершения фильтрации
+    },
+
+    // Обновление дат
+    updateLastInspectDateAndInspectionResult() {
+      this.updateLastInspectDate();
+      this.updateInspectionResult();
+    },
     updateTestDate(event) {
       this.siz.testDate = event.target.value;
+      this.calculateNextTestDate();
     },
     updateNextTestDate(event) {
       this.siz.nextTestDate = event.target.value;
+      this.updateInspectionResult();
     },
     updateLastInspectDate(event) {
-      this.siz.lastInspectDate = event.target.value;
+      if (event) {
+        this.siz.lastInspectDate = event.target.value;
+      } else {
+        this.siz.lastInspectDate = getLastInspectDate();
+      }
+      this.updateInspectionResult();
+    },
+    updateInspectionResult() {
+      const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
+      this.siz.inspectionResult = getAutomaticInspectionResult(
+        differenceInMs,
+        this.siz.lastInspectDate
+      );
     },
     calculateNextTestDate() {
       if (this.siz.testDate && this.siz.type) {
@@ -184,17 +326,34 @@ export default {
           this.siz.type,
           new Date(this.siz.testDate)
         );
-        this.siz.lastInspectDate = getLastInspectDate();
-        const differenceInMs = new Date(this.siz.nextTestDate) - new Date();
-        this.siz.inspectionResult =
-          getAutomaticInspectionResult(differenceInMs);
       }
+      this.updateInspectionResult();
     },
+    noSubmit() {
+      this.$router.push("/security-device");
+    },
+
     async submitForm() {
       const toast = useToast();
       let testDateForSubmitForm;
       let nextTestDateForSubmitForm;
       let lastInspectDateForSubmitForm;
+
+      // Применяем новые значения, если они добавлены
+      ["location", "type", "voltage", "szType", "inspectionResult"].forEach(
+        (field) => {
+          const newValue =
+            this[`new${field.charAt(0).toUpperCase() + field.slice(1)}`];
+          if (newValue) {
+            this.siz[field] = newValue;
+
+            // Добавляем новые значения в store
+            this[`add${field.charAt(0).toUpperCase() + field.slice(1)}`](
+              newValue
+            );
+          }
+        }
+      );
 
       // Преобразуем дату
       if (PZ_TYPES.includes(this.siz.type)) {
@@ -213,11 +372,11 @@ export default {
       const updatedSIZ = {
         location: this.siz.location,
         type: this.siz.type,
-        voltageClass: this.siz.voltageClass,
+        voltage: this.siz.voltage,
         szType: this.siz.szType,
         number: Number(this.siz.number), // Преобразование в число
-        testDate: testDateForSubmitForm,
-        nextTestDate: nextTestDateForSubmitForm,
+        testDate: testDateForSubmitForm || null,
+        nextTestDate: nextTestDateForSubmitForm || null,
         lastInspectDate: lastInspectDateForSubmitForm,
         quantity: Number(this.siz.quantity), // Преобразование в число
         inspectionResult: this.siz.inspectionResult,
@@ -227,15 +386,15 @@ export default {
       try {
         const response = await updateSIZItem(this.siz.id, updatedSIZ);
         // Успешное уведомление
-        toast.success("СИЗ успешно обновлено!");
-        console.log("СИЗ успешно обновлено:", response.data);
+        toast.success("СЗ успешно обновлено!");
+        console.log("СЗ успешно обновлено:", response.data);
         // Принудительное обновление данных через Vuex
-        await this.$store.dispatch("loadSIZItems");
+        await this.$store.dispatch("loadSIZItems", { force: true });
         // Переход на страницу /security-device
         this.$router.push("/security-device");
       } catch (error) {
-        toast.error("Ошибка при обновлении СИЗ!");
-        console.error("Ошибка при обновлении СИЗ:", error);
+        toast.error("Ошибка при обновлении СЗ!");
+        console.error("Ошибка при обновлении СЗ:", error);
       }
     },
   },
@@ -262,6 +421,9 @@ export default {
 }
 .form-actions {
   margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  place-content: center space-between;
 }
 .form-actions button {
   padding: 10px 20px;

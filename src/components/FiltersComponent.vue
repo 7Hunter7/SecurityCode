@@ -1,6 +1,6 @@
 <template>
   <div class="filters">
-    <h2>Поиск СИЗ</h2>
+    <h2>Поиск СЗ</h2>
     <!-- Поле для поиска -->
     <input
       v-model="search"
@@ -8,7 +8,7 @@
       @input="updateFilters"
     />
     <br />
-    <h2>Фильтрация СИЗ</h2>
+    <h2>Фильтрация СЗ</h2>
     <!-- Фильтр по местонахождению -->
     <select v-model="selectedLocation" @change="updateFilters">
       <option value="">Местонахождение</option>
@@ -24,9 +24,9 @@
       </option>
     </select>
     <!-- Фильтр по классу напряжения СЗ -->
-    <select v-model="selectedVoltageClass" @change="updateFilters">
-      <option value="">Класс напряжения</option>
-      <option v-for="voltage in voltageClasses" :key="voltage" :value="voltage">
+    <select v-model="selectedVoltage" @change="updateFilters">
+      <option value="">Напряжение ЭУ</option>
+      <option v-for="voltage in voltages" :key="voltage" :value="voltage">
         {{ voltage }} кВ
       </option>
     </select>
@@ -61,7 +61,7 @@ export default {
       type: Array,
       required: true,
     },
-    voltageClasses: {
+    voltages: {
       type: Array,
       required: true,
     },
@@ -71,7 +71,7 @@ export default {
       search: "",
       selectedLocation: "",
       selectedType: "",
-      selectedVoltageClass: "",
+      selectedVoltage: "",
       nextTestDateFrom: "",
       nextTestDateTo: "",
     };
@@ -82,7 +82,7 @@ export default {
         search: this.search,
         selectedLocation: this.selectedLocation,
         selectedType: this.selectedType,
-        selectedVoltageClass: this.selectedVoltageClass,
+        selectedVoltage: this.selectedVoltage,
         nextTestDateFrom: this.nextTestDateFrom || null,
         nextTestDateTo: this.nextTestDateTo || null,
       });

@@ -92,9 +92,9 @@ export async function importCSV() {
         try {
           const existingSIZ = await SIZItem.findOne({
             where: {
-              number: row["№ СЗ"],
-              type: row["Вид СЗ"],
               location: row["Местонахождение"],
+              type: row["Вид СЗ"],
+              number: row["№ СЗ"],
             },
           });
 
@@ -103,7 +103,7 @@ export async function importCSV() {
             await SIZItem.create({
               location: row["Местонахождение"],
               type: row["Вид СЗ"],
-              voltageClass: row["Класс напряжения СЗ"],
+              voltage: row["Напряжение ЭУ"],
               szType: row["Тип СЗ"] || "—",
               number: row["№ СЗ"],
               testDate: testDate,

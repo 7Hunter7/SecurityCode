@@ -5,7 +5,7 @@ export default createStore({
   state: {
     sizItems: [], // Хранилище для данных о СИЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
-    // newSIZ: [], // Хранилище для новых СИЗ
+    savedFilters: null, // Хранилище для отфильтров
     locations: [
       "new",
       "ПС 35 кВ Жуково",
@@ -39,7 +39,7 @@ export default createStore({
       "ПЗ для ИВЛ",
       "Наброс для ВЛ",
     ],
-    voltageClasses: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
+    voltages: ["new", "0,4", "1", "6", "10", "15", "35", "110"],
     szTypes: [
       "new",
       "—",
@@ -58,6 +58,7 @@ export default createStore({
       "УВНИ 10-110",
       "УВН-90М",
       "ШО-1",
+      "ШО-6",
       "ШО-10",
       "ШО-10/15",
       "ШО-15",
@@ -66,6 +67,7 @@ export default createStore({
       "ШОУ-1",
       "ШОУ-6",
       "ШОУ-10",
+      "ШОУ-15",
       "ШОУ-35",
       "ШОУ-110",
       "КШЗ-0,4",
@@ -99,6 +101,36 @@ export default createStore({
     ],
   },
   mutations: {
+    // Мутация для добавления нового местоположения
+    ADD_LOCATION(state, newLocation) {
+      if (!state.locations.includes(newLocation)) {
+        state.locations.push(newLocation);
+      }
+    },
+    // Мутация для добавления нового типа
+    ADD_TYPE(state, newType) {
+      if (!state.types.includes(newType)) {
+        state.types.push(newType);
+      }
+    },
+    // Мутация для добавления нового класса напряжения
+    ADD_VOLTAGE(state, newVoltage) {
+      if (!state.voltages.includes(newVoltage)) {
+        state.voltages.push(newVoltage);
+      }
+    },
+    // Мутация для добавления нового типа СЗ
+    ADD_SZ_TYPE(state, newSzType) {
+      if (!state.szTypes.includes(newSzType)) {
+        state.szTypes.push(newSzType);
+      }
+    },
+    // Мутация для добавления нового результата осмотра
+    ADD_INSPECTION_RESULT(state, newInspectionResult) {
+      if (!state.inspectionResults.includes(newInspectionResult)) {
+        state.inspectionResults.push(newInspectionResult);
+      }
+    },
     // методы для изменения состояния
     SET_SIZ_ITEMS(state, items) {
       if (Array.isArray(items)) {
@@ -109,6 +141,9 @@ export default createStore({
     },
     SET_FILTERED_SIZ_ITEMS(state, filteredItems) {
       state.filteredSIZItems = filteredItems;
+    },
+    SET_SAVED_FILTERS(state, filters) {
+      state.savedFilters = filters; // Сохраняем фильтры
     },
     ADD_SIZ(state, newSIZ) {
       console.log(`Новое СИЗ передано в store: ${newSIZ}`);
@@ -125,6 +160,21 @@ export default createStore({
     },
   },
   actions: {
+    addLocation({ commit }, newLocation) {
+      commit("ADD_LOCATION", newLocation);
+    },
+    addType({ commit }, newType) {
+      commit("ADD_TYPE", newType);
+    },
+    addVoltage({ commit }, newVoltage) {
+      commit("ADD_VOLTAGE", newVoltage);
+    },
+    addSzType({ commit }, newSzType) {
+      commit("ADD_SZ_TYPE", newSzType);
+    },
+    addInspectionResult({ commit }, newInspectionResult) {
+      commit("ADD_INSPECTION_RESULT", newInspectionResult);
+    },
     async loadSIZItems({ commit }) {
       try {
         const response = await axios.get("http://localhost:3000/api/siz-items");
@@ -154,8 +204,8 @@ export default createStore({
         const matchesType = filters.selectedType
           ? item.type === filters.selectedType
           : true;
-        const matchesVoltageClass = filters.selectedVoltageClass
-          ? item.voltageClass === filters.selectedVoltageClass
+        const matchesVoltage = filters.selectedVoltage
+          ? item.voltage === filters.selectedVoltage
           : true;
 
         // Преобразование дат в ISO формат перед сравнением
@@ -180,7 +230,7 @@ export default createStore({
           matchesSearch &&
           matchesLocation &&
           matchesType &&
-          matchesVoltageClass &&
+          matchesVoltage &&
           matchesDateFrom &&
           matchesDateTo
         );
@@ -231,8 +281,7 @@ export default createStore({
     getFilteredSizItems: (state) => state.filteredSIZItems,
     getLocations: (state) => state.locations,
     getTypes: (state) => state.types,
-    getPzTypes: (state) => state.pzTypes,
-    getVoltageClasses: (state) => state.voltageClasses,
+    getVoltages: (state) => state.voltages,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
   },
