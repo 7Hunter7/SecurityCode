@@ -97,8 +97,11 @@
 </template>
 
 <script>
+import InputField from "../components/InputField.vue";
+
 export default {
   name: "ProfilePage",
+  components: { InputField },
   data() {
     return {
       user: {
