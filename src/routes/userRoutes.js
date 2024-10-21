@@ -2,8 +2,22 @@ import express from "express";
 import User from "../models/User.js";
 import { userValidationSchema } from "../validation/userValidation.js";
 import logger from "../logger.js";
+import multer from "multer";
+import path from "path";
 
 const router = express.Router();
+
+// Настройки для хранения файлов
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/profile-photos");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 // Получение данных о пользователе по ID
 router.get("/:id", async (req, res, next) => {
@@ -64,6 +78,28 @@ router.put("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+// Загрузка фото профиля
+router.post(
+  "/:id/upload-photo",
+  upload.single("profilePhoto"),
+  async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: "Пользователь не найден" });
+      }
+
+      user.profilePhoto = req.file.path; // Сохраняем путь к файлу в базе данных
+      await user.save();
+
+      res.status(200).json({ message: "Фото профиля загружено", user });
+    } catch (error) {
+      logger.error(`Ошибка загрузки фото профиля: ${error.message}`);
+      next(error);
+    }
+  }
+);
 
 // Удаление пользователя
 router.delete("/:id", async (req, res, next) => {
