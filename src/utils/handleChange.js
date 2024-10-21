@@ -1,14 +1,16 @@
 // Функция обработки изменений типа СЗ
 export function handleTypeChange(siz, state) {
-  if (!siz.type) return;
   const { type, voltage } = siz;
   const { szTypes } = state;
 
   // Сброс значения szType при изменении type
   siz.szType = "";
 
-  // Проверка, есть ли szTypes в состоянии, чтобы избежать ошибок
-  if (!szTypes || szTypes.length === 0) return;
+  // Проверка, есть ли szTypes в состоянии
+  if (!szTypes || szTypes.length === 0) {
+    console.warn("szTypes are undefined or empty");
+    return;
+  }
 
   // Массив для хранения всех фильтраций
   let filteredSzTypes = [];
@@ -111,8 +113,9 @@ export function handleTypeChange(siz, state) {
 export function handleVoltageChange(siz, state, fromTypeChange = false) {
   const { voltage } = siz;
 
-  // При неверных данных
+  // Проверка на наличие значения напряжения
   if (!voltage || isNaN(voltage)) {
+    console.warn("Invalid voltage or voltage is undefined");
     return;
   }
 
@@ -120,7 +123,10 @@ export function handleVoltageChange(siz, state, fromTypeChange = false) {
   siz.szType = "";
 
   // Проверка на наличие данных для фильтрации
-  if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) return;
+  if (!state.filteredSzTypes || state.filteredSzTypes.length === 0) {
+    console.warn("filteredSzTypes are undefined or empty");
+    return;
+  }
 
   // Регулярное выражение для точного соответствия напряжению
   const voltagePattern = new RegExp(`\\b${voltage}\\b`);
