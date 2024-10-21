@@ -61,7 +61,7 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="filteredSzTypes"
+        :options="filteredSzTypes.length > 0 ? filteredSzTypes : szTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -260,8 +260,17 @@ export default {
         }
       }
     },
+    // Включение фильтрации szTypes
     isChange() {
       this.applyFilters = !this.applyFilters;
+      if (this.applyFilters) {
+        if (this.siz.type !== "") {
+          this.handleTypeChange();
+        }
+        if (this.siz.voltage !== "") {
+          this.handleVoltageChange();
+        }
+      }
     },
     // Фильтрация szTypes по типу напряжению
     handleTypeChange() {
