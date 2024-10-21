@@ -12,8 +12,16 @@ export function handleTypeChange(siz, state) {
     return;
   }
 
+  // Сохранение текущего значения szType, если оно "new" или "—"
+  const previousSzType = siz.szType;
+  if (previousSzType !== "new" && previousSzType !== "—") {
+    siz.szType = ""; // Сброс значения szType, если это не "new" или "—"
+  }
+
   // Массив для хранения всех фильтраций
-  let filteredSzTypes = [];
+  let filteredSzTypes = szTypes.filter(
+    (szType) => szType === "new" || szType === "—"
+  );
 
   // Перчатки диэлектрические, Боты диэлектрические, Клещи изолирующие и Изолирующий инструмент
   if (
