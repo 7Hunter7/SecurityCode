@@ -10,6 +10,7 @@ import { RouterLink, RouterView } from "vue-router";
       <RouterLink to="/add-device">Добавить СИЗ</RouterLink>
       <RouterLink to="/security-device">Учет СИЗ</RouterLink>
       <RouterLink to="/history">История</RouterLink>
+      <RouterLink to="/profile">Профиль</RouterLink>
       <RouterLink to="/settings">Настройки</RouterLink>
     </nav>
   </header>
