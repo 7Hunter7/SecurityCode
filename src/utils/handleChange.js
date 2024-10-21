@@ -1,5 +1,6 @@
 // Функция обработки изменений типа СЗ
 export function handleTypeChange(siz, state) {
+  if (!siz.type) return;
   const { type, voltage } = siz;
   const { szTypes } = state;
 
