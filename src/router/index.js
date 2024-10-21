@@ -35,7 +35,11 @@ const router = createRouter({
       component: () => import("../pages/EditDevicePage.vue"),
       props: true, // Передаем параметры маршрута как пропсы
     },
-
+    {
+      path: "/profile", // Маршрут для редактирования с параметром ID
+      name: "Profile",
+      component: () => import("../pages/ProfilePage.vue"),
+    },
     {
       path: "/:pathMatch(.*)",
       name: "404",
