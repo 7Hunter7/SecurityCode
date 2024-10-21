@@ -17,12 +17,6 @@
         v-on:update:newValue="(value) => (newLocation = value)"
         required
       />
-      <div class="form-group">
-        <label
-          >Включить фильтрацию СЗ
-          <input type="checkbox" @change="isChange" />
-        </label>
-      </div>
 
       <!-- Напряжение ЭУ (кВ) -->
       <InputField
@@ -54,6 +48,11 @@
         required
       />
 
+      <!-- Кнопка для применения фильтрации szType -->
+      <div class="form-actions">
+        <button @click.prevent="isChange">Обновить Типы СЗ</button>
+      </div>
+
       <!-- Тип СЗ -->
       <InputField
         fieldId="szType"
@@ -61,11 +60,7 @@
         v-model="siz.szType"
         v-bind:modelValue="siz.szType"
         v-on:update:modelValue="(value) => (siz.szType = value)"
-        :options="
-          filteredSzTypes && filteredSzTypes.length > 0
-            ? filteredSzTypes
-            : szTypes || []
-        "
+        :options="computedSzTypes"
         placeholder="Выберите тип СЗ"
         newPlaceholder="Добавить новый тип СЗ"
         v-bind:newValue="newSzType"
@@ -142,7 +137,7 @@
       <!-- Кнопка для сохранения изменений -->
       <div class="form-actions">
         <button type="submit">Сохранить изменения</button>
-        <button @click="noSubmit">Отмена</button>
+        <button @click.prevent="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -205,6 +200,11 @@ export default {
     isPZType() {
       return PZ_TYPES.includes(this.siz.type);
     },
+    computedSzTypes() {
+      return this.filteredSzTypes && this.filteredSzTypes.length > 0
+        ? this.filteredSzTypes
+        : this.szTypes || [];
+    },
   },
   async mounted() {
     await this.loadData(); // Асинхронная загрузка данных
@@ -265,25 +265,15 @@ export default {
       }
     },
     // Включение фильтрации szTypes
-    iisChange() {
-      this.applyFilters = !this.applyFilters;
-      // Проверка, загружены ли данные перед вызовом handleTypeChange и handleVoltageChange
-      if (
-        this.applyFilters &&
-        this.siz.type !== "" &&
-        this.siz.voltage !== ""
-      ) {
-        if (this.$store.state.szTypes && this.$store.state.szTypes.length > 0) {
+    isChange() {
+      this.applyFilters = true;
+
+      if (this.applyFilters) {
+        if (this.siz.type !== "" && this.siz.voltage !== "") {
+          // Если тип и напряжение заданы, а szType пусто, запускаем фильтрацию
           this.handleTypeChange();
-        }
-        if (
-          this.$store.state.voltages &&
-          this.$store.state.voltages.length > 0
-        ) {
           this.handleVoltageChange();
         }
-      } else {
-        console.warn("Данные для фильтрации не загружены или невалидные");
       }
     },
     // Фильтрация szTypes по типу напряжению
@@ -298,6 +288,8 @@ export default {
       // Вызов функции изменения напряжения
       handleVoltageChange(this.siz, this.$store.state);
       this.filteredSzTypes = this.$store.state.filteredSzTypes;
+
+      this.applyFilters = false; // Сброс флага после завершения фильтрации
     },
 
     // Обновление дат
@@ -429,6 +421,7 @@ export default {
 }
 .form-actions {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   place-content: center space-between;
 }
