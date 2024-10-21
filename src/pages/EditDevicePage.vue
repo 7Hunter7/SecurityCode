@@ -189,6 +189,7 @@ export default {
       newSzType: "",
       newInspectionResult: "",
       filteredSzTypes: [], // Массив для фильтрации типов СЗ
+      isInitialized: false, // Флаг для отслеживания начальной загрузки данных
     };
   },
   computed: {
@@ -218,15 +219,17 @@ export default {
       "addInspectionResult",
     ]),
     handleTypeChange() {
+      // Пропускаем выполнение при загрузке данных
+      if (!this.isInitialized) return;
       // Вызов функции изменения типа СЗ
       handleTypeChange(this.siz, this.$store.state);
       // Обновление отфильтрованных типов
       this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     handleVoltageChange() {
+      if (!this.isInitialized) return;
       // Вызов функции изменения напряжения
       handleVoltageChange(this.siz, this.$store.state);
-      // Обновление отфильтрованных типов
       this.filteredSzTypes = this.$store.state.filteredSzTypes;
     },
     async loadData() {
@@ -238,7 +241,10 @@ export default {
         if (!this.getSizItems.length) {
           this.loadSIZItems().then(() => this.fillFormData());
         } else {
+          // Заполняем форму данными
           this.fillFormData();
+          // Устанавливаем флаг после загрузки данных
+          this.isInitialized = true;
         }
       } catch (error) {
         console.error("Ошибка при обновлении данных", error);
