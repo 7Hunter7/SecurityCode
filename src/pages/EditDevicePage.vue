@@ -261,15 +261,26 @@ export default {
       }
     },
     // Включение фильтрации szTypes
-    isChange() {
+    iisChange() {
       this.applyFilters = !this.applyFilters;
-      if (this.applyFilters) {
-        if (this.siz.type !== "") {
+
+      // Проверяем, загружены ли данные перед вызовом handleTypeChange и handleVoltageChange
+      if (
+        this.applyFilters &&
+        this.siz.type !== "" &&
+        this.siz.voltage !== ""
+      ) {
+        if (this.$store.state.szTypes && this.$store.state.szTypes.length > 0) {
           this.handleTypeChange();
         }
-        if (this.siz.voltage !== "") {
+        if (
+          this.$store.state.voltages &&
+          this.$store.state.voltages.length > 0
+        ) {
           this.handleVoltageChange();
         }
+      } else {
+        console.warn("Данные для фильтрации не загружены или невалидные");
       }
     },
     // Фильтрация szTypes по типу напряжению
