@@ -126,8 +126,11 @@ export default {
     },
   },
   async created() {
-    // Загрузка данных пользователя при загрузке компонента
-    await this.loadUser();
+    try {
+      await this.loadUser(); // Загрузка данных пользователя
+    } catch (error) {
+      console.error("Ошибка при загрузке профиля:", error);
+    }
   },
   methods: {
     ...mapActions(["loadUser", "updateUser"]),
