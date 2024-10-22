@@ -69,6 +69,7 @@
 <script>
 import InputField from "../components/InputField.vue"; // Подключение InputField
 import { mapGetters, mapActions } from "vuex";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 export default {
   name: "RegistrationPage",
@@ -107,6 +108,8 @@ export default {
 
     // Метод для отправки данных регистрации
     async submitRegistrationForm() {
+      const toast = useToast();
+
       try {
         const userData = {
           firstName: this.user.firstName,
@@ -119,11 +122,14 @@ export default {
 
         // Отправлка данных на сервер
         await this.createUser(userData); // Экшен для создания пользователя
+        // Успешное уведомление
+        toast.success("Пользователь успешно зарегистрирован!");
         console.log("Пользователь зарегистрирован:", userData);
 
         // Перенаправление на страницу после успешной регистрации
         this.$router.push("/profile");
       } catch (error) {
+        toast.error("Ошибка при регистрации пользователя!");
         console.error("Ошибка при регистрации:", error);
       }
     },
