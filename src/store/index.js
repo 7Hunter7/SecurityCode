@@ -3,6 +3,15 @@ import axios from "axios";
 
 export default createStore({
   state: {
+    users: [], // Хранилище для зарегистрированных пользователей
+    departments: [
+      "new",
+      "РЭС",
+      "СПС",
+      "УВС",
+      "Отдел эксплуатации",
+      "Отдел безопасности",
+    ],
     sizItems: [], // Хранилище для данных о СЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СЗ
     savedFilters: null, // Хранилище для фильтров
@@ -100,15 +109,13 @@ export default createStore({
       "Испытание просрочено!",
     ],
   },
-  departments: [
-    "new",
-    "РЭС",
-    "СПС",
-    "УВС",
-    "Отдел эксплуатации",
-    "Отдел безопасности",
-  ],
   mutations: {
+    // Мутация для добавления нового пользователя
+    ADD_USER(state, user) {
+      if (!state.users.includes(user)) {
+        state.users.push(user);
+      }
+    },
     // Мутация для добавления нового местоположения
     ADD_LOCATION(state, newLocation) {
       if (!state.locations.includes(newLocation)) {
@@ -174,6 +181,21 @@ export default createStore({
     },
   },
   actions: {
+    // Экшен для создания нового пользователя
+    async createUser({ commit }, userData) {
+      try {
+        // Запрос на сервер
+        const response = await axios.post("/api/users", userData);
+        const newUser = response.data;
+        // Вызов мутации для добавления нового пользователя в хранилище
+        commit("ADD_USER", newUser);
+
+        console.log("Пользователь успешно зарегистрирован:", newUser);
+      } catch (error) {
+        console.error("Ошибка при регистрации пользователя:", error);
+      }
+    },
+    // Экшены для СЗ
     addLocation({ commit }, newLocation) {
       commit("ADD_LOCATION", newLocation);
     },
@@ -294,7 +316,12 @@ export default createStore({
     },
   },
   getters: {
-    // методы для чтения состояния
+    // Getter для получения всех зарегистрированных пользователей
+    getUsers: (state) => state.users,
+    // Getter для получения списка подразделений
+    getDepartments: (state) => state.departments,
+
+    // Getters для получения данных о СЗ
     getSizItems: (state) => state.sizItems,
     getFilteredSizItems: (state) => state.filteredSIZItems,
     getLocations: (state) => state.locations,
@@ -302,7 +329,5 @@ export default createStore({
     getVoltages: (state) => state.voltages,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
-    // Getter для получения списка подразделений
-    getDepartments: (state) => state.departments,
   },
 });
