@@ -194,29 +194,41 @@ export default createStore({
         // Запрос на сервер
         const response = await axios.post("/api/users", userData);
         const newUser = response.data;
-        // Вызов мутации для добавления нового пользователя в хранилище
-        commit("ADD_USER", newUser);
-
+        // Устанавка текущего пользователя
+        commit("SET_USER", newUser);
         console.log("Пользователь успешно зарегистрирован:", newUser);
       } catch (error) {
         console.error("Ошибка при регистрации пользователя:", error);
+        throw error; // Проброс ошибки дальше
       }
     },
-    async loadUser({ commit }) {
+    // Экшен для загрузки данных пользователя
+    async loadUser({ commit, state }) {
       try {
-        const response = await axios.get("/api/user");
+        if (!state.user || !state.user.id) {
+          throw new Error("User not logged in");
+        }
+        const response = await axios.get(`/api/users/${state.user.id}`);
         commit("SET_USER", response.data);
       } catch (error) {
         console.error("Ошибка при загрузке данных пользователя:", error);
       }
     },
-    async updateUser({ commit }, updatedData) {
+    // Экшен для обновления данных пользователя
+    async updateUser({ commit, state }, updatedData) {
       try {
+        if (!state.user || !state.user.id) {
+          throw new Error("User not logged in");
+        }
         // Обновление данных на сервере
-        const response = await axios.put("/api/user", updatedData);
+        const response = await axios.put(
+          `/api/users/${state.user.id}`,
+          updatedData
+        );
         commit("UPDATE_USER", response.data);
       } catch (error) {
         console.error("Ошибка при обновлении данных пользователя:", error);
+        throw error;
       }
     },
     // Экшены для СЗ
