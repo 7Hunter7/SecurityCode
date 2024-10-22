@@ -3,9 +3,26 @@ import User from "../models/User.js";
 import { userValidationSchema } from "../validation/userValidation.js";
 import logger from "../logger.js";
 import multer from "multer";
-import path from "path";
 
 const router = express.Router();
+
+// Middleware для поиска пользователя по ID
+async function findUserById(req, res, next) {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      const error = new Error("Пользователь не найден");
+      error.statusCode = 404;
+      return next(error);
+    }
+    req.user = user;
+    next();
+    logger.info("Пользователь успешно найден");
+  } catch (error) {
+    logger.error(`Ошибка поиска пользователя по ID: ${error.message}`);
+    next(error);
+  }
+}
 
 // Настройки для хранения файлов
 const storage = multer.diskStorage({
@@ -19,18 +36,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Получение данных о пользователе по ID
-router.get("/:id", async (req, res, next) => {
+// Получение пользователя по ID
+router.get("/:id", findUserById, async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-    logger.info("Данные пользователя успешно получены");
-    res.status(200).json(user);
+    res.status(200).json(req.user);
   } catch (error) {
-    logger.error(`Ошибка получения данных пользователя: ${error.message}`);
-    res.status(500).json({ message: "Ошибка получения данных" });
+    logger.error(`Ошибка получения пользователя: ${error.message}`);
+    res.status(500).json({ message: "Ошибка получения пользователя" });
     next(error);
   }
 });
@@ -53,7 +65,7 @@ router.post("/", async (req, res, next) => {
 });
 
 // Обновление данных пользователя
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", findUserById, async (req, res, next) => {
   const { error } = userValidationSchema.validate(req.body);
   if (error) {
     const err = new Error(error.details[0].message);
@@ -65,14 +77,9 @@ router.put("/:id", async (req, res, next) => {
   }
 
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-
-    await user.update(req.body);
-    logger.info(`Данные пользователя с ID: ${req.params.id} успешно обновлены`);
-    res.status(200).json({ message: "Данные пользователя обновлены", user });
+    await req.user.update(req.body);
+    logger.info(`Пользователь с ID: ${req.user.id} успешно обновлен`);
+    res.status(200).json(req.user);
   } catch (error) {
     logger.error(`Ошибка обновления данных пользователя: ${error.message}`);
     next(error);
@@ -82,18 +89,14 @@ router.put("/:id", async (req, res, next) => {
 // Загрузка фото профиля
 router.post(
   "/:id/upload-photo",
+  findUserById,
   upload.single("profilePhoto"),
   async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id);
-      if (!user) {
-        return res.status(404).json({ message: "Пользователь не найден" });
-      }
+      req.user.profilePhoto = req.file.path; // Сохраняем путь к файлу в базе данных
+      await req.user.save();
 
-      user.profilePhoto = req.file.path; // Сохраняем путь к файлу в базе данных
-      await user.save();
-
-      res.status(200).json({ message: "Фото профиля загружено", user });
+      res.status(200).json({ message: "Фото профиля загружено" });
     } catch (error) {
       logger.error(`Ошибка загрузки фото профиля: ${error.message}`);
       next(error);
@@ -104,14 +107,11 @@ router.post(
 // Удаление пользователя
 router.delete("/:id", async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-
-    await user.destroy();
-    logger.info(`Пользователь успешно удален`);
-    res.status(200).json({ message: "Пользователь удален" });
+    await req.user.destroy();
+    logger.info(`Пользователь с ID: ${req.user.id} успешно удален`);
+    res
+      .status(200)
+      .json({ message: `Пользователь с ID ${req.user.id} успешно удален` });
   } catch (error) {
     logger.error(`Ошибка удаления пользователя: ${error.message}`);
     next(error);
