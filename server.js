@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import sequelize from "./src/data/db.js"; // Подключение к базе данных
 import sizRoutes from "./src/routes/sizRoutes.js"; // Маршруты для СИЗ
 import historyRoutes from "./src/routes/historyRoutes.js"; // Подключение маршрута истории
-import userRoutes from "./src/routes/userRoutes.js"; // Подключение маршрута управления профилем
+import userRoutes from "./src/routes/userRoutes.js"; // Маршруты для пользователей
 import errorHandler from "./src/middlewares/errorHandler.js"; // Обработчик ошибок
 import { importCSV } from "./src/data/importCSV.js"; // Импорт функции для импорта данных
 
@@ -45,7 +45,7 @@ app.use(
 // Маршруты истории
 app.use("/api/history", historyRoutes);
 
-// Маршруты управления профилем
+// Маршруты для управления пользователями
 app.use("/api/users", userRoutes);
 
 // Подключение статических файлов (если используется)
