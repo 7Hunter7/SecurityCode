@@ -36,7 +36,12 @@ const router = createRouter({
       props: true, // Передаем параметры маршрута как пропсы
     },
     {
-      path: "/profile", // Маршрут для редактирования с параметром ID
+      path: "/registration", // Маршрут для регистрации
+      name: "Registration",
+      component: () => import("../pages/RegistrationPage.vue"),
+    },
+    {
+      path: "/profile", // Маршрут профиля пользователя
       name: "Profile",
       component: () => import("../pages/ProfilePage.vue"),
     },
