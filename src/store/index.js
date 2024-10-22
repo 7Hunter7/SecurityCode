@@ -3,9 +3,9 @@ import axios from "axios";
 
 export default createStore({
   state: {
-    sizItems: [], // Хранилище для данных о СИЗ
-    filteredSIZItems: [], // Хранилище для отфильтрованных данных о СИЗ
-    savedFilters: null, // Хранилище для отфильтров
+    sizItems: [], // Хранилище для данных о СЗ
+    filteredSIZItems: [], // Хранилище для отфильтрованных данных о СЗ
+    savedFilters: null, // Хранилище для фильтров
     locations: [
       "new",
       "ПС 35 кВ Жуково",
@@ -100,6 +100,14 @@ export default createStore({
       "Испытание просрочено!",
     ],
   },
+  departments: [
+    "new",
+    "РЭС",
+    "СПС",
+    "УВС",
+    "Отдел эксплуатации",
+    "Отдел безопасности",
+  ],
   mutations: {
     // Мутация для добавления нового местоположения
     ADD_LOCATION(state, newLocation) {
@@ -129,6 +137,12 @@ export default createStore({
     ADD_INSPECTION_RESULT(state, newInspectionResult) {
       if (!state.inspectionResults.includes(newInspectionResult)) {
         state.inspectionResults.push(newInspectionResult);
+      }
+    },
+    // Мутация для добавления нового подразделения
+    ADD_DEPARTMENT(state, newDepartment) {
+      if (!state.departments.includes(newDepartment)) {
+        state.departments.push(newDepartment);
       }
     },
     // методы для изменения состояния
@@ -174,6 +188,10 @@ export default createStore({
     },
     addInspectionResult({ commit }, newInspectionResult) {
       commit("ADD_INSPECTION_RESULT", newInspectionResult);
+    },
+    // Добавление нового подразделения
+    addDepartment({ commit }, newDepartment) {
+      commit("ADD_DEPARTMENT", newDepartment);
     },
     async loadSIZItems({ commit }) {
       try {
@@ -284,5 +302,7 @@ export default createStore({
     getVoltages: (state) => state.voltages,
     getSzTypes: (state) => state.szTypes,
     getInspectionResults: (state) => state.inspectionResults,
+    // Getter для получения списка подразделений
+    getDepartments: (state) => state.departments,
   },
 });
