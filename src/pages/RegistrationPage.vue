@@ -2,7 +2,7 @@
   <div class="registration-page">
     <h1>Регистрация пользователя</h1>
 
-    <form @submit.prevent="submitRegistrationData">
+    <form @submit.prevent="submitRegistrationForm">
       <!-- Имя -->
       <InputField
         fieldId="firstName"
@@ -48,18 +48,19 @@
       <InputField
         fieldId="department"
         label="Подразделение:"
-        v-model="user.department"
         :options="departments"
+        v-model="user.department"
         placeholder="Выберите подразделение"
         newPlaceholder="Добавить новое подразделение"
         v-bind:newValue="newDepartment"
-        v-on:update:newValue="(value) => (newDepartment = value)"
+        @update:newValue="addNewDepartment"
         required
       />
 
       <!-- Кнопка для отправки данных -->
       <div class="form-actions">
-        <button type="submit">Зарегистрировать пользователя</button>
+        <button type="submit">Зарегистрироваться</button>
+        <button @click.prevent="noSubmit">Отмена</button>
       </div>
     </form>
   </div>
@@ -67,7 +68,7 @@
 
 <script>
 import InputField from "../components/InputField.vue"; // Подключение InputField
-import axios from "axios"; // Для отправки данных на сервер
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "RegistrationPage",
@@ -85,23 +86,45 @@ export default {
         department: "",
       },
       newDepartment: "", // Для нового подразделения
-      departments: ["IT", "HR", "Finance", "Marketing"], // Пример опций подразделений
     };
   },
+  computed: {
+    ...mapGetters(["getDepartments"]), // Получение списка подразделений
+    departments() {
+      return this.getDepartments;
+    },
+  },
   methods: {
-    async submitRegistrationData() {
-      try {
-        // Подготовка данных для отправки
-        const userData = { ...this.user };
-        if (this.newDepartment) {
-          userData.department = this.newDepartment; // Использовать новое подразделение, если оно указано
-        }
+    ...mapActions(["addDepartment"]), // Добавление нового подразделения
 
-        // Отправка данных на сервер
-        const response = await axios.post("/api/users", userData);
-        console.log("Пользователь успешно зарегистрирован:", response.data);
+    // Метод для добавления нового подразделения в хранилище
+    addNewDepartment(newDepartment) {
+      if (newDepartment && !this.departments.includes(newDepartment)) {
+        this.addDepartment(newDepartment);
+        this.user.department = newDepartment; // Новое подразделение
+      }
+    },
+
+    // Метод для отправки данных регистрации
+    async submitRegistrationForm() {
+      try {
+        const userData = {
+          firstName: this.user.firstName,
+          lastName: this.user.lastName,
+          middleName: this.user.middleName,
+          department: this.user.department,
+          email: this.user.email,
+          phone: this.user.phone,
+        };
+
+        // Отправляем данные на сервер или в store
+        await this.$store.dispatch("createUser", userData); // Экшен для создания пользователя
+        console.log("Пользователь зарегистрирован:", userData);
+
+        // Перенаправляем на страницу после успешной регистрации
+        this.$router.push("/profile");
       } catch (error) {
-        console.error("Ошибка регистрации пользователя:", error);
+        console.error("Ошибка при регистрации:", error);
       }
     },
   },
