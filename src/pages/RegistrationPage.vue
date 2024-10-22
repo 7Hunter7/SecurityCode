@@ -127,6 +127,7 @@ export default {
         console.log("Пользователь зарегистрирован:", userData);
 
         // Перенаправление на страницу профиля после успешной регистрации
+        const userId = userData.id;
         this.$router.push(`/profile/${userId}`);
       } catch (error) {
         toast.error("Ошибка при регистрации пользователя!");
