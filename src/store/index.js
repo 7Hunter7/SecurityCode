@@ -3,6 +3,7 @@ import axios from "axios";
 
 export default createStore({
   state: {
+    user: null, // Хранилище для данных пользователя
     users: [], // Хранилище для зарегистрированных пользователей
     departments: [
       "new",
@@ -110,11 +111,17 @@ export default createStore({
     ],
   },
   mutations: {
-    // Мутация для добавления нового пользователя
+    // Мутация для изменения пользователя
     ADD_USER(state, user) {
       if (!state.users.includes(user)) {
         state.users.push(user);
       }
+    },
+    SET_USER(state, userData) {
+      state.user = userData;
+    },
+    UPDATE_USER(state, updatedData) {
+      state.user = { ...state.user, ...updatedData };
     },
     // Мутация для добавления нового местоположения
     ADD_LOCATION(state, newLocation) {
@@ -193,6 +200,23 @@ export default createStore({
         console.log("Пользователь успешно зарегистрирован:", newUser);
       } catch (error) {
         console.error("Ошибка при регистрации пользователя:", error);
+      }
+    },
+    async loadUser({ commit }) {
+      try {
+        const response = await axios.get("/api/user");
+        commit("SET_USER", response.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке данных пользователя:", error);
+      }
+    },
+    async updateUser({ commit }, updatedData) {
+      try {
+        // Обновление данных на сервере
+        const response = await axios.put("/api/user", updatedData);
+        commit("UPDATE_USER", response.data);
+      } catch (error) {
+        console.error("Ошибка при обновлении данных пользователя:", error);
       }
     },
     // Экшены для СЗ
@@ -316,6 +340,8 @@ export default createStore({
     },
   },
   getters: {
+    // Getter для получения данных пользователя
+    getUser: (state) => state.user,
     // Getter для получения всех зарегистрированных пользователей
     getUsers: (state) => state.users,
     // Getter для получения списка подразделений
