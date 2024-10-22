@@ -43,7 +43,12 @@
       <InputField
         fieldId="department"
         label="Подразделение:"
+        :options="departments"
         v-model="user.department"
+        placeholder="Выберите подразделение"
+        newPlaceholder="Добавить новое подразделение"
+        v-bind:newValue="newDepartment"
+        @update:newValue="addNewDepartment"
         required
       />
 
