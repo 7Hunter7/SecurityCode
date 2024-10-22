@@ -98,78 +98,98 @@
 
 <script>
 import InputField from "../components/InputField.vue";
+import { mapActions, mapGetters } from "vuex";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 export default {
   name: "ProfilePage",
   components: { InputField },
   data() {
     return {
-      user: {
-        firstName: "",
-        lastName: "",
-        middleName: "",
-        department: "",
-        email: "",
-        phone: "",
-        notifications: {
-          email: false,
-          phone: false,
-        },
-      },
       profilePhotoUrl: null,
       emailVerified: false,
       phoneVerified: false,
       emailVerificationInProgress: false,
       phoneVerificationInProgress: false,
-      isSaving: false, // Для управления состоянием кнопки сохранения
+      isSaving: false, // Управление состоянием кнопки сохранения
     };
   },
+  computed: {
+    ...mapGetters(["getUser"]),
+    user() {
+      return this.getUser || {}; // Пустой объект, если нет данных пользователя
+    },
+  },
+  async created() {
+    // Загрузка данных пользователя при загрузке компонента
+    await this.loadUser();
+  },
   methods: {
+    ...mapActions(["loadUser", "updateUser"]),
+
     async submitProfileData() {
+      const toast = useToast();
       this.isSaving = true;
-      // Логика для отправки данных профиля на сервер
-      console.log("Данные профиля:", this.user);
+
       try {
-        // Эмуляция запроса на сервер для сохранения данных
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        alert("Профиль успешно сохранен!");
+        // Отправка обновленных данных пользователя на сервер
+        await this.updateUser(this.user);
+        toast.success("Профиль успешно сохранен!");
+        console.log("Профиль успешно сохранен!");
       } catch (error) {
+        toast.error("Ошибка при сохранения профиля!");
         console.error("Ошибка сохранения профиля:", error);
       } finally {
         this.isSaving = false;
       }
     },
+
     uploadProfilePhoto(event) {
+      const toast = useToast();
       const file = event.target.files[0];
+
       // Логика для загрузки фото профиля (например, отправка на сервер)
       if (file && file.size < 5 * 1024 * 1024) {
         // Проверка размера файла
         this.profilePhotoUrl = URL.createObjectURL(file);
+        toast.success("Фото профиля успешно обновлено!");
       } else {
-        alert("Размер файла слишком велик!");
+        toast.error("Размер файла должен быть не более 5Мб!");
+        console.log("Размер файла более 5Мб!");
       }
     },
+
     async sendEmailVerification() {
+      const toast = useToast();
       this.emailVerificationInProgress = true;
+
       try {
         // Эмуляция отправки кода подтверждения на почту
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        alert("Код подтверждения отправлен на почту.");
+        toast.success("Код подтверждения отправлен на почту!");
+        console.log("Код подтверждения отправлен на почту");
         this.emailVerified = true; // Предполагаем, что верификация успешна
+        toast.success("Почта успешно подтверждена!");
       } catch (error) {
+        toast.error("Ошибка подтверждения почты!");
         console.error("Ошибка подтверждения почты:", error);
       } finally {
         this.emailVerificationInProgress = false;
       }
     },
     async sendPhoneVerification() {
+      const toast = useToast();
       this.phoneVerificationInProgress = true;
+
       try {
         // Эмуляция отправки кода подтверждения на телефон
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        alert("Код подтверждения отправлен на телефон.");
+        toast.success("Код подтверждения отправлен на телефон!");
+        console.log("Код подтверждения отправлен на телефон");
         this.phoneVerified = true; // Предполагаем, что верификация успешна
+        toast.success("Телефон успешно подтвержден!");
       } catch (error) {
+        toast.error("Ошибка подтверждения телефона!");
         console.error("Ошибка подтверждения телефона:", error);
       } finally {
         this.phoneVerificationInProgress = false;
