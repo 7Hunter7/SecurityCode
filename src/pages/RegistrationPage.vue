@@ -95,7 +95,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["addDepartment"]), // Добавление нового подразделения
+    ...mapActions(["createUser", "addDepartment"]),
 
     // Метод для добавления нового подразделения в хранилище
     addNewDepartment(newDepartment) {
@@ -117,11 +117,11 @@ export default {
           phone: this.user.phone,
         };
 
-        // Отправляем данные на сервер или в store
-        await this.$store.dispatch("createUser", userData); // Экшен для создания пользователя
+        // Отправлка данных на сервер
+        await this.createUser(userData); // Экшен для создания пользователя
         console.log("Пользователь зарегистрирован:", userData);
 
-        // Перенаправляем на страницу после успешной регистрации
+        // Перенаправление на страницу после успешной регистрации
         this.$router.push("/profile");
       } catch (error) {
         console.error("Ошибка при регистрации:", error);
