@@ -43,10 +43,13 @@
         </tr>
       </tbody>
     </table>
+    <!-- Кнопка "Наверх" -->
+    <ScrollTopButton />
   </main>
 </template>
 
 <script setup>
+import ScrollTopButton from "../components/ScrollTopButton .vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { reverseformatDate } from "../utils/dateUtils.js";
