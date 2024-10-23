@@ -68,9 +68,9 @@ export default {
   align-items: center;
   font-size: 24px;
   cursor: pointer;
-  transition: opacity 0.5s, transform 0.3s;
   opacity: 0;
   transform: translateY(30px); /* Кнопка сначала находится ниже */
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .scroll-to-top:hover {
   background-color: #0056b3;
@@ -80,12 +80,12 @@ export default {
   transform: scale(0.95); /* Эффект сжатия при клике */
 }
 /* Плавное появление кнопки */
-.scroll-to-top-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-/* Плавное исчезновение кнопки */
+.scroll-to-top-enter-active,
 .scroll-to-top-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.scroll-to-top-enter,
+.scroll-to-top-leave-to {
   opacity: 0;
   transform: translateY(30px);
 }
