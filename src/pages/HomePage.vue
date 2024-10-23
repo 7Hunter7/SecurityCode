@@ -24,10 +24,15 @@
     <div class="add-siz">
       <button @click="goToAddSIZ">Добавить СИЗ</button>
     </div>
+
+    <!-- Кнопка "Наверх" -->
+    <ScrollTopButton />
   </div>
 </template>
 
 <script>
+import ScrollTopButton from "../components/ScrollTopButton .vue";
+
 export default {
   name: "HomePage",
   data() {
