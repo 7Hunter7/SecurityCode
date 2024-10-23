@@ -67,6 +67,7 @@
         </tr>
       </tfoot>
     </table>
+
     <!-- Кнопка "Наверх" -->
     <ScrollTopButton />
   </div>
@@ -74,7 +75,7 @@
 
 <script>
 import FiltersComponent from "../components/FiltersComponent.vue";
-import ScrollTopButton from "../components/ScrollTopButton .vue";
+import ScrollTopButton from "../components/scrollTopButton.vue";
 import { mapGetters, mapActions } from "vuex";
 import { useToast } from "vue-toastification";
 import { PZ_TYPES } from "../constants/constants.js";
