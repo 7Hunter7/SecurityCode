@@ -29,7 +29,6 @@ export default {
       showButton: false,
     };
   },
-  // Добавление бработчика события scroll
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -38,12 +37,10 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
-    // Появление кнопки при прокрутке более 300px
     handleScroll() {
       const scrollPosition = window.scrollY;
-      this.showButton = scrollPosition > 300;
+      this.showButton = scrollPosition > 300; // Появление кнопки при прокрутке более 300px
     },
-    // Плавная прокрутка вверх
     scrollToTop() {
       window.scrollTo({
         top: 0,
@@ -91,7 +88,7 @@ export default {
   opacity: 0;
   transform: translateY(30px);
 }
-/* Поддержка адаптивности  */
+/* Поддержка адаптивности */
 @media (max-width: 768px) {
   .scroll-to-top {
     width: 40px;
