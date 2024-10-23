@@ -50,7 +50,6 @@ export default {
   components: { UserModal },
   data() {
     return {
-      users: [], // Массив для хранения списка пользователей
       showUserModal: false, // Флаг для отображения модального окна
       isEdit: false, // Флаг для различения добавления/редактирования
       selectedUser: null, // Пользователь, выбранный для редактирования
@@ -58,6 +57,10 @@ export default {
   },
   computed: {
     ...mapGetters(["getAllUsers"]),
+
+    user() {
+      return this.getAllUsers || {}; // Пустой объект, если нет пользователей;
+    },
   },
   methods: {
     ...mapActions(["fetchUsers", "addUser", "updateUser", "deleteUser"]),
