@@ -51,10 +51,26 @@ router.post("/register", async (req, res, next) => {
   }
 
   try {
+    // Проверка, существует ли пользователь с таким же username или email
+    const existingUser = await User.findOne({
+      where: { username: req.body.username },
+    });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "Пользователь с таким именем уже существует" });
+    }
+
+    // Создание нового пользователя
     const newUser = await User.create(req.body);
     logger.info(
       `Новый пользователь успешно зарегистрирован с ID: ${newUser.id}`
     );
+
+    // Удаление пароля из ответа перед отправкой данных на клиент
+    const userData = newUser.toJSON();
+    delete userData.password;
+
     res.status(201).json(newUser);
   } catch (error) {
     logger.error(`Ошибка регистрации нового пользователя: ${error.message}`);
