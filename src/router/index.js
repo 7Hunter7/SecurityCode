@@ -41,7 +41,7 @@ const router = createRouter({
       component: () => import("../pages/RegistrationPage.vue"),
     },
     {
-      path: "/profile:id?", // Маршрут профиля пользователя
+      path: "/profile/:id?", // Маршрут профиля пользователя
       name: "Profile",
       component: () => import("../pages/ProfilePage.vue"),
     },
