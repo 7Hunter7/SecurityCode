@@ -120,8 +120,17 @@ export default createStore({
     SET_USER(state, userData) {
       state.user = userData;
     },
-    UPDATE_USER(state, updatedData) {
-      state.user = { ...state.user, ...updatedData };
+    SET_USERS(state, users) {
+      state.users = users;
+    },
+    UPDATE_USER(state, updatedUser) {
+      const index = state.users.findIndex((user) => user.id === updatedUser.id);
+      if (index !== -1) {
+        state.users.splice(index, 1, updatedUser);
+      }
+    },
+    DELETE_USER(state, userId) {
+      state.users = state.users.filter((user) => user.id !== userId);
     },
     // Мутация для добавления нового местоположения
     ADD_LOCATION(state, newLocation) {
@@ -188,7 +197,25 @@ export default createStore({
     },
   },
   actions: {
-    // Экшен для создания нового пользователя
+    // Экшен для загрузки всех пользователей (Администрирование)
+    async fetchUsers({ commit }) {
+      try {
+        const response = await axios.get("/api/users");
+        commit("SET_USERS", response.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке пользователей:", error);
+      }
+    },
+    // Экшен для создания нового пользователя (Администрирование)
+    async addUser({ commit }, newUser) {
+      try {
+        const response = await axios.post("/api/users", newUser);
+        commit("ADD_USER", response.data);
+      } catch (error) {
+        console.error("Ошибка при добавлении пользователя:", error);
+      }
+    },
+    // Экшен для создания нового пользователя (Регистрация)
     async createUser({ commit }, userData) {
       try {
         // Запрос на сервер
@@ -202,7 +229,7 @@ export default createStore({
         throw error; // Проброс ошибки дальше
       }
     },
-    // Экшен для загрузки данных пользователя
+    // Экшен для загрузки данных пользователя (Профиль)
     async loadUser({ commit, state }) {
       try {
         if (!state.user || !state.user.id) {
@@ -215,20 +242,28 @@ export default createStore({
       }
     },
     // Экшен для обновления данных пользователя
-    async updateUser({ commit, state }, updatedData) {
+    async updateUser({ commit, state }, updatedUser) {
       try {
         if (!state.user || !state.user.id) {
           throw new Error("User not logged in");
         }
         // Обновление данных на сервере
         const response = await axios.put(
-          `/api/users/${state.user.id}`,
-          updatedData
+          `/api/users/${updatedUser.id}`,
+          updatedUser
         );
         commit("UPDATE_USER", response.data);
       } catch (error) {
-        console.error("Ошибка при обновлении данных пользователя:", error);
+        console.error("Ошибка при обновлении пользователя:", error);
         throw error;
+      }
+    },
+    async deleteUser({ commit }, userId) {
+      try {
+        await axios.delete(`/api/users/${userId}`);
+        commit("DELETE_USER", userId);
+      } catch (error) {
+        console.error("Ошибка при удалении пользователя:", error);
       }
     },
     // Экшены для СЗ
@@ -355,7 +390,7 @@ export default createStore({
     // Getter для получения данных пользователя
     getUser: (state) => state.user,
     // Getter для получения всех зарегистрированных пользователей
-    getUsers: (state) => state.users,
+    getAllUsers: (state) => state.users,
     // Getter для получения списка подразделений
     getDepartments: (state) => state.departments,
 
