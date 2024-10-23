@@ -50,6 +50,11 @@ router.post(
         phone,
       });
       logger.info(`Новый пользователь успешно создан с ID: ${newUser.id}`);
+
+      // Удаление пароля из ответа перед отправкой данных на клиент
+      const userData = newUser.toJSON();
+      delete userData.password;
+
       res.status(201).json(newUser);
     } catch (error) {
       logger.error(`Ошибка создания нового пользователя: ${error.message}`);
