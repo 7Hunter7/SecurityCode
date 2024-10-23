@@ -7,6 +7,21 @@ const User = sequelize.define("User", {
     primaryKey: true,
     autoIncrement: true,
   },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  role: {
+    type: DataTypes.STRING,
+    defaultValue: "user", // По умолчанию роль обычного пользователя
+    validate: {
+      isIn: [["user", "advanced_user", "admin"]], // Роли пользователя
+    },
+  },
   firstName: {
     type: DataTypes.STRING,
     allowNull: false,
