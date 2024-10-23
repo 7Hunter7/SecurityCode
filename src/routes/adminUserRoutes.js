@@ -24,7 +24,7 @@ router.get(
 );
 
 // Добавление нового пользователя
-router.post("/", async (req, res, next) => {
+router.post("/users/:id", async (req, res, next) => {
   // Валидация данных пользователя перед созданием
   const { error } = userValidationSchema.validate(req.body);
   if (error) {
@@ -88,7 +88,7 @@ router.put("/users/:id", authenticateToken, async (req, res, next) => {
 
 // Защищённый маршрут для удаления пользователя
 router.delete(
-  "/:id",
+  "/users/:id",
   authenticateToken,
   authorize(["admin"]),
   async (req, res, next) => {
