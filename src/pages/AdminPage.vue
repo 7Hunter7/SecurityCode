@@ -24,7 +24,7 @@
           <td>{{ user.role }}</td>
           <td>
             <button @click="openEditUserModal(user)">Редактировать</button>
-            <button @click="deleteUser(user.id)">Удалить</button>
+            <button @click="handleDeleteUser(user.id)">Удалить</button>
           </td>
         </tr>
       </tbody>
@@ -53,23 +53,21 @@ export default {
       showUserModal: false, // Флаг для отображения модального окна
       isEdit: false, // Флаг для различения добавления/редактирования
       selectedUser: null, // Пользователь, выбранный для редактирования
+      isLoading: false, // Флаг управление загрузкой во время сохранения пользователя
     };
+  },
+  async created() {
+    await this.fetchUsers(); // Загрузка пользователей при загрузке страницы
   },
   computed: {
     ...mapGetters(["getAllUsers"]),
 
-    user() {
-      return this.getAllUsers || {}; // Пустой объект, если нет пользователей;
+    users() {
+      return this.getAllUsers || []; // Возвращаем всех пользователей
     },
   },
   methods: {
     ...mapActions(["fetchUsers", "addUser", "updateUser", "deleteUser"]),
-
-    async created() {
-      // Загружаем список пользователей при открытии страницы
-      await this.fetchUsers();
-      this.users = this.getAllUsers;
-    },
 
     // Открыть модальное окно для добавления пользователя
     openAddUserModal() {
@@ -81,7 +79,7 @@ export default {
     // Открыть модальное окно для редактирования пользователя
     openEditUserModal(user) {
       this.isEdit = true;
-      this.selectedUser = { ...user }; // Копируем данные пользователя
+      this.selectedUser = { ...user }; // Данные пользователя скопированы
       this.showUserModal = true;
     },
 
@@ -92,20 +90,33 @@ export default {
 
     // Отправка данных пользователя (создание или редактирование)
     async submitUserData(userData) {
-      if (this.isEdit) {
-        await this.updateUser(userData);
-      } else {
-        await this.addUser(userData);
+      this.isLoading = true; // Устанавка флага загрузки
+      try {
+        if (this.isEdit) {
+          await this.updateUser(userData);
+        } else {
+          await this.addUser(userData);
+        }
+        this.closeUserModal();
+        this.fetchUsers(); // Перезагрузка списока пользователей после изменений
+      } catch (error) {
+        console.error("Ошибка при сохранении данных пользователя:", error);
+        alert("Произошла ошибка при сохранении пользователя.");
+      } finally {
+        this.isLoading = false; // Сброс флага загрузки
       }
-      this.closeUserModal();
-      this.fetchUsers(); // Перезагружаем список пользователей после изменений
     },
 
     // Удаление пользователя
-    async deleteUser(userId) {
+    async handleDeleteUser(userId) {
       if (confirm("Вы уверены, что хотите удалить этого пользователя?")) {
-        await this.deleteUser(userId);
-        this.fetchUsers(); // Перезагружаем список пользователей после удаления
+        try {
+          await this.deleteUser(userId);
+          this.fetchUsers(); // Перезагрузка список пользователей после удаления
+        } catch (error) {
+          console.error("Ошибка при удалении пользователя:", error);
+          alert("Произошла ошибка при удалении пользователя.");
+        }
       }
     },
   },
