@@ -84,6 +84,7 @@ export default {
   name: "SecurityDevicePage",
   components: {
     FiltersComponent,
+    ScrollTopButton,
   },
   data() {
     return {
