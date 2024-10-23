@@ -1,23 +1,25 @@
 <template>
-  <transition name="scroll-to-top">
-    <div class="scroll-to-top" v-if="showButton" @click="scrollToTop">
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 -4 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g id="Lager_14" data-name="Lager 14" transform="translate(-6 -10)">
-          <path
-            id="Path_16"
-            data-name="Path 16"
-            d="M15.319,15.909a1.97,1.97,0,0,1,.732-.278,1,1,0,0,1,.679.278l5.732,5.517a2.116,2.116,0,0,0,2.887.01l.03-.028a1.958,1.958,0,0,0,.008-2.854l-8.613-8.267A1.077,1.077,0,0,0,16.051,10a2.115,2.115,0,0,0-.775.287L6.611,18.554a1.959,1.959,0,0,0,.012,2.854l.036.028a2.134,2.134,0,0,0,2.9-.01Z"
-            fill="#fff"
-          />
-        </g>
-      </svg>
-    </div>
-  </transition>
+  <div
+    class="scroll-to-top"
+    :class="{ visible: showButton }"
+    @click="scrollToTop"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 -4 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="Lager_14" data-name="Lager 14" transform="translate(-6 -10)">
+        <path
+          id="Path_16"
+          data-name="Path 16"
+          d="M15.319,15.909a1.97,1.97,0,0,1,.732-.278,1,1,0,0,1,.679.278l5.732,5.517a2.116,2.116,0,0,0,2.887.01l.03-.028a1.958,1.958,0,0,0,.008-2.854l-8.613-8.267A1.077,1.077,0,0,0,16.051,10a2.115,2.115,0,0,0-.775.287L6.611,18.554a1.959,1.959,0,0,0,.012,2.854l.036.028a2.134,2.134,0,0,0,2.9-.01Z"
+          fill="#fff"
+        />
+      </g>
+    </svg>
+  </div>
 </template>
 
 <script>
@@ -25,14 +27,12 @@ export default {
   name: "ScrollTopButton",
   data() {
     return {
-      // Флаг видимости кнопки
-      showButton: false,
+      showButton: false, // Флаг видимости кнопки
     };
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
   },
-  // Удаление обработчика, чтобы предотвратить утечку памяти.
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
   },
@@ -65,29 +65,26 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
   cursor: pointer;
   opacity: 0;
-  transform: translateY(30px); /* Кнопка сначала находится ниже */
+  transform: translateY(30px);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+/* Состояние, когда кнопка видима */
+.scroll-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .scroll-to-top:hover {
   background-color: #0056b3;
-  opacity: 1;
 }
+
 .scroll-to-top:active {
-  transform: scale(0.95); /* Эффект сжатия при клике */
+  transform: scale(0.95);
 }
-/* Плавное появление кнопки */
-.scroll-to-top-enter-active,
-.scroll-to-top-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.scroll-to-top-enter,
-.scroll-to-top-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
+
 /* Поддержка адаптивности */
 @media (max-width: 768px) {
   .scroll-to-top {
