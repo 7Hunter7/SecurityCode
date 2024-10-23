@@ -44,6 +44,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import UserModal from "../components/UserModal.vue";
+import { useToast } from "vue-toastification"; // Импорт уведомлений
 
 export default {
   name: "AdminPage",
@@ -90,6 +91,8 @@ export default {
 
     // Отправка данных пользователя (создание или редактирование)
     async submitUserData(userData) {
+      const toast = useToast();
+
       this.isLoading = true; // Устанавка флага загрузки
       try {
         if (this.isEdit) {
@@ -99,9 +102,13 @@ export default {
         }
         this.closeUserModal();
         this.fetchUsers(); // Перезагрузка списока пользователей после изменений
+        toast.success("Данные пользователя успешно сохранены!");
+        console.log(
+          `Данные пользователя с ID: ${userId} - успешно сохранены: ${userData}.`
+        );
       } catch (error) {
+        toast.error("Ошибка сохранения данных пользователя!");
         console.error("Ошибка при сохранении данных пользователя:", error);
-        alert("Произошла ошибка при сохранении пользователя.");
       } finally {
         this.isLoading = false; // Сброс флага загрузки
       }
@@ -109,13 +116,17 @@ export default {
 
     // Удаление пользователя
     async handleDeleteUser(userId) {
+      const toast = useToast();
+
       if (confirm("Вы уверены, что хотите удалить этого пользователя?")) {
         try {
           await this.deleteUser(userId);
           this.fetchUsers(); // Перезагрузка список пользователей после удаления
+          toast.success("Пользователь успешно удален!");
+          console.log(`Пользователь с ID: ${userId} - успешно удален.`);
         } catch (error) {
+          toast.error("Ошибка удалении пользователя!");
           console.error("Ошибка при удалении пользователя:", error);
-          alert("Произошла ошибка при удалении пользователя.");
         }
       }
     },
