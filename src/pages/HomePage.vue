@@ -31,10 +31,11 @@
 </template>
 
 <script>
-import ScrollTopButton from "../components/ScrollTopButton .vue";
+import ScrollTopButton from "../components/scrollTopButton.vue";
 
 export default {
   name: "HomePage",
+  components: { ScrollTopButton },
   data() {
     return {
       totalSIZ: 150, // Пример данных — общее количество СИЗ
