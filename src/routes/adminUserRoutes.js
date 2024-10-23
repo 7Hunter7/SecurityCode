@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import { authenticateToken, authorizeRole } from "../middlewares/authorize.js";
 import { userValidationSchema } from "../validation/userValidation.js"; // Импорт схемы валидации
 import logger from "../logger.js";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -24,33 +25,38 @@ router.get(
 );
 
 // Добавление нового пользователя
-router.post("/users/:id", async (req, res, next) => {
-  // Валидация данных пользователя перед созданием
-  const { error } = userValidationSchema.validate(req.body);
-  if (error) {
-    logger.warn(`Ошибка валидации данных пользователя: ${error.message}`);
-    return res.status(400).json({ message: error.details[0].message });
-  }
+router.post(
+  "/users",
+  authenticateToken,
+  authorizeRole(["admin"]),
+  async (req, res, next) => {
+    // Валидация данных пользователя перед созданием
+    const { error } = userValidationSchema.validate(req.body);
+    if (error) {
+      logger.warn(`Ошибка валидации данных пользователя: ${error.message}`);
+      return res.status(400).json({ message: error.details[0].message });
+    }
 
-  try {
-    const { username, password, role, firstName, lastName, email, phone } =
-      req.body;
-    const newUser = await User.create({
-      username,
-      password,
-      role,
-      firstName,
-      lastName,
-      email,
-      phone,
-    });
-    logger.info(`Новый пользователь успешно создан с ID: ${newUser.id}`);
-    res.status(201).json(newUser);
-  } catch (error) {
-    logger.error(`Ошибка создания нового пользователя: ${error.message}`);
-    next(error);
+    try {
+      const { username, password, role, firstName, lastName, email, phone } =
+        req.body;
+      const newUser = await User.create({
+        username,
+        password,
+        role,
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
+      logger.info(`Новый пользователь успешно создан с ID: ${newUser.id}`);
+      res.status(201).json(newUser);
+    } catch (error) {
+      logger.error(`Ошибка создания нового пользователя: ${error.message}`);
+      next(error);
+    }
   }
-});
+);
 
 // Защищённый маршрут для обновления данных пользователя (администратор или сам пользователь)
 router.put("/users/:id", authenticateToken, async (req, res, next) => {
@@ -73,6 +79,7 @@ router.put("/users/:id", authenticateToken, async (req, res, next) => {
   try {
     const user = await User.findByPk(userId);
     if (user) {
+      // Обновление данных пользователя
       await user.update(req.body);
       res.json(user);
       logger.info(`Данные пользователя с ID: ${user.id} успешно обновлены`);
@@ -86,11 +93,11 @@ router.put("/users/:id", authenticateToken, async (req, res, next) => {
   }
 });
 
-// Защищённый маршрут для удаления пользователя
+// Защищённый маршрут для удаления пользователя (только администратор)
 router.delete(
   "/users/:id",
   authenticateToken,
-  authorize(["admin"]),
+  authorizeRole(["admin"]),
   async (req, res, next) => {
     try {
       const user = await User.findByPk(req.params.id);
