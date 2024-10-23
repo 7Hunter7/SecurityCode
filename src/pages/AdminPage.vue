@@ -3,7 +3,9 @@
     <h1>Панель администратора</h1>
 
     <!-- Кнопка для добавления нового пользователя -->
-    <button @click="openAddUserModal">Добавить пользователя</button>
+    <button :disabled="isLoading" @click="openAddUserModal">
+      Добавить пользователя
+    </button>
 
     <!-- Таблица с пользователями -->
     <table>
@@ -23,8 +25,12 @@
           <td>{{ user.department }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="openEditUserModal(user)">Редактировать</button>
-            <button @click="handleDeleteUser(user.id)">Удалить</button>
+            <button :disabled="isLoading" @click="openEditUserModal(user)">
+              Редактировать
+            </button>
+            <button :disabled="isLoading" @click="handleDeleteUser(user.id)">
+              Удалить
+            </button>
           </td>
         </tr>
       </tbody>
@@ -57,8 +63,8 @@ export default {
       isLoading: false, // Флаг управление загрузкой во время сохранения пользователя
     };
   },
-  async created() {
-    await this.fetchUsers(); // Загрузка пользователей при загрузке страницы
+  async mounted() {
+    await this.fetchUsers(); // Загрузка пользователей
   },
   computed: {
     ...mapGetters(["getAllUsers"]),
@@ -104,7 +110,7 @@ export default {
         this.fetchUsers(); // Перезагрузка списока пользователей после изменений
         toast.success("Данные пользователя успешно сохранены!");
         console.log(
-          `Данные пользователя с ID: ${userId} - успешно сохранены: ${userData}.`
+          `Данные пользователя с ID: ${userData.id} - успешно сохранены: ${userData}.`
         );
       } catch (error) {
         toast.error("Ошибка сохранения данных пользователя!");
