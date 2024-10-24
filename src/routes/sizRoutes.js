@@ -26,7 +26,10 @@ async function findSIZById(req, res, next) {
 
 // Получить все СИЗ
 router.get("/", authenticateToken, async (req, res, next) => {
-  const { page = 1, limit = 20 } = req.query; // Параметры пагинации из запроса
+  // Параметры пагинации из запроса
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 20);
+
   try {
     // Постраничный вывод при получении всех СИЗ
     const offset = (page - 1) * limit;
