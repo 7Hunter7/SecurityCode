@@ -251,6 +251,30 @@ export default createStore({
     },
   },
   actions: {
+    // Экшен для добавления нового подразделения
+    addDepartment({ commit }, newDepartment) {
+      commit("ADD_DEPARTMENT", newDepartment);
+    },
+    // Экшен для добавления новой бригады
+    addBrigade({ commit }, newBrigade) {
+      commit("ADD_BRIGADE", newBrigade);
+    },
+    // Экшен для выбора филиала
+    selectBranch({ commit }, branch) {
+      commit("SET_SELECTED_BRANCH", branch);
+    },
+    // Экшен для выбора подразделения
+    selectDepartment({ commit }, department) {
+      commit("SET_SELECTED_DEPARTMENT", department);
+    },
+    // Экшен для выбора района (РЭС)
+    selectDistrict({ commit }, district) {
+      commit("SET_SELECTED_DISTRICT", district);
+    },
+    // Экшен для выбора бригады
+    selectBrigade({ commit }, brigade) {
+      commit("SET_SELECTED_BRIGADE", brigade);
+    },
     // Экшен для загрузки всех пользователей (Администрирование)
     async fetchUsers({ commit }) {
       try {
