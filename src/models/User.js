@@ -51,7 +51,12 @@ const User = sequelize.define("User", {
   phone: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    validate: {
+      is: /^[0-9]{10}$/, // Валидация телефона
+      notNull: {
+        msg: "Телефон обязателен",
+      },
+    },
   },
   profilePhoto: {
     type: DataTypes.STRING, // Ссылка на фото
@@ -71,6 +76,15 @@ const User = sequelize.define("User", {
       email: false,
       phone: false,
     },
+  },
+  //Двухфакторная аутентификация
+  twoFactorCode: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  twoFactorExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
 });
 
