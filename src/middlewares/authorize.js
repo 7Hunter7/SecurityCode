@@ -12,7 +12,11 @@ export const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: "Неверный токен" });
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ message: "Токен истек" });
+      } else {
+        return res.status(403).json({ message: "Неверный токен" });
+      }
     }
 
     req.user = user; // Сохраняем данные пользователя для использования в дальнейших запросах
