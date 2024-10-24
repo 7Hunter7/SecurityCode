@@ -1,4 +1,5 @@
 import logger from "../logger.js";
+import { apiResponse } from "../utils/apiResponse.js"; // Универсальный формат
 
 const errorHandler = (err, req, res, next) => {
   // Логирование ошибки
@@ -39,11 +40,8 @@ const errorHandler = (err, req, res, next) => {
     logger.error("Внутренняя ошибка сервера");
   }
 
-  // Отправка ответа с ошибкой
-  res.status(statusCode).json({
-    status: "error",
-    message,
-  });
+  // Форматируем ответ через apiResponse
+  apiResponse(res, statusCode, message);
 };
 
 export default errorHandler;
