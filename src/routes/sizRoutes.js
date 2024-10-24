@@ -1,8 +1,8 @@
 import express from "express";
 import SIZItem from "../models/SIZItem.js";
 import History from "../models/History.js";
-import { sizItemValidationSchema } from "../validation/sizValidation.js";
 import { authenticateToken, authorizeRole } from "../middlewares/authorize.js"; // Подключение миддлвэра для проверки прав доступа
+import { validateSIZ } from "../middlewares/validateSIZ.js"; // Подключение миддлвэра для валидации СИЗ
 import logger from "../logger.js"; // Подключение Winston
 
 const router = express.Router();
@@ -43,16 +43,9 @@ router.post(
   "/",
   authenticateToken,
   authorizeRole(["advanced_user", "admin"]),
-  // Только опытные пользователи и администраторы могут добавлять СИЗ
+  validateSIZ, // Middleware для валидации СИЗ
   async (req, res, next) => {
     console.log("Запрос на добавление СЗ получен:", req.body);
-    const { error } = sizItemValidationSchema.validate(req.body);
-    if (error) {
-      const err = new Error(error.details[0].message);
-      err.statusCode = 400;
-      logger.warn(`Ошибка валидации при добавлении СЗ: ${err.message}`);
-      return next(err);
-    }
 
     // Проверка уникальности СИЗ
     try {
@@ -69,6 +62,7 @@ router.post(
         logger.warn("Попытка добавить дублирующее СЗ");
         return next(err);
       }
+
       const newItem = await SIZItem.create(req.body);
 
       // Логирование добавления СИЗ
@@ -96,14 +90,8 @@ router.put(
   authorizeRole(["advanced_user", "admin"]),
   // Только опытные пользователи и администраторы могут редактировать СИЗ
   findSIZById,
+  validateSIZ, // Middleware для валидации СИЗ
   async (req, res, next) => {
-    const { error } = sizItemValidationSchema.validate(req.body);
-    if (error) {
-      const err = new Error(error.details[0].message);
-      err.statusCode = 400;
-      logger.warn(`Ошибка валидации при обновлении СЗ: ${err.message}`);
-      return next(err);
-    }
     // Проверка на дублирующее СЗ
     try {
       const existingItem = await SIZItem.findOne({
@@ -154,8 +142,8 @@ router.delete(
   // Только опытные пользователи и администраторы могут удалять СИЗ
   findSIZById,
   async (req, res, next) => {
-    const oldData = { ...req.sizItem.dataValues }; // Сохранение данных до удаления
-    console.log(oldData);
+    // Сохранение данных до удаления
+    const oldData = { ...req.sizItem.dataValues };
 
     try {
       // Удаление записи
@@ -164,13 +152,6 @@ router.delete(
       try {
         // Логирование удаления СИЗ
         await History.create({
-          action: "Удаление",
-          sizType: oldData.type,
-          sizNumber: oldData.number,
-          userId: req.user?.id || null,
-          details: { oldData },
-        });
-        console.log("Данные для сохранения в History:", {
           action: "Удаление",
           sizType: oldData.type,
           sizNumber: oldData.number,
