@@ -2,8 +2,8 @@ import express from "express";
 import SIZItem from "../models/SIZItem.js";
 import History from "../models/History.js";
 import { sizItemValidationSchema } from "../validation/sizValidation.js";
+import { authenticateToken, authorizeRole } from "../middlewares/authorize.js"; // Подключение миддлвэра для проверки прав доступа
 import logger from "../logger.js"; // Подключение Winston
-import { authorize } from "../middlewares/authorize.js"; // Подключение миддлвэра для проверки прав доступа
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ async function findSIZById(req, res, next) {
 }
 
 // Получить все СИЗ
-router.get("/", async (req, res, next) => {
+router.get("/", authenticateToken, async (req, res, next) => {
   try {
     const items = await SIZItem.findAll();
     console.log(`Найдено ${items.length} записей в базе данных.`);
@@ -41,7 +41,8 @@ router.get("/", async (req, res, next) => {
 // Добавить новое СИЗ с проверкой уникальности
 router.post(
   "/",
-  authorize(["advanced_user", "admin"]),
+  authenticateToken,
+  authorizeRole(["advanced_user", "admin"]),
   // Только опытные пользователи и администраторы могут добавлять СИЗ
   async (req, res, next) => {
     console.log("Запрос на добавление СЗ получен:", req.body);
@@ -91,7 +92,8 @@ router.post(
 // Обновить существующее СИЗ
 router.put(
   "/:id",
-  authorize(["advanced_user", "admin"]),
+  authenticateToken,
+  authorizeRole(["advanced_user", "admin"]),
   // Только опытные пользователи и администраторы могут редактировать СИЗ
   findSIZById,
   async (req, res, next) => {
@@ -147,7 +149,8 @@ router.put(
 // Удалить СИЗ
 router.delete(
   "/:id",
-  authorize(["advanced_user", "admin"]),
+  authenticateToken,
+  authorizeRole(["advanced_user", "admin"]),
   // Только опытные пользователи и администраторы могут удалять СИЗ
   findSIZById,
   async (req, res, next) => {
