@@ -26,11 +26,22 @@ async function findSIZById(req, res, next) {
 
 // Получить все СИЗ
 router.get("/", authenticateToken, async (req, res, next) => {
+  const { page = 1, limit = 20 } = req.query; // Параметры пагинации из запроса
   try {
-    const items = await SIZItem.findAll();
+    // Постраничный вывод при получении всех СИЗ
+    const offset = (page - 1) * limit;
+    const items = await SIZItem.findAndCountAll({
+      offset,
+      limit: parseInt(limit),
+    });
     console.log(`Найдено ${items.length} записей в базе данных.`);
     logger.info("Все СЗ успешно получены");
-    res.status(200).json(items);
+    res.status(200).json({
+      totalItems: items.count,
+      totalPages: Math.ceil(items.count / limit),
+      currentPage: page,
+      items: items.rows,
+    });
   } catch (err) {
     logger.error("Ошибка получения СЗ:", err);
     res.status(500).json({ message: "Ошибка получения данных" });
