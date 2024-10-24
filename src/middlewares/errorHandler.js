@@ -14,18 +14,24 @@ const errorHandler = (err, req, res, next) => {
     logger.warn(`Ошибка валидации Joi: ${message}`);
   }
 
-  // Обработка ошибок валидации Mongoose
+  // Обработка ошибок валидации данных
   if (err.name === "ValidationError") {
     statusCode = 400;
     message = "Ошибка валидации данных";
-    logger.warn("Ошибка валидации Mongoose");
+    logger.warn("Ошибка валидации данных");
   }
 
-  // Обработка ошибок дублирования ключей (Mongoose)
-  if (err.code && err.code === 11000) {
-    statusCode = 400;
-    message = "Дублирование уникального поля";
-    logger.warn("Ошибка дублирования ключей Mongoose");
+  // Обработка ошибок JWT (истекший или невалидный токен)
+  if (err.name === "TokenExpiredError") {
+    statusCode = 401;
+    message = "Токен истек. Пожалуйста, войдите заново.";
+    logger.warn("Истекший токен JWT");
+  }
+
+  if (err.name === "JsonWebTokenError") {
+    statusCode = 401;
+    message = "Неверный токен. Пожалуйста, авторизуйтесь заново.";
+    logger.warn("Неверный токен JWT");
   }
 
   if (statusCode === 500) {
