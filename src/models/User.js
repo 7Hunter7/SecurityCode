@@ -36,9 +36,30 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  department: {
+  // Филиал
+  branch: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: "Филиал обязателен",
+      },
+    },
+  },
+  // Подразделение
+  subdivision: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: "Подразделение обязательно",
+      },
+    },
+  },
+  // РЭС/Бригада
+  districtOrBrigade: {
+    type: DataTypes.STRING,
+    allowNull: true, // Может быть необязательным, если сотрудник не относится ни к РЭС, ни к бригаде
   },
   email: {
     type: DataTypes.STRING,
@@ -53,7 +74,7 @@ const User = sequelize.define("User", {
     allowNull: false,
     validate: {
       is: /^[0-9]{10}$/, // Валидация телефона
-      notNull: {
+      notEmpty: {
         msg: "Телефон обязателен",
       },
     },
