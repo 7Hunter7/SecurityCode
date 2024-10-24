@@ -36,14 +36,19 @@ const router = createRouter({
       props: true, // Передаем параметры маршрута как пропсы
     },
     {
-      path: "/registration", // Маршрут для регистрации
+      path: "/registration",
       name: "Registration",
       component: () => import("../pages/RegistrationPage.vue"),
     },
     {
-      path: "/profile/:id?", // Маршрут профиля пользователя
+      path: "/profile/:id?",
       name: "Profile",
       component: () => import("../pages/ProfilePage.vue"),
+    },
+    {
+      path: "/admin",
+      name: "Admin",
+      component: () => import("../pages/AdminPage.vue"),
     },
     {
       path: "/:pathMatch(.*)",
