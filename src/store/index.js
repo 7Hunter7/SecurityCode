@@ -137,6 +137,34 @@ export default createStore({
     ],
   },
   mutations: {
+    // Мутация для добавления нового подразделения
+    ADD_DEPARTMENT(state, newDepartment) {
+      if (!state.departments.includes(newDepartment)) {
+        state.departments.push(newDepartment);
+      }
+    },
+    // Мутация для добавления новой бригады
+    ADD_BRIGADE(state, newBrigade) {
+      if (!state.brigades.includes(newBrigade)) {
+        state.brigades.push(newBrigade);
+      }
+    },
+    // Мутация для выбора филиала
+    SET_SELECTED_BRANCH(state, branch) {
+      state.selectedBranch = branch;
+    },
+    // Мутация для выбора подразделения
+    SET_SELECTED_DEPARTMENT(state, department) {
+      state.selectedDepartment = department;
+    },
+    // Мутация для выбора района (РЭС)
+    SET_SELECTED_DISTRICT(state, district) {
+      state.selectedDistrict = district;
+    },
+    // Мутация для выбора бригады
+    SET_SELECTED_BRIGADE(state, brigade) {
+      state.selectedBrigade = brigade;
+    },
     // Мутация для изменения пользователя
     ADD_USER(state, user) {
       if (!state.users.includes(user)) {
