@@ -39,6 +39,10 @@ export default createStore({
       "Шуйская бригада",
       "Южная бригада",
     ],
+    selectedBranch: null, // Текущий выбранный филиал
+    selectedDepartment: null, // Текущее выбранное подразделение
+    selectedDistrict: null, // Текущий выбранный район (РЭС)
+    selectedBrigade: null, // Текущая выбранная бригада
     sizItems: [], // Хранилище для данных о СЗ
     filteredSIZItems: [], // Хранилище для отфильтрованных данных о СЗ
     savedFilters: null, // Хранилище для фильтров
@@ -465,6 +469,22 @@ export default createStore({
     },
   },
   getters: {
+    // Getter для получения списка филиалов
+    getBranches: (state) => state.branches,
+    // Getter для получения списка подразделений
+    getDepartments: (state) => state.departments,
+    // Getter для получения списка районов (РЭС)
+    getDistricts: (state) => state.districts,
+    // Getter для получения списка бригад
+    getBrigades: (state) => state.brigades,
+    // Getter для получения текущего выбранного филиала
+    getSelectedBranch: (state) => state.selectedBranch,
+    // Getter для получения текущего выбранного подразделения
+    getSelectedDepartment: (state) => state.selectedDepartment,
+    // Getter для получения текущего выбранного района (РЭС)
+    getSelectedDistrict: (state) => state.selectedDistrict,
+    // Getter для получения текущей выбранной бригады
+    getSelectedBrigade: (state) => state.selectedBrigade,
     // Getter для получения данных пользователя
     getUser: (state) => state.user,
     // Getter для получения всех зарегистрированных пользователей
