@@ -4,6 +4,7 @@ import History from "../models/History.js";
 import { authenticateToken, authorizeRole } from "../middlewares/authorize.js"; // Подключение миддлвэра для проверки прав доступа
 import { validateSIZ } from "../middlewares/validateSIZ.js"; // Подключение миддлвэра для валидации СИЗ
 import logger from "../logger.js"; // Подключение Winston
+import { apiResponse } from "../utils/apiResponse.js"; // Универсальнуая функция для формирования ответа
 
 const router = express.Router();
 
@@ -12,9 +13,7 @@ async function findSIZById(req, res, next) {
   try {
     const sizItem = await SIZItem.findByPk(req.params.id);
     if (!sizItem) {
-      const error = new Error("СЗ не найдено");
-      error.statusCode = 404;
-      return next(error);
+      return apiResponse(res, 404, "СЗ не найдено!", null);
     }
     req.sizItem = sizItem;
     next();
@@ -39,7 +38,8 @@ router.get("/", authenticateToken, async (req, res, next) => {
     });
     console.log(`Найдено ${items.length} записей в базе данных.`);
     logger.info("Все СЗ успешно получены");
-    res.status(200).json({
+
+    return apiResponse(res, 200, "Все СЗ успешно получены", {
       totalItems: items.count,
       totalPages: Math.ceil(items.count / limit),
       currentPage: page,
@@ -47,8 +47,7 @@ router.get("/", authenticateToken, async (req, res, next) => {
     });
   } catch (err) {
     logger.error("Ошибка получения СЗ:", err);
-    res.status(500).json({ message: "Ошибка получения данных" });
-    next(err);
+    return apiResponse(res, 500, "Ошибка получения данных!");
   }
 });
 
@@ -71,10 +70,8 @@ router.post(
         },
       });
       if (existingItem) {
-        const err = new Error("СЗ с таким номером уже существует!");
-        err.statusCode = 400;
         logger.warn("Попытка добавить дублирующее СЗ");
-        return next(err);
+        return apiResponse(res, 400, "СЗ с таким номером уже существует");
       }
 
       const newItem = await SIZItem.create(req.body);
@@ -89,10 +86,10 @@ router.post(
       });
 
       logger.info(`СЗ успешно добавлено с ID: ${newItem.id}`);
-      res.status(201).json(newItem);
+      return apiResponse(res, 201, "СЗ успешно добавлено", newItem);
     } catch (err) {
       logger.error(`Ошибка при добавлении нового СЗ: ${err.message}`);
-      next(err);
+      return apiResponse(res, 500, "Ошибка добавления нового СЗ");
     }
   }
 );
@@ -116,12 +113,15 @@ router.put(
         },
       });
       if (existingItem && existingItem.id !== req.sizItem.id) {
-        const err = new Error("СЗ с таким номером уже существует!");
-        err.statusCode = 400;
         logger.warn(
           `Попытка обновления на дублирующий номер СЗ: ${req.body.number}`
         );
-        return next(err);
+        return apiResponse(
+          res,
+          400,
+          "СЗ с таким номером уже существует!",
+          null
+        );
       }
       // Сохранение данных до обновления
       const oldData = { ...req.sizItem.dataValues };
@@ -138,12 +138,10 @@ router.put(
       });
 
       logger.info(`СЗ с ID: ${req.sizItem.id} успешно обновлено`);
-      res
-        .status(200)
-        .json({ message: "СЗ успешно обновлено", updatedItem: req.sizItem });
+      return apiResponse(res, 200, "СЗ успешно обновлено", req.sizItem);
     } catch (err) {
       logger.error(`Ошибка обновления СЗ: ${err.message}`);
-      next(err);
+      return apiResponse(res, 500, "Ошибка обновления СЗ");
     }
   }
 );
@@ -179,9 +177,7 @@ router.delete(
         next(err);
       }
       logger.info(`СЗ с ID: ${oldData.id} успешно удалено`);
-      res
-        .status(200)
-        .json({ message: `СЗ с ID ${oldData.id} успешно удалено` });
+      return apiResponse(res, 200, `СЗ с ID ${oldData.id} успешно удалено`);
     } catch (err) {
       logger.error(
         `Ошибка удаления СЗ с ID: ${req.sizItem.id}: ${err.message}`,
@@ -189,7 +185,7 @@ router.delete(
           stack: err.stack,
         }
       );
-      next(err);
+      return apiResponse(res, 500, "Ошибка удаления СЗ");
     }
   }
 );
