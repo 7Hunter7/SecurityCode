@@ -82,6 +82,12 @@ router.post(
         sizType: newItem.type,
         sizNumber: newItem.number,
         userId: req.user?.id || null, // Если есть учет пользователей
+        userFullName: `${req.user.firstName} ${
+          req.user.middleName ? req.user.middleName + " " : ""
+        }${req.user.lastName}`,
+        userDepartmentInfo: `${req.user.branch}, ${req.user.subdivision}${
+          req.user.districtOrBrigade ? `, ${req.user.districtOrBrigade}` : ""
+        }`,
         details: { newData: req.body },
       });
 
@@ -134,6 +140,12 @@ router.put(
         sizType: req.sizItem.type,
         sizNumber: req.sizItem.number,
         userId: req.user?.id || null,
+        userFullName: `${req.user.firstName} ${
+          req.user.middleName ? req.user.middleName + " " : ""
+        }${req.user.lastName}`,
+        userDepartmentInfo: `${req.user.branch}, ${req.user.subdivision}${
+          req.user.districtOrBrigade ? `, ${req.user.districtOrBrigade}` : ""
+        }`,
         details: { oldData, newData: req.body },
       });
 
@@ -168,6 +180,12 @@ router.delete(
           sizType: oldData.type,
           sizNumber: oldData.number,
           userId: req.user?.id || null,
+          userFullName: `${req.user.firstName} ${
+            req.user.middleName ? req.user.middleName + " " : ""
+          }${req.user.lastName}`,
+          userDepartmentInfo: `${req.user.branch}, ${req.user.subdivision}${
+            req.user.districtOrBrigade ? `, ${req.user.districtOrBrigade}` : ""
+          }`,
           details: { oldData },
         });
       } catch (err) {
