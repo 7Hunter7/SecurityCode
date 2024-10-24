@@ -7,14 +7,6 @@ const History = sequelize.define("History", {
     primaryKey: true,
     autoIncrement: true,
   },
-  timestamp: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
   action: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -26,6 +18,18 @@ const History = sequelize.define("History", {
   sizNumber: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: true, // Поле для ID пользователя
+  },
+  userFullName: {
+    type: DataTypes.STRING,
+    allowNull: true, // Поле для полного имени пользователя (ФИО)
+  },
+  userDepartmentInfo: {
+    type: DataTypes.STRING,
+    allowNull: true, // Поле для информации о подразделении (Филиал, Подразделение, РЭС/Бригада)
   },
   details: {
     type: DataTypes.JSON,
