@@ -14,11 +14,11 @@ const errorHandler = (err, req, res, next) => {
     logger.warn(`Ошибка валидации Joi: ${message}`);
   }
 
-  // Обработка ошибок валидации данных
-  if (err.name === "ValidationError") {
+  // Обработка ошибок дублирования уникальных полей в Sequelize
+  if (err.name === "SequelizeUniqueConstraintError") {
     statusCode = 400;
-    message = "Ошибка валидации данных";
-    logger.warn("Ошибка валидации данных");
+    message = "Дублирование уникального поля";
+    logger.warn("Ошибка дублирования ключей в Sequelize");
   }
 
   // Обработка ошибок JWT (истекший или невалидный токен)
