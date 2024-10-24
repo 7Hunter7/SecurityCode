@@ -4,7 +4,7 @@ import History from "../models/History.js";
 import { authenticateToken, authorizeRole } from "../middlewares/authorize.js"; // Подключение миддлвэра для проверки прав доступа
 import { validateSIZ } from "../middlewares/validateSIZ.js"; // Подключение миддлвэра для валидации СИЗ
 import logger from "../logger.js"; // Подключение Winston
-import { apiResponse } from "../utils/apiResponse.js"; // Универсальнуая функция для формирования ответа
+import { apiResponse } from "../utils/apiResponse.js"; // Универсальная функция для формирования ответа
 
 const router = express.Router();
 
