@@ -38,14 +38,27 @@ router.post(
     }
 
     try {
-      const { username, password, role, firstName, lastName, email, phone } =
-        req.body;
+      const {
+        username,
+        password,
+        role,
+        firstName,
+        lastName,
+        branch,
+        subdivision,
+        districtOrBrigade,
+        email,
+        phone,
+      } = req.body;
       const newUser = await User.create({
         username,
         password,
         role,
         firstName,
         lastName,
+        branch,
+        subdivision,
+        districtOrBrigade,
         email,
         phone,
       });
