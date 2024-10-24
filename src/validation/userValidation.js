@@ -8,7 +8,14 @@ export const userValidationSchema = Joi.object({
   firstName: Joi.string().min(1).max(100).required(),
   lastName: Joi.string().min(1).max(100).required(),
   middleName: Joi.string().min(0).max(100).optional(),
-  department: Joi.string().min(0).max(255).optional(),
+
+  // Поля филиала и подразделения обязательные
+  branch: Joi.string().min(1).max(255).required(),
+  subdivision: Joi.string().min(1).max(255).required(),
+
+  // Поле РЭС/Бригада может быть опциональным
+  districtOrBrigade: Joi.string().min(0).max(255).optional(),
+
   email: Joi.string().email().required(),
   phone: Joi.string()
     .pattern(/^[0-9]{10,15}$/)
@@ -20,4 +27,8 @@ export const userValidationSchema = Joi.object({
     email: Joi.boolean().default(false),
     phone: Joi.boolean().default(false),
   }).default(),
+
+  // Двухфакторная аутентификация
+  twoFactorCode: Joi.string().optional(),
+  twoFactorExpires: Joi.date().optional(),
 });
