@@ -12,6 +12,7 @@ import { RouterLink, RouterView } from "vue-router";
       <RouterLink to="/history">История</RouterLink>
       <RouterLink to="/registration">Регистрация</RouterLink>
       <RouterLink to="/profile">Профиль</RouterLink>
+      <RouterLink to="/admin">Админ</RouterLink>
       <RouterLink to="/settings">Настройки</RouterLink>
     </nav>
   </header>
